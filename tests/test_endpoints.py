@@ -61,7 +61,13 @@ async def test_node_endpoint_actions():
 
     # Call the property directly to invoke the PostAction
     await node_endpoint.reboot()
-    mock_client.request.assert_called_with("POST", "nodes/pve-01/reboot", json_data={})
+    mock_client.request.assert_called_with(
+        "POST", "nodes/pve-01/status", json_data={"command": "reboot"}
+    )
+    await node_endpoint.shutdown()
+    mock_client.request.assert_called_with(
+        "POST", "nodes/pve-01/status", json_data={"command": "shutdown"}
+    )
 
     await node_endpoint.startall()
     mock_client.request.assert_called_with(
