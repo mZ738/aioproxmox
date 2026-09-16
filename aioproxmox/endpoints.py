@@ -8,7 +8,14 @@ from .helpers import pve_cluster_cache, pve_find_node_in_cache
 from .model import PVEPermissions
 from .model.disks import DiskSmart, NodeDisk, ZfsPool
 from .model.guest import GuestFilesystem, GuestInterface, Snapshot
-from .model.health import Certificate, ReplicationJob, Subscription
+from .model.health import (
+    CephStatus,
+    Certificate,
+    GuestWithoutBackup,
+    HAStatus,
+    ReplicationJob,
+    Subscription,
+)
 from .model.pve import (
     ClusterResourcesCollection,
     ContainerResource,
@@ -533,6 +540,25 @@ class ClusterEndpoint:
     def __init__(self, client: Any) -> None:
         """Endpoint initialisation."""
         self.client = client
+
+    async def ceph_status(self) -> CephStatus:
+        """Fetch Ceph's health and usage; needs Sys.Audit or Datastore.Audit on `/`."""
+        raw = await self.client.request("GET", "cluster/ceph/status")
+        return CephStatus.from_api(raw if isinstance(raw, dict) else {})
+
+    async def ha_status(self) -> HAStatus:
+        """Fetch the HA stack's current status; needs Sys.Audit on `/`."""
+        raw = await self.client.request("GET", "cluster/ha/status/current")
+        return HAStatus.from_api(raw if isinstance(raw, list) else [])
+
+    async def not_backed_up(self) -> list[GuestWithoutBackup]:
+        """Fetch the guests no backup job covers.
+
+        Proxmox filters this to guests the credentials may see, so it reads
+        "not backed up, as far as this user can tell".
+        """
+        raw = await self.client.request("GET", "cluster/backup-info/not-backed-up")
+        return GuestWithoutBackup.list_from_api(raw)
 
     async def resources(self) -> ClusterResourcesCollection:
         """A direct, optimized call returning the complete cluster resources block."""
