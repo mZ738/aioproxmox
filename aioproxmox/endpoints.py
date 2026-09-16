@@ -8,6 +8,7 @@ from .helpers import pve_cluster_cache, pve_find_node_in_cache
 from .model import PVEPermissions
 from .model.disks import DiskSmart, NodeDisk, ZfsPool
 from .model.guest import GuestFilesystem, GuestInterface, Snapshot
+from .model.health import Certificate, ReplicationJob, Subscription
 from .model.pve import (
     ClusterResourcesCollection,
     ContainerResource,
@@ -23,6 +24,7 @@ from .model.pve import (
     QemuResource,
     QemuStatus,
 )
+from .model.summary import NodeInterface
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -487,6 +489,26 @@ class NodeEndpoint:
         """Fetch PVE version for this physical node."""
         raw = await self.client.request("GET", f"nodes/{self.node}/version")
         return NodeVersion.from_dict(raw)
+
+    async def certificates(self) -> list[Certificate]:
+        """Fetch the node's certificates; `serving_certificate()` picks the one the API uses."""
+        raw = await self.client.request("GET", f"nodes/{self.node}/certificates/info")
+        return Certificate.list_from_api(raw)
+
+    async def subscription(self) -> Subscription:
+        """Fetch the node's subscription state; needs no privilege beyond logging in."""
+        raw = await self.client.request("GET", f"nodes/{self.node}/subscription")
+        return Subscription.from_dict(raw if isinstance(raw, dict) else {})
+
+    async def replication(self) -> list[ReplicationJob]:
+        """Fetch the node's replication jobs; `ReplicationHealth.from_jobs()` sums them up."""
+        raw = await self.client.request("GET", f"nodes/{self.node}/replication")
+        return ReplicationJob.list_from_api(raw)
+
+    async def network(self) -> list[NodeInterface]:
+        """Fetch the node's interfaces; `node_mac_addresses()` reads the physical ports' MACs."""
+        raw = await self.client.request("GET", f"nodes/{self.node}/network")
+        return NodeInterface.list_from_api(raw)
 
     reboot = node_action("reboot")
     shutdown = node_action("shutdown")
