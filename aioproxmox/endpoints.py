@@ -237,8 +237,34 @@ class QemuStatusEndpoint:
             )
         )
 
+    async def hibernate(self) -> str:
+        """Suspend the VM to disk - what the web interface calls Hibernate."""
+        return str(
+            await self.client.request(
+                "POST",
+                f"nodes/{self.node}/qemu/{self.vmid}/status/suspend",
+                json_data={"todisk": 1},
+            )
+        )
+
+    async def unlock(self) -> str:
+        """Remove the config lock, like `qm unlock`.
+
+        Not part of the status API: the lock is deleted from the config.
+        QEMU refuses to edit a locked guest's config unless `skiplock` is
+        passed, which only root@pam may do.
+        """
+        return str(
+            await self.client.request(
+                "PUT",
+                f"nodes/{self.node}/qemu/{self.vmid}/config",
+                json_data={"delete": "lock", "skiplock": 1},
+            )
+        )
+
     start = qemu_action("start")
     stop = qemu_action("stop")
+    reboot = qemu_action("reboot")
     restart = qemu_action("restart")
     suspend = qemu_action("suspend")
     resume = qemu_action("resume")
@@ -336,9 +362,23 @@ class LXCStatusEndpoint:
             )
         )
 
+    async def unlock(self) -> str:
+        """Remove the config lock, like `pct unlock`; the LXC config takes no `skiplock`."""
+        return str(
+            await self.client.request(
+                "PUT",
+                f"nodes/{self.node}/lxc/{self.vmid}/config",
+                json_data={"delete": "lock"},
+            )
+        )
+
     start = lxc_action("start")
     restart = lxc_action("restart")
+    reboot = lxc_action("reboot")
     stop = lxc_action("stop")
+    shutdown = lxc_action("shutdown")
+    suspend = lxc_action("suspend")
+    resume = lxc_action("resume")
 
 
 class LXCEndpoint:
@@ -527,8 +567,56 @@ class NodeEndpoint:
         raw = await self.client.request("GET", f"nodes/{self.node}/network")
         return NodeInterface.list_from_api(raw)
 
+    async def vzdump(
+        self,
+        vmid: int | list[int] | None = None,
+        *,
+        all_guests: bool = False,
+        storage: str | None = None,
+        mode: str | None = None,
+        compress: str | None = None,
+        notes_template: str | None = None,
+        **extra: Any,
+    ) -> str:
+        """Start a backup run the way *Backup now* in the web interface does.
+
+        Name the guests (`vmid`) or take everything the node hosts
+        (`all_guests`); `storage`, `mode` (snapshot, suspend, stop) and
+        `compress` fall back to the node's defaults. A `notes_template`
+        (`{{guestname}}`, `{{vmid}}`, `{{node}}`, `{{cluster}}`) needs a
+        storage alongside it, as vzdump does. vzdump holds one lock per node:
+        a second run waits for the first. Returns the task id. Needs
+        `VM.Backup` on the guests and `Datastore.AllocateSpace` on the storage.
+        """
+        payload: dict[str, Any] = dict(extra)
+        if all_guests:
+            payload["all"] = 1
+        elif vmid is not None:
+            ids = vmid if isinstance(vmid, list) else [vmid]
+            if not ids:
+                raise ProxmoxError("vzdump: name at least one guest or take all")
+            payload["vmid"] = ",".join(str(i) for i in ids)
+        else:
+            raise ProxmoxError("vzdump: name at least one guest or take all")
+        if storage:
+            payload["storage"] = storage
+        if mode:
+            payload["mode"] = mode
+        if compress is not None:
+            payload["compress"] = compress
+        if notes_template:
+            if not storage:
+                raise ProxmoxError("vzdump: a notes template needs a storage")
+            payload["notes-template"] = notes_template
+        return str(
+            await self.client.request(
+                "POST", f"nodes/{self.node}/vzdump", json_data=payload
+            )
+        )
+
     reboot = node_action("reboot")
     shutdown = node_action("shutdown")
+    wakeonlan = node_action("wakeonlan")
     suspendall = node_action("suspendall")
     stopall = node_action("stopall")
     startall = node_action("startall")
