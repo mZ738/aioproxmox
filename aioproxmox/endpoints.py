@@ -560,6 +560,36 @@ class ClusterEndpoint:
         raw = await self.client.request("GET", "cluster/ceph/status")
         return CephStatus.from_api(raw if isinstance(raw, dict) else {})
 
+    async def arm_ha(self) -> str:
+        """Resume HA fencing after a disarm; queues a CRM command, returns its task id.
+
+        Needs `Sys.Console` on `/` and pve-ha-manager 5.1.3 or newer. Whether
+        the cluster actually reached the armed state is what `ha_status()`
+        says afterwards - arm and disarm only queue the command.
+        """
+        return str(await self.client.request("POST", "cluster/ha/status/arm-ha"))
+
+    async def disarm_ha(self, resource_mode: str = "freeze") -> str:
+        """Pause HA fencing for planned maintenance; queues a CRM command.
+
+        `resource_mode` is what happens to HA services meanwhile: `freeze`
+        keeps them locked in their current state, no automatic action - the
+        safer choice; `ignore` suspends HA tracking entirely and lets guests
+        be managed by hand during the disarmed window. Needs `Sys.Console`
+        on `/`.
+        """
+        if resource_mode not in ("freeze", "ignore"):
+            raise ProxmoxError(
+                f"resource_mode must be 'freeze' or 'ignore', not {resource_mode!r}"
+            )
+        return str(
+            await self.client.request(
+                "POST",
+                "cluster/ha/status/disarm-ha",
+                json_data={"resource-mode": resource_mode},
+            )
+        )
+
     async def ha_status(self) -> HAStatus:
         """Fetch the HA stack's current status; needs Sys.Audit on `/`."""
         raw = await self.client.request("GET", "cluster/ha/status/current")
