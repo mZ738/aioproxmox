@@ -7,7 +7,7 @@ from .exceptions import ProxmoxAPIError, ProxmoxError, ResourceNotFoundError
 from .helpers import pve_cluster_cache, pve_find_node_in_cache
 from .model import PVEPermissions
 from .model.disks import DiskSmart, NodeDisk, ZfsPool
-from .model.guest import GuestFilesystem, GuestInterface
+from .model.guest import GuestFilesystem, GuestInterface, Snapshot
 from .model.pve import (
     ClusterResourcesCollection,
     ContainerResource,
@@ -248,6 +248,13 @@ class QemuEndpoint:
         self.status = QemuStatusEndpoint(client, node, vmid)
         self.agent = QemuAgentEndpoint(client, node, vmid)
 
+    async def snapshots(self) -> list[Snapshot]:
+        """Fetch the VM's snapshot list - `current` included, see `Snapshot.is_current`."""
+        raw = await self.client.request(
+            "GET", f"nodes/{self.node}/qemu/{self.vmid}/snapshot"
+        )
+        return Snapshot.list_from_api(raw)
+
 
 class LXCStatusEndpoint:
     """LXC nested status endpoint."""
@@ -334,6 +341,13 @@ class LXCEndpoint:
         self.node = node
         self.vmid = vmid
         self.status = LXCStatusEndpoint(client, node, vmid)
+
+    async def snapshots(self) -> list[Snapshot]:
+        """Fetch the container's snapshot list - `current` included."""
+        raw = await self.client.request(
+            "GET", f"nodes/{self.node}/lxc/{self.vmid}/snapshot"
+        )
+        return Snapshot.list_from_api(raw)
 
     async def interfaces(self) -> list[GuestInterface]:
         """Fetch the container's interfaces with their addresses; needs it running."""

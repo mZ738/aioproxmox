@@ -1,6 +1,7 @@
-"""aioproxmox models for what a guest reports about itself through the agent or its own interfaces."""
+"""aioproxmox models for what a guest reports about itself: agent data, snapshots."""
 
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 import ipaddress
 from typing import Any
 
@@ -150,3 +151,41 @@ def primary_address(interfaces: list[GuestInterface]) -> str | None:
     return next(
         (a for a in addresses if ipaddress.ip_address(a).version == 4), addresses[0]
     )
+
+
+@dataclass(slots=True)
+class Snapshot(ProxmoxVEDataClass):
+    """One entry of a guest's snapshot list.
+
+    The list always ends with a `current` pseudo entry standing for the
+    live state; `is_current` tells it apart, it is not a snapshot.
+    """
+
+    name: str
+    snaptime: int | None = None
+    description: str | None = None
+    parent: str | None = None
+    vmstate: int | None = None
+    running: int | None = None
+
+    class Config(BaseConfig):
+        """DataClass configuration."""
+
+        allow_unknown_fields = True
+
+    @property
+    def is_current(self) -> bool:
+        """Whether this is the live state rather than a snapshot."""
+        return self.name == "current"
+
+    @property
+    def taken_at(self) -> datetime | None:
+        """When the snapshot was taken, aware, UTC."""
+        return datetime.fromtimestamp(self.snaptime, tz=UTC) if self.snaptime else None
+
+
+def snapshots_taken(entries: list[Snapshot]) -> list[Snapshot]:
+    """The real snapshots, newest first."""
+    taken = [entry for entry in entries if not entry.is_current]
+    taken.sort(key=lambda entry: entry.snaptime or 0, reverse=True)
+    return taken

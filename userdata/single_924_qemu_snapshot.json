@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "name": "before-update",
+      "snaptime": 1757900000,
+      "description": "Created by Home Assistant",
+      "vmstate": 0,
+      "parent": "clean-install"
+    },
+    {
+      "name": "clean-install",
+      "snaptime": 1757000000,
+      "description": ""
+    },
+    {
+      "name": "current",
+      "running": 1,
+      "digest": "abc123",
+      "parent": "before-update"
+    }
+  ]
+}

@@ -166,3 +166,9 @@ def mock_agent_interfaces() -> dict:
 def mock_lxc_interfaces() -> list[dict]:
     """Return fixture container interfaces."""
     return mock_pve_fixture("single_924_lxc_interfaces.json")
+
+
+@pytest.fixture
+def mock_snapshots() -> list[dict]:
+    """Return fixture snapshot list, `current` last."""
+    return mock_pve_fixture("single_924_qemu_snapshot.json")
