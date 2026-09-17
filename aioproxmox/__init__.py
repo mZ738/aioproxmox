@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import ssl
 import time
 from typing import Any
 
@@ -29,9 +30,15 @@ class ProxmoxHTTPAuthBase:
         session: aiohttp.ClientSession,
         timeout: float = 5.0,
         service: str = "PVE",
-        verify_ssl: bool = False,
+        verify_ssl: bool | ssl.SSLContext = False,
     ):
-        """Initialize ticket based authentication."""
+        """Initialize ticket based authentication.
+
+        `verify_ssl` is handed to aiohttp as its `ssl` argument: True verifies
+        against the session's trust store, False verifies nothing, and an
+        `ssl.SSLContext` verifies against exactly what that context trusts -
+        the way to accept a private cluster CA without giving up verification.
+        """
         self.session = session
         self.timeout = timeout
         self.service = service
@@ -212,13 +219,18 @@ class ProxmoxVE:
         password: str | None = None,
         otp: str | None = None,
         port: int | None = None,
-        verify_ssl: bool = True,
+        verify_ssl: bool | ssl.SSLContext = True,
         timeout: float = 5.0,
         token_name: str | None = None,
         token_value: str | None = None,
         service: str = "PVE",
     ) -> None:
-        """HTTPS Backend for Proxmox Virtualisation Engine."""
+        """HTTPS Backend for Proxmox Virtualisation Engine.
+
+        `verify_ssl` may be an `ssl.SSLContext` instead of a bool, for a
+        Proxmox that presents a certificate from a private CA: load that CA
+        into the context and every request verifies against it.
+        """
         if ":" in host and not host.startswith("["):
             # Clean up base IPv4 parsing strings; ignore legacy bracket rules
             host, _ = host.split(":", 1)
