@@ -1,5 +1,6 @@
 """Proxmox Home Assistant Integration Service."""
 
+import asyncio
 import logging
 import time
 from typing import Any
@@ -8,7 +9,7 @@ import aiohttp
 
 from .const import DEFAULT_PVE_PORT
 from .endpoints import AccessEndpoint, ClusterEndpoint, NodeEndpoint
-from .exceptions import ProxmoxAPIError, ProxmoxAuthError
+from .exceptions import ProxmoxAPIError, ProxmoxAuthError, ProxmoxError
 from .model import PVECapabilities, PVEPermissions
 from .model.pve import ClusterCache, ClusterResourcesCollection
 
@@ -36,6 +37,8 @@ class ProxmoxHTTPAuthBase:
         self.service = service
         self.verify_ssl = verify_ssl
         self.capabilities: PVECapabilities
+        # Where the API answers; the client points it at another host on failover.
+        self.base_url: str = ""
 
     def get_cookies(self) -> dict[str, str]:
         """Return cookies."""
@@ -220,6 +223,12 @@ class ProxmoxVE:
 
         self.auth: ProxmoxHTTPAuthBase
         self.base_url = f"https://{host}:{port}/api2/json"
+        # The configured host first, then whatever the cluster says its other
+        # nodes answer on. Only the first is ever written anywhere.
+        self._hosts: list[str] = [host]
+        self._host_index = 0
+        self._port = port
+        self._switch_lock = asyncio.Lock()
         self.verify_ssl = verify_ssl
         self.timeout = timeout
         self.permissions = PVEPermissions()
@@ -250,6 +259,78 @@ class ProxmoxVE:
             await self.auth.async_init()
         return await self.cluster.resources()
 
+    def learn_hosts(self, hosts: list[str]) -> None:
+        """Remember other nodes of the cluster as places to fall back to.
+
+        `cluster/status` says what address every node answers on. That is
+        the corosync address, which on a cluster with a separate cluster
+        network is not reachable from outside - so these are tried, not
+        relied on. The configured host stays first and is used again after
+        a reconnect.
+        """
+        for host in hosts:
+            if isinstance(host, str) and host and host not in self._hosts:
+                self._hosts.append(host)
+
+    async def learn_hosts_from_cluster(self) -> None:
+        """Ask the cluster where else the API answers and remember it."""
+        try:
+            entries = await self.cluster.status()
+        except ProxmoxError as err:
+            _LOGGER.debug("Could not read cluster/status to learn hosts: %s", err)
+            return
+        self.learn_hosts(
+            [
+                str(entry["ip"])
+                for entry in entries
+                if entry.get("type") == "node"
+                and entry.get("ip")
+                and not entry.get("local")
+            ]
+        )
+
+    @property
+    def host(self) -> str:
+        """The host currently in use."""
+        return self._hosts[self._host_index]
+
+    @property
+    def hosts(self) -> tuple[str, ...]:
+        """Every host this client may use, the configured one first."""
+        return tuple(self._hosts)
+
+    def _use_host(self, index: int) -> None:
+        self._host_index = index
+        self.base_url = f"https://{self._hosts[index]}:{self._port}/api2/json"
+        self.auth.base_url = self.base_url
+
+    async def failover(self) -> bool:
+        """Move to the next node that answers, once the current one stopped.
+
+        Several requests may hit the dead host at once; the lock lets the
+        first one switch and the rest find the switch done. A candidate has
+        to answer `version` before it counts. Returns whether a working host
+        is in place.
+        """
+        async with self._switch_lock:
+            start = self._host_index
+            for offset in range(1, len(self._hosts)):
+                index = (start + offset) % len(self._hosts)
+                self._use_host(index)
+                try:
+                    await self._request_once("GET", "version")
+                except (ProxmoxError, aiohttp.ClientError, TimeoutError) as err:
+                    _LOGGER.debug("Fallback host %s did not answer: %s", self.host, err)
+                    continue
+                _LOGGER.warning(
+                    "Proxmox at %s stopped answering; using %s until it is back",
+                    self._hosts[start],
+                    self.host,
+                )
+                return True
+            self._use_host(start)
+            return False
+
     async def request(
         self,
         method: str,
@@ -260,7 +341,9 @@ class ProxmoxVE:
         """Unified request pipeline managing tickets, CSRF tokens and cookies.
 
         A 401 with password authentication means the ticket died while the
-        host was away: log in again and repeat once.
+        host was away: log in again and repeat once. A host that does not
+        answer at all is left for another node of the cluster when one is
+        known, and the request repeated there.
         """
         await self.auth.check_and_refresh(method=method)
         try:
@@ -270,6 +353,10 @@ class ProxmoxVE:
                 raise
             _LOGGER.debug("Request to %s refused with 401, logging in again", path)
             await self.auth.relogin()
+            return await self._request_once(method, path, json_data, params)
+        except aiohttp.ClientConnectionError, TimeoutError:
+            if len(self._hosts) < 2 or not await self.failover():
+                raise
             return await self._request_once(method, path, json_data, params)
 
     async def _request_once(
