@@ -337,7 +337,7 @@ class ProxmoxVE:
         path: str,
         json_data: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
-    ) -> dict[Any, Any] | list[Any] | dict[str, Any]:
+    ) -> Any:
         """Unified request pipeline managing tickets, CSRF tokens and cookies.
 
         A 401 with password authentication means the ticket died while the
@@ -365,7 +365,7 @@ class ProxmoxVE:
         path: str,
         json_data: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
-    ) -> dict[Any, Any] | list[Any] | dict[str, Any]:
+    ) -> Any:
         """One attempt against the current host."""
 
         headers: dict[str, str] = {
@@ -406,8 +406,9 @@ class ProxmoxVE:
                 raise ProxmoxAPIError(response.status, text, path)
 
             payload = await response.json()
-            data = payload.get("data", {})
-            return data if isinstance(data, (dict, list)) else {}
+            # Reads answer with a dict or a list; a command answers with the
+            # task id it queued - a string. Hand back what Proxmox said.
+            return payload.get("data") if isinstance(payload, dict) else payload
 
     @property
     def cluster(self) -> ClusterEndpoint:

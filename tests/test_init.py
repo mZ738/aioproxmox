@@ -261,3 +261,27 @@ async def test_request_query_params_and_csrf():
     post_kwargs = session.request.call_args[1]
     assert post_kwargs["json"] == {"new_val": "data"}
     assert post_kwargs["headers"]["CSRFPreventionToken"] == "mutation_csrf"
+
+
+@pytest.mark.asyncio
+async def test_a_command_answers_with_its_task_id():
+    """A POST that queues a task answers with the UPID string, not an empty dict."""
+    session = AsyncMock(spec=aiohttp.ClientSession)
+    mock_resp = AsyncMock()
+    mock_resp.status = 200
+    mock_resp.json.return_value = {"data": "UPID:pve:0001:0001:1:qmstart:101:root@pam:"}
+    session.request.return_value.__aenter__.return_value = mock_resp
+
+    pve = ProxmoxVE(
+        session=session,
+        host="127.0.0.1",
+        user="root@pam",
+        token_name="test",
+        token_value="secret",
+    )
+
+    assert await pve.request("POST", "nodes/pve/qemu/101/status/start") == (
+        "UPID:pve:0001:0001:1:qmstart:101:root@pam:"
+    )
+    mock_resp.json.return_value = {"data": None}
+    assert await pve.request("GET", "nodes/pve/subscription") is None
