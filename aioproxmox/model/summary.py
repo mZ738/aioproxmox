@@ -1,4 +1,4 @@
-"""aioproxmox summaries worked out of what the API already lists: backups, node ports, load."""
+"""aioproxmox summaries worked out of what the API already lists: backups, cluster totals, node ports."""
 
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -7,7 +7,17 @@ from typing import Any, Final
 
 from mashumaro.config import BaseConfig
 
-from .pve import NodeTask, ProxmoxVEDataClass
+from .pve import (
+    ClusterContainerResource,
+    ClusterNodeResource,
+    ClusterQemuResource,
+    ClusterResourcesCollection,
+    NodeTask,
+    OperationalStatus,
+    ProxmoxVEDataClass,
+)
+
+# --- backups, from the task log ---
 
 
 @dataclass(slots=True)
@@ -79,6 +89,77 @@ def _utc(value: int | None) -> datetime | None:
     return datetime.fromtimestamp(value, tz=UTC) if value else None
 
 
+# --- the cluster at a glance ---
+
+
+@dataclass(slots=True)
+class ClusterSummary:
+    """Nodes online, guests running, CPU and memory across the cluster."""
+
+    nodes_total: int
+    nodes_online: int
+    nodes_offline: list[str]
+    qemu_total: int
+    qemu_running: int
+    lxc_total: int
+    lxc_running: int
+    # CPU used across the online nodes, weighted by each node's core count:
+    # sixteen cores at 50 % and four at 100 % is 60 % of the cluster, not
+    # the 75 % a plain average would say.
+    cpu: float | None
+    memory_used: int | None
+    memory_total: int | None
+
+    @classmethod
+    def from_resources(cls, resources: ClusterResourcesCollection) -> ClusterSummary:
+        """Add up the resource list."""
+        nodes = [r for r in resources if isinstance(r, ClusterNodeResource)]
+        online = [n for n in nodes if n.status == OperationalStatus.ONLINE]
+        qemu = [
+            r
+            for r in resources
+            if isinstance(r, ClusterQemuResource) and not getattr(r, "template", 0)
+        ]
+        lxc = [
+            r
+            for r in resources
+            if isinstance(r, ClusterContainerResource) and not getattr(r, "template", 0)
+        ]
+        weighted_cpu = 0.0
+        total_cpus = 0
+        memory_total = 0
+        memory_used = 0
+        for node in online:
+            cpus = getattr(node, "maxcpu", None)
+            cpu = getattr(node, "cpu", None)
+            if (
+                isinstance(cpus, (int, float))
+                and cpus > 0
+                and isinstance(cpu, (int, float))
+            ):
+                weighted_cpu += float(cpu) * cpus
+                total_cpus += int(cpus)
+            maxmem = getattr(node, "maxmem", None)
+            mem = getattr(node, "mem", None)
+            if isinstance(maxmem, int) and isinstance(mem, int):
+                memory_total += maxmem
+                memory_used += mem
+        return cls(
+            nodes_total=len(nodes),
+            nodes_online=len(online),
+            nodes_offline=sorted(str(n.node) for n in nodes if n not in online),
+            qemu_total=len(qemu),
+            qemu_running=sum(1 for r in qemu if r.status == OperationalStatus.RUNNING),
+            lxc_total=len(lxc),
+            lxc_running=sum(1 for r in lxc if r.status == OperationalStatus.RUNNING),
+            cpu=(weighted_cpu / total_cpus) if total_cpus else None,
+            memory_used=memory_used if memory_total else None,
+            memory_total=memory_total or None,
+        )
+
+
+# --- a node's physical ports ---
+
 MAC_ALTNAME: Final = re.compile(r"^enx([0-9a-f]{12})$")
 
 
@@ -124,6 +205,9 @@ def node_mac_addresses(interfaces: list[NodeInterface]) -> list[str]:
         if (mac := interface.mac) and mac not in found:
             found.append(mac)
     return found
+
+
+# --- load average ---
 
 
 def load_average(value: Any) -> tuple[float, float, float] | None:
