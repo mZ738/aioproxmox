@@ -1,0 +1,35 @@
+{
+  "data": [
+    {
+      "devpath": "/dev/sda",
+      "by_id_link": "/dev/disk/by-id/ata-SAMSUNG_SSD_870_S123",
+      "serial": "S123",
+      "wwn": "0x5002538e40000001",
+      "model": "SAMSUNG_SSD_870",
+      "vendor": "ATA",
+      "type": "ssd",
+      "size": 500107862016,
+      "health": "PASSED",
+      "wearout": 98,
+      "rpm": 0,
+      "gpt": 1,
+      "used": "ZFS",
+      "osdid": -1
+    },
+    {
+      "devpath": "/dev/nvme0n1",
+      "by_id_link": "/dev/disk/by-id/nvme-Example_NVMe_N456",
+      "serial": "N456",
+      "model": "Example_NVMe",
+      "vendor": "unknown",
+      "type": "nvme",
+      "size": 1000204886016,
+      "health": "PASSED",
+      "wearout": "N/A",
+      "rpm": 0,
+      "gpt": 1,
+      "used": "LVM",
+      "osdid": -1
+    }
+  ]
+}

@@ -6,6 +6,7 @@ from typing import Any, cast
 from .exceptions import ProxmoxAPIError, ProxmoxError, ResourceNotFoundError
 from .helpers import pve_cluster_cache, pve_find_node_in_cache
 from .model import PVEPermissions
+from .model.disks import DiskSmart, NodeDisk, ZfsPool
 from .model.pve import (
     ClusterResourcesCollection,
     ContainerResource,
@@ -339,6 +340,40 @@ class NodeAptEndpoint:
         return NodeAptUpdate(items=items)
 
 
+class NodeDisksEndpoint:
+    """Physical disks, their SMART data and ZFS pools of a node."""
+
+    def __init__(self, client: Any, node: str) -> None:
+        """Endpoint initialisation."""
+        self.client = client
+        self.node = node
+
+    async def all(self) -> list[NodeDisk]:
+        """Fetch the node's physical disks.
+
+        Proxmox runs smartctl for the health and wearout columns, which wakes
+        a sleeping disk - worth knowing before polling this every minute.
+        """
+        raw = await self.client.request("GET", f"nodes/{self.node}/disks/list")
+        return NodeDisk.list_from_api(raw)
+
+    async def smart(self, devpath: str) -> DiskSmart:
+        """Fetch one disk's SMART data; `DiskSmart.summary` reads either shape."""
+        raw = await self.client.request(
+            "GET", f"nodes/{self.node}/disks/smart", params={"disk": devpath}
+        )
+        if not isinstance(raw, dict):
+            raise ProxmoxError(
+                f"Expected dict response from disks/smart, got {type(raw)}"
+            )
+        return DiskSmart.from_dict(raw)
+
+    async def zfs(self) -> list[ZfsPool]:
+        """Fetch the node's ZFS pools."""
+        raw = await self.client.request("GET", f"nodes/{self.node}/disks/zfs")
+        return ZfsPool.list_from_api(raw)
+
+
 class NodeEndpoint:
     """Node endpoint."""
 
@@ -350,6 +385,10 @@ class NodeEndpoint:
     def apt(self) -> NodeAptEndpoint:
         """Map APT endpoint."""
         return NodeAptEndpoint(self.client, self.node)
+
+    def disks(self) -> NodeDisksEndpoint:
+        """Map the disks endpoint."""
+        return NodeDisksEndpoint(self.client, self.node)
 
     def qemu(self, vmid: int) -> QemuEndpoint:
         """Map individual Qemu endpoint."""

@@ -130,3 +130,21 @@ def mock_pve_dual_node_cluster_raw() -> list[dict]:
             "maxdisk": 10,
         },
     ]
+
+
+@pytest.fixture
+def mock_node_disks() -> list[dict]:
+    """Return fixture physical disks of a node."""
+    return mock_pve_fixture("single_924_node_disks_list.json")
+
+
+@pytest.fixture
+def mock_node_disk_smart() -> dict:
+    """Return fixture SMART data of an ATA disk."""
+    return mock_pve_fixture("single_924_node_disk_smart_ata.json")
+
+
+@pytest.fixture
+def mock_node_zfs() -> list[dict]:
+    """Return fixture ZFS pools of a node."""
+    return mock_pve_fixture("single_924_node_disks_zfs.json")

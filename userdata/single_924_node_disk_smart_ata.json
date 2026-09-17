@@ -1,0 +1,41 @@
+{
+  "data": {
+    "health": "PASSED",
+    "type": "ata",
+    "attributes": [
+      {
+        "id": "9",
+        "name": "Power_On_Hours",
+        "raw": "12345",
+        "value": 99,
+        "worst": 99,
+        "threshold": 0,
+        "flags": "-O--CK",
+        "fail": "-",
+        "normalized": 99
+      },
+      {
+        "id": "12",
+        "name": "Power_Cycle_Count",
+        "raw": "321",
+        "value": 99,
+        "worst": 99,
+        "threshold": 0,
+        "flags": "-O--CK",
+        "fail": "-",
+        "normalized": 99
+      },
+      {
+        "id": "194",
+        "name": "Temperature_Celsius",
+        "raw": "34",
+        "value": 66,
+        "worst": 50,
+        "threshold": 0,
+        "flags": "-O---K",
+        "fail": "-",
+        "normalized": 66
+      }
+    ]
+  }
+}
