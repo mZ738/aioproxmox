@@ -1,0 +1,47 @@
+{
+  "data": {
+    "result": [
+      {
+        "name": "sda1",
+        "mountpoint": "/",
+        "type": "ext4",
+        "used-bytes": 12000000000,
+        "total-bytes": 33000000000,
+        "disk": [
+          {
+            "dev": "/dev/sda1",
+            "bus-type": "scsi",
+            "pci-controller": {
+              "bus": 0,
+              "domain": 0,
+              "function": 0,
+              "slot": 5
+            }
+          }
+        ]
+      },
+      {
+        "name": "sda1",
+        "mountpoint": "/mnt/bind",
+        "type": "ext4",
+        "used-bytes": 12000000000,
+        "total-bytes": 33000000000,
+        "disk": [
+          {
+            "dev": "/dev/sda1",
+            "bus-type": "scsi",
+            "pci-controller": {}
+          }
+        ]
+      },
+      {
+        "name": "loop0",
+        "mountpoint": "/snap/core/1",
+        "type": "squashfs",
+        "used-bytes": 100000000,
+        "total-bytes": 100000000,
+        "disk": []
+      }
+    ]
+  }
+}

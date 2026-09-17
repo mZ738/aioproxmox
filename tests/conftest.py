@@ -148,3 +148,21 @@ def mock_node_disk_smart() -> dict:
 def mock_node_zfs() -> list[dict]:
     """Return fixture ZFS pools of a node."""
     return mock_pve_fixture("single_924_node_disks_zfs.json")
+
+
+@pytest.fixture
+def mock_agent_fsinfo() -> dict:
+    """Return fixture guest agent filesystem info, with its `result` envelope."""
+    return mock_pve_fixture("single_924_qemu_agent_fsinfo.json")
+
+
+@pytest.fixture
+def mock_agent_interfaces() -> dict:
+    """Return fixture guest agent network interfaces, with its `result` envelope."""
+    return mock_pve_fixture("single_924_qemu_agent_network_interfaces.json")
+
+
+@pytest.fixture
+def mock_lxc_interfaces() -> list[dict]:
+    """Return fixture container interfaces."""
+    return mock_pve_fixture("single_924_lxc_interfaces.json")

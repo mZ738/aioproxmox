@@ -7,6 +7,7 @@ from .exceptions import ProxmoxAPIError, ProxmoxError, ResourceNotFoundError
 from .helpers import pve_cluster_cache, pve_find_node_in_cache
 from .model import PVEPermissions
 from .model.disks import DiskSmart, NodeDisk, ZfsPool
+from .model.guest import GuestFilesystem, GuestInterface
 from .model.pve import (
     ClusterResourcesCollection,
     ContainerResource,
@@ -102,6 +103,12 @@ def lxc_action(endpoint: str) -> LXCActionProperty:
     return LXCActionProperty(endpoint)
 
 
+def _agent_result(raw: Any) -> list[dict[str, Any]]:
+    """Unwrap the `result` envelope the guest agent commands answer with."""
+    entries = raw.get("result") if isinstance(raw, dict) else raw
+    return entries if isinstance(entries, list) else []
+
+
 class QemuAgentEndpoint:
     """Agent endpoint."""
 
@@ -129,6 +136,25 @@ class QemuAgentEndpoint:
         except ProxmoxAPIError:
             return False
         return True
+
+    async def fsinfo(self) -> list[GuestFilesystem]:
+        """Fetch the guest's filesystems with their usage, from inside the guest.
+
+        The host only knows the size of the virtual disks; this is where a
+        VM's disk usage comes from. Needs `VM.GuestAgent.Audit` (Proxmox VE 9)
+        and a running agent - otherwise the API answers 500.
+        """
+        raw = await self.client.request(
+            "GET", f"nodes/{self.node}/qemu/{self.vmid}/agent/get-fsinfo"
+        )
+        return GuestFilesystem.list_from_api(_agent_result(raw))
+
+    async def network_interfaces(self) -> list[GuestInterface]:
+        """Fetch the guest's interfaces with their addresses, from inside the guest."""
+        raw = await self.client.request(
+            "GET", f"nodes/{self.node}/qemu/{self.vmid}/agent/network-get-interfaces"
+        )
+        return GuestInterface.list_from_api(_agent_result(raw))
 
 
 class QemuStatusEndpoint:
@@ -308,6 +334,13 @@ class LXCEndpoint:
         self.node = node
         self.vmid = vmid
         self.status = LXCStatusEndpoint(client, node, vmid)
+
+    async def interfaces(self) -> list[GuestInterface]:
+        """Fetch the container's interfaces with their addresses; needs it running."""
+        raw = await self.client.request(
+            "GET", f"nodes/{self.node}/lxc/{self.vmid}/interfaces"
+        )
+        return GuestInterface.list_from_api(raw if isinstance(raw, list) else [])
 
 
 class AccessEndpoint:
