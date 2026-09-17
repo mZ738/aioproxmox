@@ -463,14 +463,24 @@ class NodeEndpoint:
         return NodeStatus.from_dict(raw)
 
     async def tasks(
-        self, typefilter: str | None = None, limit: int | None = None
+        self,
+        typefilter: str | None = None,
+        limit: int | None = None,
+        source: str | None = None,
     ) -> NodeTasks:
-        """Fetch operational history blocks matching specific filters (e.g., vzdump)."""
+        """Fetch operational history blocks matching specific filters (e.g., vzdump).
+
+        `source` is `archive` for finished tasks (the default in Proxmox),
+        `active` for tasks in progress, `all` for both. `LastBackup` and
+        `RunningBackup` read the two lists.
+        """
         params: dict[str, Any] = {}
         if typefilter:
             params["typefilter"] = typefilter
         if limit is not None:
             params["limit"] = limit
+        if source:
+            params["source"] = source
 
         # The Proxmox API handles query constraints cleanly via standard payload mappings
         raw = await self.client.request(

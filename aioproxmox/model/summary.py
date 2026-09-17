@@ -1,12 +1,83 @@
-"""aioproxmox summaries worked out of what a node lists: its ports and its load."""
+"""aioproxmox summaries worked out of what the API already lists: backups, node ports, load."""
 
 from dataclasses import dataclass, field
+from datetime import UTC, datetime
 import re
 from typing import Any, Final
 
 from mashumaro.config import BaseConfig
 
-from .pve import ProxmoxVEDataClass
+from .pve import NodeTask, ProxmoxVEDataClass
+
+
+@dataclass(slots=True)
+class LastBackup:
+    """A node's most recent finished `vzdump` run, from the archived task log.
+
+    A run still in progress is not in that list, which is deliberate: it
+    has no end time and no verdict yet, and reporting it would make every
+    backup look like a failure while it runs.
+    """
+
+    started: datetime | None
+    finished: datetime | None
+    status: str | None
+    guests: str | None
+    user: str | None
+
+    @property
+    def duration(self) -> int | None:
+        """How long the run took, in seconds."""
+        if (
+            self.started is None
+            or self.finished is None
+            or self.finished < self.started
+        ):
+            return None
+        return int((self.finished - self.started).total_seconds())
+
+    @property
+    def ok(self) -> bool | None:
+        """Whether the run's verdict was OK - `job errors` (a partial run) is not."""
+        return None if self.status is None else self.status == "OK"
+
+    @classmethod
+    def from_tasks(cls, tasks: list[NodeTask]) -> LastBackup | None:
+        """The newest vzdump task, or None for a node that never ran one."""
+        runs = [task for task in tasks if task.task_type == "vzdump"]
+        if not runs:
+            return None
+        task = runs[0]
+        return cls(
+            started=_utc(task.starttime),
+            finished=_utc(task.endtime),
+            status=task.status,
+            # The task's `id` is the guests the run covered - "100" or
+            # "100,101" - and is empty for a job that backs up everything.
+            guests=task.id or None,
+            user=task.user or None,
+        )
+
+
+@dataclass(slots=True)
+class RunningBackup:
+    """The `vzdump` run in progress on a node, from the active task list."""
+
+    since: datetime | None
+    guests: str | None
+
+    @classmethod
+    def from_tasks(cls, tasks: list[NodeTask]) -> RunningBackup | None:
+        """The vzdump task in progress, or None."""
+        runs = [task for task in tasks if task.task_type == "vzdump"]
+        if not runs:
+            return None
+        return cls(since=_utc(runs[0].starttime), guests=runs[0].id or None)
+
+
+def _utc(value: int | None) -> datetime | None:
+    return datetime.fromtimestamp(value, tz=UTC) if value else None
+
 
 MAC_ALTNAME: Final = re.compile(r"^enx([0-9a-f]{12})$")
 
