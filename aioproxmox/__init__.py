@@ -146,11 +146,27 @@ class ProxmoxHTTPAuth(ProxmoxHTTPAuthBase):
         return {"CSRFPreventionToken": self.csrf_prevention_token}
 
     async def check_and_refresh(self, method: str) -> None:
-        """Asynchronously refresh credentials if required before a request."""
+        """Asynchronously refresh credentials if required before a request.
+
+        A ticket renews itself for as long as it is valid - two hours. After
+        a host has been unreachable longer than that, the renewal is refused
+        exactly like a wrong password would be; the password is still here,
+        so log in again with it before giving up.
+        """
         time_diff = time.monotonic() - self.birth_time
         if time_diff >= self.renew_age:
             _LOGGER.debug("Refreshing ticket (age %s)", time_diff)
-            await self._get_new_tokens()
+            try:
+                await self._get_new_tokens()
+            except ProxmoxAuthError:
+                _LOGGER.debug("Ticket renewal refused, logging in again")
+                await self.relogin()
+
+    async def relogin(self) -> None:
+        """Log in again with the stored password, replacing ticket and CSRF token."""
+        await self._get_new_tokens(
+            password=self.password, otp=self.otp, otptype=self.otptype
+        )
 
 
 class ProxmoxHTTPApiTokenAuth(ProxmoxHTTPAuthBase):
@@ -241,8 +257,29 @@ class ProxmoxVE:
         json_data: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
     ) -> dict[Any, Any] | list[Any] | dict[str, Any]:
-        """Unified internal request pipeline managing tickets, CSRF tokens, and cookies."""
+        """Unified request pipeline managing tickets, CSRF tokens and cookies.
+
+        A 401 with password authentication means the ticket died while the
+        host was away: log in again and repeat once.
+        """
         await self.auth.check_and_refresh(method=method)
+        try:
+            return await self._request_once(method, path, json_data, params)
+        except ProxmoxAPIError as err:
+            if err.status != 401 or not hasattr(self.auth, "relogin"):
+                raise
+            _LOGGER.debug("Request to %s refused with 401, logging in again", path)
+            await self.auth.relogin()
+            return await self._request_once(method, path, json_data, params)
+
+    async def _request_once(
+        self,
+        method: str,
+        path: str,
+        json_data: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+    ) -> dict[Any, Any] | list[Any] | dict[str, Any]:
+        """One attempt against the current host."""
 
         headers: dict[str, str] = {
             "Accept": "application/json",
