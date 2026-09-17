@@ -285,3 +285,36 @@ async def test_a_command_answers_with_its_task_id():
     )
     mock_resp.json.return_value = {"data": None}
     assert await pve.request("GET", "nodes/pve/subscription") is None
+
+
+@pytest.mark.asyncio
+async def test_an_api_error_carries_proxmox_reason_phrase():
+    """Proxmox explains a refusal in the HTTP reason, with an empty body."""
+    session = AsyncMock(spec=aiohttp.ClientSession)
+    mock_resp = AsyncMock()
+    mock_resp.status = 403
+    mock_resp.reason = "Permission check failed (/nodes/pve, Sys.PowerMgmt)"
+    mock_resp.text.return_value = '{"data":null}'
+    session.request.return_value.__aenter__.return_value = mock_resp
+
+    pve = ProxmoxVE(
+        session=session,
+        host="127.0.0.1",
+        user="root@pam",
+        token_name="test",
+        token_value="secret",
+    )
+
+    with pytest.raises(
+        ProxmoxAPIError, match=r"Permission check failed \(/nodes/pve, Sys.PowerMgmt\)"
+    ):
+        await pve.request("POST", "nodes/pve/status")
+
+    # A body that says more than the reason is kept alongside it.
+    mock_resp.status = 400
+    mock_resp.reason = "Parameter verification failed."
+    mock_resp.text.return_value = '{"data":null,"errors":{"storage":"missing"}}'
+    with pytest.raises(
+        ProxmoxAPIError, match=r"Parameter verification failed\.: .*storage"
+    ):
+        await pve.request("POST", "nodes/pve/vzdump")
