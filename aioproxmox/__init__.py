@@ -348,9 +348,16 @@ class ProxmoxVE:
         A 401 with password authentication means the ticket died while the
         host was away: log in again and repeat once. A host that does not
         answer at all is left for another node of the cluster when one is
-        known, and the request repeated there.
+        known, and the request repeated there - the ticket renewal that
+        comes first included, since that is where a dead host is met once
+        the ticket is an hour old.
         """
-        await self.auth.check_and_refresh(method=method)
+        try:
+            await self.auth.check_and_refresh(method=method)
+        except aiohttp.ClientConnectionError, TimeoutError:
+            if len(self._hosts) < 2 or not await self.failover():
+                raise
+            await self.auth.check_and_refresh(method=method)
         try:
             return await self._request_once(method, path, json_data, params)
         except ProxmoxAPIError as err:
