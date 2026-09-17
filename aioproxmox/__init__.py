@@ -195,6 +195,11 @@ class ProxmoxHTTPApiTokenAuth(ProxmoxHTTPAuthBase):
         return {"Authorization": auth_string}
 
 
+def _says_nothing(body: str) -> bool:
+    """Whether an error body is Proxmox's empty `{"data":null}` or blank."""
+    return body.replace(" ", "").replace("\n", "") in ("", '{"data":null}')
+
+
 class ProxmoxVE:
     """Backend Engine coordinating configuration endpoints and session mapping."""
 
@@ -402,8 +407,16 @@ class ProxmoxVE:
             **request_kwargs,
         ) as response:
             if response.status not in (200, 201):
+                # Proxmox puts what went wrong into the HTTP reason phrase -
+                # "Permission check failed (/nodes/pve, Sys.PowerMgmt)" - and
+                # answers with a body of `{"data":null}`; keep the reason, and
+                # the body only where it says more.
                 text = await response.text()
-                raise ProxmoxAPIError(response.status, text, path)
+                reason = response.reason if isinstance(response.reason, str) else ""
+                message = reason if reason and _says_nothing(text) else text
+                if reason and message is text and reason not in text:
+                    message = f"{reason}: {text}"
+                raise ProxmoxAPIError(response.status, message.strip(), path)
 
             payload = await response.json()
             # Reads answer with a dict or a list; a command answers with the
