@@ -53,6 +53,39 @@ async def test_failover_moves_to_the_next_host_that_answers():
 
 
 @pytest.mark.asyncio
+async def test_a_renewal_meeting_a_dead_host_fails_over_too():
+    """The hourly ticket renewal is the first thing to hit a host that went away.
+
+    A password client renews its ticket before a request once the ticket is an
+    hour old. That renewal used to run outside the failover, so a dead host was
+    reported instead of left for another node - for every request from then on.
+    """
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    pve.auth.birth_time = time.monotonic() - 2 * pve.auth.renew_age
+    login = AsyncMock()
+    login.status = 200
+    login.json.return_value = {"data": {"ticket": "t2", "CSRFPreventionToken": "c2"}}
+    session.post.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # renewal on host 1
+        login,  # renewal on host 2
+    ]
+    session.request.return_value.__aenter__.side_effect = [
+        _response(200, {"version": "9.2"}),  # version probe on host 2
+        _response(200, {"ok": 1}),  # the request on host 2
+    ]
+
+    assert await pve.request("GET", "nodes") == {"ok": 1}
+    assert pve.host == "192.0.2.2"
+    assert pve.auth.pve_auth_ticket == "t2"
+    renewals = [call.args[0] for call in session.post.call_args_list]
+    assert renewals == [
+        "https://192.0.2.1:8006/api2/json/access/ticket",
+        "https://192.0.2.2:8006/api2/json/access/ticket",
+    ]
+
+
+@pytest.mark.asyncio
 async def test_without_another_host_the_failure_is_reported():
     """A single host has nowhere to go; the connection error reaches the caller."""
     pve, session = _client_with_session()
