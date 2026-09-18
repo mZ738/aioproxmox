@@ -123,6 +123,10 @@ lxc_status = proxmox.nodes("pvex").lxc(501).status.current.get()
 print(f"Container Memory: {lxc_status.get('mem')} bytes")
 ```
 
+## Documentation
+
+- [The Proxmox API schema](docs/schema.md) — where `schema/pve_api.json` comes from, and how the endpoints are held against it.
+
 ## Development Diagnostics
 
 The repository provides a diagnostic CLI utility to verify authentication mechanics, cookie/ticket attachment, and data serialization against live systems.

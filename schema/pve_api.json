@@ -1,0 +1,11158 @@
+{
+ "/access": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/access/acl": {
+  "GET": {
+   "parameters": []
+  },
+  "PUT": {
+   "check": [
+    "perm-modify",
+    "{path}"
+   ],
+   "parameters": [
+    "delete",
+    "groups",
+    "path",
+    "propagate",
+    "roles",
+    "tokens",
+    "users"
+   ]
+  }
+ },
+ "/access/domains": {
+  "GET": {
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/access/realm",
+    [
+     "Realm.Allocate"
+    ]
+   ],
+   "parameters": [
+    "acr-values",
+    "audiences",
+    "autocreate",
+    "base_dn",
+    "bind_dn",
+    "capath",
+    "case-sensitive",
+    "cert",
+    "certkey",
+    "check-connection",
+    "client-id",
+    "client-key",
+    "comment",
+    "default",
+    "domain",
+    "filter",
+    "group_classes",
+    "group_dn",
+    "group_filter",
+    "group_name_attr",
+    "groups-autocreate",
+    "groups-claim",
+    "groups-overwrite",
+    "issuer-url",
+    "mode",
+    "password",
+    "port",
+    "prompt",
+    "query-userinfo",
+    "realm",
+    "scopes",
+    "secure",
+    "server1",
+    "server2",
+    "sslversion",
+    "sync-defaults-options",
+    "sync_attributes",
+    "tfa",
+    "type",
+    "user_attr",
+    "user_classes",
+    "username-claim",
+    "verify"
+   ]
+  }
+ },
+ "/access/domains/{realm}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/access/realm",
+    [
+     "Realm.Allocate"
+    ]
+   ],
+   "parameters": [
+    "realm"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/access/realm",
+    [
+     "Realm.Allocate",
+     "Sys.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "realm"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/access/realm",
+    [
+     "Realm.Allocate"
+    ]
+   ],
+   "parameters": [
+    "acr-values",
+    "audiences",
+    "autocreate",
+    "base_dn",
+    "bind_dn",
+    "capath",
+    "case-sensitive",
+    "cert",
+    "certkey",
+    "check-connection",
+    "client-id",
+    "client-key",
+    "comment",
+    "default",
+    "delete",
+    "digest",
+    "domain",
+    "filter",
+    "group_classes",
+    "group_dn",
+    "group_filter",
+    "group_name_attr",
+    "groups-autocreate",
+    "groups-claim",
+    "groups-overwrite",
+    "issuer-url",
+    "mode",
+    "password",
+    "port",
+    "prompt",
+    "query-userinfo",
+    "realm",
+    "scopes",
+    "secure",
+    "server1",
+    "server2",
+    "sslversion",
+    "sync-defaults-options",
+    "sync_attributes",
+    "tfa",
+    "user_attr",
+    "user_classes",
+    "verify"
+   ]
+  }
+ },
+ "/access/domains/{realm}/sync": {
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/access/realm/{realm}",
+     [
+      "Realm.AllocateUser"
+     ]
+    ],
+    [
+     "perm",
+     "/access/groups",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "dry-run",
+    "enable-new",
+    "full",
+    "purge",
+    "realm",
+    "remove-vanished",
+    "scope"
+   ]
+  }
+ },
+ "/access/groups": {
+  "GET": {
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/access/groups",
+    [
+     "Group.Allocate"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "groupid"
+   ]
+  }
+ },
+ "/access/groups/{groupid}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/access/groups",
+    [
+     "Group.Allocate"
+    ]
+   ],
+   "parameters": [
+    "groupid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/access/groups",
+    [
+     "Sys.Audit",
+     "Group.Allocate"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "groupid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/access/groups",
+    [
+     "Group.Allocate"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "groupid"
+   ]
+  }
+ },
+ "/access/openid": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/access/openid/auth-url": {
+  "POST": {
+   "parameters": [
+    "realm",
+    "redirect-url"
+   ]
+  }
+ },
+ "/access/openid/login": {
+  "POST": {
+   "parameters": [
+    "code",
+    "redirect-url",
+    "state"
+   ]
+  }
+ },
+ "/access/password": {
+  "PUT": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "and",
+     [
+      "userid-param",
+      "Realm.AllocateUser"
+     ],
+     [
+      "userid-group",
+      [
+       "User.Modify"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "confirmation-password",
+    "password",
+    "userid"
+   ]
+  }
+ },
+ "/access/permissions": {
+  "GET": {
+   "parameters": [
+    "path",
+    "userid"
+   ]
+  }
+ },
+ "/access/roles": {
+  "GET": {
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/access",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "privs",
+    "roleid"
+   ]
+  }
+ },
+ "/access/roles/{roleid}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/access",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "roleid"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "roleid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/access",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "append",
+    "privs",
+    "roleid"
+   ]
+  }
+ },
+ "/access/tfa": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/access/tfa/{userid}": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify",
+      "Sys.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "userid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "challenge",
+    "description",
+    "password",
+    "totp",
+    "type",
+    "userid",
+    "value"
+   ]
+  }
+ },
+ "/access/tfa/{userid}/{id}": {
+  "DELETE": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "id",
+    "password",
+    "userid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify",
+      "Sys.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "id",
+    "userid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "description",
+    "enable",
+    "id",
+    "password",
+    "userid"
+   ]
+  }
+ },
+ "/access/ticket": {
+  "GET": {
+   "parameters": []
+  },
+  "POST": {
+   "parameters": [
+    "new-format",
+    "otp",
+    "password",
+    "path",
+    "privs",
+    "realm",
+    "tfa-challenge",
+    "username"
+   ]
+  }
+ },
+ "/access/users": {
+  "GET": {
+   "parameters": [
+    "enabled",
+    "full"
+   ]
+  },
+  "POST": {
+   "check": [
+    "and",
+    [
+     "userid-param",
+     "Realm.AllocateUser"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ],
+     "groups_param",
+     "create"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "email",
+    "enable",
+    "expire",
+    "firstname",
+    "groups",
+    "keys",
+    "lastname",
+    "password",
+    "userid"
+   ]
+  }
+ },
+ "/access/users/{userid}": {
+  "DELETE": {
+   "check": [
+    "and",
+    [
+     "userid-param",
+     "Realm.AllocateUser"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "userid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "userid-group",
+    [
+     "User.Modify",
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "userid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "userid-group",
+    [
+     "User.Modify"
+    ],
+    "groups_param",
+    "update"
+   ],
+   "parameters": [
+    "append",
+    "comment",
+    "email",
+    "enable",
+    "expire",
+    "firstname",
+    "groups",
+    "keys",
+    "lastname",
+    "userid"
+   ]
+  }
+ },
+ "/access/users/{userid}/tfa": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify",
+      "Sys.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "multiple",
+    "userid"
+   ]
+  }
+ },
+ "/access/users/{userid}/token": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "userid"
+   ]
+  }
+ },
+ "/access/users/{userid}/token/{tokenid}": {
+  "DELETE": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "tokenid",
+    "userid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "tokenid",
+    "userid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "expire",
+    "privsep",
+    "tokenid",
+    "userid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "or",
+    [
+     "userid-param",
+     "self"
+    ],
+    [
+     "userid-group",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "delete",
+    "expire",
+    "privsep",
+    "regenerate",
+    "tokenid",
+    "userid"
+   ]
+  }
+ },
+ "/access/users/{userid}/unlock-tfa": {
+  "PUT": {
+   "check": [
+    "userid-group",
+    [
+     "User.Modify"
+    ]
+   ],
+   "parameters": [
+    "userid"
+   ]
+  }
+ },
+ "/access/vncticket": {
+  "POST": {
+   "parameters": [
+    "authid",
+    "path",
+    "port",
+    "privs",
+    "vncticket"
+   ]
+  }
+ },
+ "/cluster": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/acme": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/acme/account": {
+  "GET": {
+   "parameters": []
+  },
+  "POST": {
+   "parameters": [
+    "contact",
+    "directory",
+    "eab-hmac-key",
+    "eab-kid",
+    "name",
+    "tos_url"
+   ]
+  }
+ },
+ "/cluster/acme/account/{name}": {
+  "DELETE": {
+   "parameters": [
+    "name"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "name"
+   ]
+  },
+  "PUT": {
+   "parameters": [
+    "contact",
+    "name"
+   ]
+  }
+ },
+ "/cluster/acme/challenge-schema": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/acme/directories": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/acme/meta": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "directory"
+   ]
+  }
+ },
+ "/cluster/acme/plugins": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "api",
+    "data",
+    "disable",
+    "id",
+    "nodes",
+    "type",
+    "validation-delay"
+   ]
+  }
+ },
+ "/cluster/acme/plugins/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "api",
+    "data",
+    "delete",
+    "digest",
+    "disable",
+    "id",
+    "nodes",
+    "validation-delay"
+   ]
+  }
+ },
+ "/cluster/acme/tos": {
+  "GET": {
+   "parameters": [
+    "directory"
+   ]
+  }
+ },
+ "/cluster/backup": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "all",
+    "bwlimit",
+    "comment",
+    "compress",
+    "dow",
+    "dumpdir",
+    "enabled",
+    "exclude",
+    "exclude-path",
+    "fleecing",
+    "id",
+    "ionice",
+    "lockwait",
+    "mailnotification",
+    "mailto",
+    "mode",
+    "node",
+    "notes-template",
+    "notification-mode",
+    "pbs-change-detection-mode",
+    "performance",
+    "pigz",
+    "pool",
+    "protected",
+    "prune-backups",
+    "quiet",
+    "remove",
+    "repeat-missed",
+    "schedule",
+    "script",
+    "starttime",
+    "stdexcludes",
+    "stop",
+    "stopwait",
+    "storage",
+    "tmpdir",
+    "vmid",
+    "zstd"
+   ]
+  }
+ },
+ "/cluster/backup-info": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/backup-info/not-backed-up": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/backup/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "all",
+    "bwlimit",
+    "comment",
+    "compress",
+    "delete",
+    "dow",
+    "dumpdir",
+    "enabled",
+    "exclude",
+    "exclude-path",
+    "fleecing",
+    "id",
+    "ionice",
+    "lockwait",
+    "mailnotification",
+    "mailto",
+    "mode",
+    "node",
+    "notes-template",
+    "notification-mode",
+    "pbs-change-detection-mode",
+    "performance",
+    "pigz",
+    "pool",
+    "protected",
+    "prune-backups",
+    "quiet",
+    "remove",
+    "repeat-missed",
+    "schedule",
+    "script",
+    "starttime",
+    "stdexcludes",
+    "stop",
+    "stopwait",
+    "storage",
+    "tmpdir",
+    "vmid",
+    "zstd"
+   ]
+  }
+ },
+ "/cluster/backup/{id}/included_volumes": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  }
+ },
+ "/cluster/bulk-action": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/bulk-action/guest": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/bulk-action/guest/migrate": {
+  "POST": {
+   "parameters": [
+    "max-workers",
+    "maxworkers",
+    "online",
+    "target",
+    "vms",
+    "with-local-disks"
+   ]
+  }
+ },
+ "/cluster/bulk-action/guest/shutdown": {
+  "POST": {
+   "parameters": [
+    "force-stop",
+    "max-workers",
+    "maxworkers",
+    "timeout",
+    "vms"
+   ]
+  }
+ },
+ "/cluster/bulk-action/guest/start": {
+  "POST": {
+   "parameters": [
+    "max-workers",
+    "maxworkers",
+    "timeout",
+    "vms"
+   ]
+  }
+ },
+ "/cluster/bulk-action/guest/suspend": {
+  "POST": {
+   "parameters": [
+    "max-workers",
+    "maxworkers",
+    "statestorage",
+    "to-disk",
+    "vms"
+   ]
+  }
+ },
+ "/cluster/ceph": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/ceph/flags": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "nobackfill",
+    "nodeep-scrub",
+    "nodown",
+    "noin",
+    "noout",
+    "norebalance",
+    "norecover",
+    "noscrub",
+    "notieragent",
+    "noup",
+    "pause"
+   ]
+  }
+ },
+ "/cluster/ceph/flags/{flag}": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "flag"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "flag",
+    "value"
+   ]
+  }
+ },
+ "/cluster/ceph/health-mute": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/ceph/health-mute/{code}": {
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "code",
+    "sticky",
+    "ttl",
+    "value"
+   ]
+  }
+ },
+ "/cluster/ceph/metadata": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "scope"
+   ]
+  }
+ },
+ "/cluster/ceph/restart-bulk": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "dry-run",
+    "force",
+    "only-outdated",
+    "service-type",
+    "timeout"
+   ]
+  }
+ },
+ "/cluster/ceph/status": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/config": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "parameters": [
+    "clustername",
+    "link[n]",
+    "nodeid",
+    "token-coefficient",
+    "votes"
+   ]
+  }
+ },
+ "/cluster/config/apiversion": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/config/join": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "parameters": [
+    "fingerprint",
+    "force",
+    "hostname",
+    "link[n]",
+    "nodeid",
+    "password",
+    "votes"
+   ]
+  }
+ },
+ "/cluster/config/nodes": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/config/nodes/{node}": {
+  "DELETE": {
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "parameters": [
+    "apiversion",
+    "force",
+    "link[n]",
+    "new_node_ip",
+    "node",
+    "nodeid",
+    "votes"
+   ]
+  }
+ },
+ "/cluster/config/qdevice": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/config/totem": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/firewall": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/firewall/aliases": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "name"
+   ]
+  }
+ },
+ "/cluster/firewall/aliases/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "name"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "digest",
+    "name",
+    "rename"
+   ]
+  }
+ },
+ "/cluster/firewall/groups": {
+  "GET": {
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "digest",
+    "group",
+    "rename"
+   ]
+  }
+ },
+ "/cluster/firewall/groups/{group}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "group"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "group"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "group",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type"
+   ]
+  }
+ },
+ "/cluster/firewall/groups/{group}/{pos}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "group",
+    "pos"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "group",
+    "pos"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "delete",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "group",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "moveto",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type"
+   ]
+  }
+ },
+ "/cluster/firewall/ipset": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "digest",
+    "name",
+    "rename"
+   ]
+  }
+ },
+ "/cluster/firewall/ipset/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "name"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "name",
+    "nomatch"
+   ]
+  }
+ },
+ "/cluster/firewall/ipset/{name}/{cidr}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "digest",
+    "name"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "name"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "digest",
+    "name",
+    "nomatch"
+   ]
+  }
+ },
+ "/cluster/firewall/macros": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/firewall/options": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "digest",
+    "ebtables",
+    "enable",
+    "log_ratelimit",
+    "policy_forward",
+    "policy_in",
+    "policy_out"
+   ]
+  }
+ },
+ "/cluster/firewall/refs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "type"
+   ]
+  }
+ },
+ "/cluster/firewall/rules": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type"
+   ]
+  }
+ },
+ "/cluster/firewall/rules/{pos}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "pos"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "pos"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "delete",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "moveto",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type"
+   ]
+  }
+ },
+ "/cluster/ha": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/ha/groups": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "group",
+    "nodes",
+    "nofailback",
+    "restricted",
+    "type"
+   ]
+  }
+ },
+ "/cluster/ha/groups/{group}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "group"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "group"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "delete",
+    "digest",
+    "group",
+    "nodes",
+    "nofailback",
+    "restricted"
+   ]
+  }
+ },
+ "/cluster/ha/resources": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "auto-rebalance",
+    "comment",
+    "failback",
+    "group",
+    "max_relocate",
+    "max_restart",
+    "sid",
+    "state",
+    "type"
+   ]
+  }
+ },
+ "/cluster/ha/resources/{sid}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "purge",
+    "sid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "sid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "auto-rebalance",
+    "comment",
+    "delete",
+    "digest",
+    "failback",
+    "group",
+    "max_relocate",
+    "max_restart",
+    "sid",
+    "state"
+   ]
+  }
+ },
+ "/cluster/ha/resources/{sid}/migrate": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "sid"
+   ]
+  }
+ },
+ "/cluster/ha/resources/{sid}/relocate": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "sid"
+   ]
+  }
+ },
+ "/cluster/ha/rules": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "resource",
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/ha/rules/{rule}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "rule"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "rule"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/ha/status": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/ha/status/arm-ha": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/ha/status/current": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/ha/status/disarm-ha": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "resource-mode"
+   ]
+  }
+ },
+ "/cluster/ha/status/manager_status": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/jobs": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/jobs/realm-sync": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/jobs/realm-sync/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/access/realm/{realm}",
+     [
+      "Realm.AllocateUser"
+     ]
+    ],
+    [
+     "perm",
+     "/access/groups",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "enable-new",
+    "enabled",
+    "id",
+    "realm",
+    "remove-vanished",
+    "schedule",
+    "scope"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/access/realm/{realm}",
+     [
+      "Realm.AllocateUser"
+     ]
+    ],
+    [
+     "perm",
+     "/access/groups",
+     [
+      "User.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "delete",
+    "enable-new",
+    "enabled",
+    "id",
+    "remove-vanished",
+    "schedule",
+    "scope"
+   ]
+  }
+ },
+ "/cluster/jobs/schedule-analyze": {
+  "GET": {
+   "parameters": [
+    "iterations",
+    "schedule",
+    "starttime"
+   ]
+  }
+ },
+ "/cluster/log": {
+  "GET": {
+   "parameters": [
+    "max"
+   ]
+  }
+ },
+ "/cluster/mapping": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/mapping/dir": {
+  "GET": {
+   "parameters": [
+    "check-node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/mapping/dir",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "description",
+    "id",
+    "map"
+   ]
+  }
+ },
+ "/cluster/mapping/dir/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/dir",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/dir/{id}",
+     [
+      "Mapping.Use"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/dir/{id}",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/dir/{id}",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/mapping/dir/{id}",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "description",
+    "digest",
+    "id",
+    "map"
+   ]
+  }
+ },
+ "/cluster/mapping/pci": {
+  "GET": {
+   "parameters": [
+    "check-node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/mapping/pci",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "description",
+    "id",
+    "live-migration-capable",
+    "map",
+    "mdev"
+   ]
+  }
+ },
+ "/cluster/mapping/pci/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/pci",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/pci/{id}",
+     [
+      "Mapping.Use"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/pci/{id}",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/pci/{id}",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/mapping/pci/{id}",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "description",
+    "digest",
+    "id",
+    "live-migration-capable",
+    "map",
+    "mdev"
+   ]
+  }
+ },
+ "/cluster/mapping/usb": {
+  "GET": {
+   "parameters": [
+    "check-node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/mapping/usb",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "description",
+    "id",
+    "map"
+   ]
+  }
+ },
+ "/cluster/mapping/usb/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/usb",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/usb/{id}",
+     [
+      "Mapping.Audit"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/usb/{id}",
+     [
+      "Mapping.Use"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/usb/{id}",
+     [
+      "Mapping.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/mapping/usb/{id}",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "description",
+    "digest",
+    "id",
+    "map"
+   ]
+  }
+ },
+ "/cluster/metrics": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/metrics/export": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "history",
+    "local-only",
+    "node-list",
+    "start-time"
+   ]
+  }
+ },
+ "/cluster/metrics/server": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/metrics/server/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "api-path-prefix",
+    "bucket",
+    "disable",
+    "id",
+    "influxdbproto",
+    "max-body-size",
+    "mtu",
+    "organization",
+    "otel-compression",
+    "otel-headers",
+    "otel-max-body-size",
+    "otel-path",
+    "otel-protocol",
+    "otel-resource-attributes",
+    "otel-timeout",
+    "otel-verify-ssl",
+    "path",
+    "port",
+    "proto",
+    "server",
+    "timeout",
+    "token",
+    "type",
+    "verify-certificate"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "api-path-prefix",
+    "bucket",
+    "delete",
+    "digest",
+    "disable",
+    "id",
+    "influxdbproto",
+    "max-body-size",
+    "mtu",
+    "organization",
+    "otel-compression",
+    "otel-headers",
+    "otel-max-body-size",
+    "otel-path",
+    "otel-protocol",
+    "otel-resource-attributes",
+    "otel-timeout",
+    "otel-verify-ssl",
+    "path",
+    "port",
+    "proto",
+    "server",
+    "timeout",
+    "token",
+    "verify-certificate"
+   ]
+  }
+ },
+ "/cluster/nextid": {
+  "GET": {
+   "parameters": [
+    "vmid"
+   ]
+  }
+ },
+ "/cluster/notifications": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/notifications/endpoints": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/notifications/endpoints/gotify": {
+  "GET": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "disable",
+    "name",
+    "server",
+    "token"
+   ]
+  }
+ },
+ "/cluster/notifications/endpoints/gotify/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "delete",
+    "digest",
+    "disable",
+    "name",
+    "server",
+    "token"
+   ]
+  }
+ },
+ "/cluster/notifications/endpoints/sendmail": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "author",
+    "comment",
+    "disable",
+    "from-address",
+    "mailto",
+    "mailto-user",
+    "name"
+   ]
+  }
+ },
+ "/cluster/notifications/endpoints/sendmail/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "author",
+    "comment",
+    "delete",
+    "digest",
+    "disable",
+    "from-address",
+    "mailto",
+    "mailto-user",
+    "name"
+   ]
+  }
+ },
+ "/cluster/notifications/endpoints/smtp": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "author",
+    "comment",
+    "disable",
+    "from-address",
+    "mailto",
+    "mailto-user",
+    "mode",
+    "name",
+    "password",
+    "port",
+    "server",
+    "username"
+   ]
+  }
+ },
+ "/cluster/notifications/endpoints/smtp/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "author",
+    "comment",
+    "delete",
+    "digest",
+    "disable",
+    "from-address",
+    "mailto",
+    "mailto-user",
+    "mode",
+    "name",
+    "password",
+    "port",
+    "server",
+    "username"
+   ]
+  }
+ },
+ "/cluster/notifications/endpoints/webhook": {
+  "GET": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "body",
+    "comment",
+    "disable",
+    "header",
+    "method",
+    "name",
+    "secret",
+    "url"
+   ]
+  }
+ },
+ "/cluster/notifications/endpoints/webhook/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "body",
+    "comment",
+    "delete",
+    "digest",
+    "disable",
+    "header",
+    "method",
+    "name",
+    "secret",
+    "url"
+   ]
+  }
+ },
+ "/cluster/notifications/matcher-field-values": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/notifications/matcher-fields": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/notifications/matchers": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Use"
+     ]
+    ]
+   ],
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "disable",
+    "invert-match",
+    "match-calendar",
+    "match-field",
+    "match-severity",
+    "mode",
+    "name",
+    "target"
+   ]
+  }
+ },
+ "/cluster/notifications/matchers/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/mapping/notifications",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "delete",
+    "digest",
+    "disable",
+    "invert-match",
+    "match-calendar",
+    "match-field",
+    "match-severity",
+    "mode",
+    "name",
+    "target"
+   ]
+  }
+ },
+ "/cluster/notifications/targets": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Use"
+     ]
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/notifications/targets/{name}/test": {
+  "POST": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Audit"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/notifications",
+     [
+      "Mapping.Use"
+     ]
+    ]
+   ],
+   "parameters": [
+    "name"
+   ]
+  }
+ },
+ "/cluster/options": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "consent-text",
+    "console",
+    "crs",
+    "delete",
+    "description",
+    "email_from",
+    "fencing",
+    "ha",
+    "http_proxy",
+    "keyboard",
+    "language",
+    "location",
+    "mac_prefix",
+    "max_workers",
+    "migration",
+    "migration_unsecure",
+    "next-id",
+    "notify",
+    "registered-tags",
+    "replication",
+    "tag-style",
+    "u2f",
+    "user-tag-access",
+    "webauthn"
+   ]
+  }
+ },
+ "/cluster/qemu": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/cluster/qemu/cpu-flags": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/nodes",
+     [
+      "Sys.Audit"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/cpu",
+     [
+      "Mapping.Audit",
+      "Mapping.Use",
+      "Mapping.Modify"
+     ],
+     "any",
+     1
+    ]
+   ],
+   "parameters": [
+    "accel",
+    "arch"
+   ]
+  }
+ },
+ "/cluster/qemu/custom-cpu-models": {
+  "GET": {
+   "parameters": []
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/mapping/cpu",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "cputype",
+    "flags",
+    "guest-phys-bits",
+    "hidden",
+    "hv-vendor-id",
+    "level",
+    "phys-bits",
+    "reported-model"
+   ]
+  }
+ },
+ "/cluster/qemu/custom-cpu-models/{cputype}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/mapping/cpu/{cputype}",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "cputype"
+   ]
+  },
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/mapping/cpu/{cputype}",
+     [
+      "Mapping.Audit"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/cpu/{cputype}",
+     [
+      "Mapping.Use"
+     ]
+    ],
+    [
+     "perm",
+     "/mapping/cpu/{cputype}",
+     [
+      "Mapping.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "cputype"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/mapping/cpu/{cputype}",
+    [
+     "Mapping.Modify"
+    ]
+   ],
+   "parameters": [
+    "cputype",
+    "delete",
+    "digest",
+    "flags",
+    "guest-phys-bits",
+    "hidden",
+    "hv-vendor-id",
+    "level",
+    "phys-bits",
+    "reported-model"
+   ]
+  }
+ },
+ "/cluster/replication": {
+  "GET": {
+   "parameters": []
+  },
+  "POST": {
+   "parameters": [
+    "comment",
+    "disable",
+    "id",
+    "rate",
+    "remove_job",
+    "schedule",
+    "source",
+    "target",
+    "type"
+   ]
+  }
+ },
+ "/cluster/replication/{id}": {
+  "DELETE": {
+   "parameters": [
+    "force",
+    "id",
+    "keep"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "parameters": [
+    "comment",
+    "delete",
+    "digest",
+    "disable",
+    "id",
+    "rate",
+    "remove_job",
+    "schedule",
+    "source"
+   ]
+  }
+ },
+ "/cluster/resources": {
+  "GET": {
+   "parameters": [
+    "type"
+   ]
+  }
+ },
+ "/cluster/sdn": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": []
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "lock-token",
+    "release-lock"
+   ]
+  }
+ },
+ "/cluster/sdn/controllers": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running",
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/controllers",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "asn",
+    "bgp-mode",
+    "bgp-multipath-as-path-relax",
+    "controller",
+    "ebgp",
+    "ebgp-multihop",
+    "fabric",
+    "isis-domain",
+    "isis-ifaces",
+    "isis-net",
+    "lock-token",
+    "loopback",
+    "node",
+    "nodes",
+    "peer-group-name",
+    "peers",
+    "route-map-in",
+    "route-map-out",
+    "type"
+   ]
+  }
+ },
+ "/cluster/sdn/controllers/{controller}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/controllers",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "controller",
+    "lock-token"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/controllers/{controller}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "controller",
+    "pending",
+    "running"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/controllers",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "asn",
+    "bgp-mode",
+    "bgp-multipath-as-path-relax",
+    "controller",
+    "delete",
+    "digest",
+    "ebgp",
+    "ebgp-multihop",
+    "fabric",
+    "isis-domain",
+    "isis-ifaces",
+    "isis-net",
+    "lock-token",
+    "loopback",
+    "node",
+    "nodes",
+    "peer-group-name",
+    "peers",
+    "route-map-in",
+    "route-map-out"
+   ]
+  }
+ },
+ "/cluster/sdn/dns": {
+  "GET": {
+   "parameters": [
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/dns",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "dns",
+    "fingerprint",
+    "key",
+    "lock-token",
+    "reversemaskv6",
+    "reversev6mask",
+    "ttl",
+    "type",
+    "url"
+   ]
+  }
+ },
+ "/cluster/sdn/dns/{dns}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/dns",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "dns",
+    "lock-token"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/dns/{dns}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "dns"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/dns",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "digest",
+    "dns",
+    "fingerprint",
+    "key",
+    "lock-token",
+    "reversemaskv6",
+    "ttl",
+    "url"
+   ]
+  }
+ },
+ "/cluster/sdn/dry-run": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/cluster/sdn/fabrics": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/fabrics",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/sdn/fabrics/all": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running"
+   ]
+  }
+ },
+ "/cluster/sdn/fabrics/fabric": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/fabrics",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "area",
+    "csnp_interval",
+    "digest",
+    "hello_interval",
+    "id",
+    "ip6_prefix",
+    "ip_prefix",
+    "lock-token",
+    "persistent_keepalive",
+    "protocol",
+    "redistribute",
+    "route_filter"
+   ]
+  }
+ },
+ "/cluster/sdn/fabrics/fabric/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/fabrics/{id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/fabrics/{id}",
+    [
+     "SDN.Audit",
+     "SDN.Allocate"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/fabrics/{id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "area",
+    "csnp_interval",
+    "delete",
+    "digest",
+    "hello_interval",
+    "id",
+    "ip6_prefix",
+    "ip_prefix",
+    "lock-token",
+    "persistent_keepalive",
+    "protocol",
+    "redistribute",
+    "route_filter"
+   ]
+  }
+ },
+ "/cluster/sdn/fabrics/node": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running"
+   ]
+  }
+ },
+ "/cluster/sdn/fabrics/node/{fabric_id}": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/fabrics/{fabric_id}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "fabric_id",
+    "pending",
+    "running"
+   ]
+  },
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/sdn/fabrics/{fabric_id}",
+     [
+      "SDN.Allocate"
+     ]
+    ],
+    [
+     "perm",
+     "/nodes/{node_id}",
+     [
+      "Sys.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "allowed_ips",
+    "digest",
+    "endpoint",
+    "fabric_id",
+    "interfaces",
+    "ip",
+    "ip6",
+    "lock-token",
+    "node_id",
+    "peers",
+    "protocol",
+    "public_key",
+    "role"
+   ]
+  }
+ },
+ "/cluster/sdn/fabrics/node/{fabric_id}/{node_id}": {
+  "DELETE": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/sdn/fabrics/{fabric_id}",
+     [
+      "SDN.Allocate"
+     ]
+    ],
+    [
+     "perm",
+     "/nodes/{node_id}",
+     [
+      "Sys.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "fabric_id",
+    "node_id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/sdn/fabrics/{fabric_id}",
+     [
+      "SDN.Audit",
+      "SDN.Allocate"
+     ],
+     "any",
+     1
+    ],
+    [
+     "perm",
+     "/nodes/{node_id}",
+     [
+      "Sys.Audit",
+      "Sys.Modify"
+     ],
+     "any",
+     1
+    ]
+   ],
+   "parameters": [
+    "fabric_id",
+    "node_id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/sdn/fabrics/{fabric_id}",
+     [
+      "SDN.Allocate"
+     ]
+    ],
+    [
+     "perm",
+     "/nodes/{node_id}",
+     [
+      "Sys.Modify"
+     ]
+    ]
+   ],
+   "parameters": [
+    "allowed_ips",
+    "delete",
+    "digest",
+    "endpoint",
+    "fabric_id",
+    "interfaces",
+    "ip",
+    "ip6",
+    "lock-token",
+    "node_id",
+    "peers",
+    "protocol",
+    "public_key",
+    "role"
+   ]
+  }
+ },
+ "/cluster/sdn/ipams": {
+  "GET": {
+   "parameters": [
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/ipams",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "fingerprint",
+    "ipam",
+    "lock-token",
+    "section",
+    "token",
+    "type",
+    "url"
+   ]
+  }
+ },
+ "/cluster/sdn/ipams/{ipam}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/ipams",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "ipam",
+    "lock-token"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/ipams/{ipam}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "ipam"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/ipams",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "digest",
+    "fingerprint",
+    "ipam",
+    "lock-token",
+    "section",
+    "token",
+    "url"
+   ]
+  }
+ },
+ "/cluster/sdn/ipams/{ipam}/status": {
+  "GET": {
+   "parameters": [
+    "ipam"
+   ]
+  }
+ },
+ "/cluster/sdn/lock": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "lock-token"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "allow-pending"
+   ]
+  }
+ },
+ "/cluster/sdn/prefix-lists": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running",
+    "verbose"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "entries",
+    "id",
+    "lock-token"
+   ]
+  }
+ },
+ "/cluster/sdn/prefix-lists/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists/{id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "id",
+    "lock-token"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists/{id}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists/{id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "digest",
+    "entries",
+    "id",
+    "lock-token"
+   ]
+  }
+ },
+ "/cluster/sdn/prefix-lists/{id}/entries": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists/{id}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists/{id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "ge",
+    "id",
+    "le",
+    "lock-token",
+    "prefix",
+    "seq"
+   ]
+  }
+ },
+ "/cluster/sdn/prefix-lists/{id}/entries/{url_seq}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists/{id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "id",
+    "lock-token"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists/{id}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/prefix-lists/{id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "delete",
+    "digest",
+    "ge",
+    "le",
+    "lock-token",
+    "prefix",
+    "seq"
+   ]
+  }
+ },
+ "/cluster/sdn/rollback": {
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "lock-token",
+    "release-lock"
+   ]
+  }
+ },
+ "/cluster/sdn/route-maps": {
+  "GET": {
+   "parameters": [
+    "running"
+   ]
+  }
+ },
+ "/cluster/sdn/route-maps/entries": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/route-maps",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "call",
+    "digest",
+    "exit-action",
+    "lock-token",
+    "match",
+    "order",
+    "route-map-id",
+    "set"
+   ]
+  }
+ },
+ "/cluster/sdn/route-maps/entries/{route-map-id}": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/route-maps/{route-map-id}",
+    [
+     "SDN.Audit",
+     "SDN.Allocate"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "pending",
+    "route-map-id",
+    "running"
+   ]
+  }
+ },
+ "/cluster/sdn/route-maps/entries/{route-map-id}/entry/{order}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/route-maps/{route-map-id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "lock-token",
+    "order",
+    "route-map-id"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/route-maps/{route-map-id}",
+    [
+     "SDN.Audit",
+     "SDN.Allocate"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "order",
+    "route-map-id"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/route-maps/{route-map-id}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "call",
+    "delete",
+    "digest",
+    "exit-action",
+    "lock-token",
+    "match",
+    "order",
+    "route-map-id",
+    "set"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "alias",
+    "isolate-ports",
+    "lock-token",
+    "tag",
+    "type",
+    "vlanaware",
+    "vnet",
+    "zone"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets/{vnet}": {
+  "DELETE": {
+   "parameters": [
+    "lock-token",
+    "vnet"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "pending",
+    "running",
+    "vnet"
+   ]
+  },
+  "PUT": {
+   "parameters": [
+    "alias",
+    "delete",
+    "digest",
+    "isolate-ports",
+    "lock-token",
+    "tag",
+    "vlanaware",
+    "vnet",
+    "zone"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets/{vnet}/firewall": {
+  "GET": {
+   "parameters": [
+    "vnet"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets/{vnet}/firewall/options": {
+  "GET": {
+   "parameters": [
+    "vnet"
+   ]
+  },
+  "PUT": {
+   "parameters": [
+    "delete",
+    "digest",
+    "enable",
+    "log_level_forward",
+    "policy_forward",
+    "vnet"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets/{vnet}/firewall/rules": {
+  "GET": {
+   "parameters": [
+    "vnet"
+   ]
+  },
+  "POST": {
+   "parameters": [
+    "action",
+    "comment",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type",
+    "vnet"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets/{vnet}/firewall/rules/{pos}": {
+  "DELETE": {
+   "parameters": [
+    "digest",
+    "pos",
+    "vnet"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "pos",
+    "vnet"
+   ]
+  },
+  "PUT": {
+   "parameters": [
+    "action",
+    "comment",
+    "delete",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "moveto",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type",
+    "vnet"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets/{vnet}/ips": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}/{vnet}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "ip",
+    "mac",
+    "vnet",
+    "zone"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}/{vnet}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "ip",
+    "mac",
+    "vnet",
+    "zone"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}/{vnet}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "ip",
+    "mac",
+    "vmid",
+    "vnet",
+    "zone"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets/{vnet}/subnets": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running",
+    "vnet"
+   ]
+  },
+  "POST": {
+   "parameters": [
+    "dhcp-dns-server",
+    "dhcp-range",
+    "dnszoneprefix",
+    "gateway",
+    "lock-token",
+    "snat",
+    "subnet",
+    "type",
+    "vnet"
+   ]
+  }
+ },
+ "/cluster/sdn/vnets/{vnet}/subnets/{subnet}": {
+  "DELETE": {
+   "parameters": [
+    "lock-token",
+    "subnet",
+    "vnet"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "pending",
+    "running",
+    "subnet",
+    "vnet"
+   ]
+  },
+  "PUT": {
+   "parameters": [
+    "delete",
+    "dhcp-dns-server",
+    "dhcp-range",
+    "digest",
+    "dnszoneprefix",
+    "gateway",
+    "lock-token",
+    "snat",
+    "subnet",
+    "vnet"
+   ]
+  }
+ },
+ "/cluster/sdn/zones": {
+  "GET": {
+   "parameters": [
+    "pending",
+    "running",
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/sdn/zones",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "advertise-subnets",
+    "bridge",
+    "bridge-disable-mac-learning",
+    "controller",
+    "dhcp",
+    "disable-arp-nd-suppression",
+    "dns",
+    "dnszone",
+    "dp-id",
+    "exitnodes",
+    "exitnodes-local-routing",
+    "exitnodes-primary",
+    "fabric",
+    "ipam",
+    "lock-token",
+    "mac",
+    "mtu",
+    "nodes",
+    "peers",
+    "reversedns",
+    "rt-import",
+    "secondary-controllers",
+    "tag",
+    "type",
+    "vlan-protocol",
+    "vrf-vxlan",
+    "vxlan-port",
+    "zone"
+   ]
+  }
+ },
+ "/cluster/sdn/zones/{zone}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "lock-token",
+    "zone"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "pending",
+    "running",
+    "zone"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}",
+    [
+     "SDN.Allocate"
+    ]
+   ],
+   "parameters": [
+    "advertise-subnets",
+    "bridge",
+    "bridge-disable-mac-learning",
+    "controller",
+    "delete",
+    "dhcp",
+    "digest",
+    "disable-arp-nd-suppression",
+    "dns",
+    "dnszone",
+    "dp-id",
+    "exitnodes",
+    "exitnodes-local-routing",
+    "exitnodes-primary",
+    "fabric",
+    "ipam",
+    "lock-token",
+    "mac",
+    "mtu",
+    "nodes",
+    "peers",
+    "reversedns",
+    "rt-import",
+    "secondary-controllers",
+    "tag",
+    "vlan-protocol",
+    "vrf-vxlan",
+    "vxlan-port",
+    "zone"
+   ]
+  }
+ },
+ "/cluster/status": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": []
+  }
+ },
+ "/cluster/tasks": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/nodes": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/nodes/{node}": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/aplinfo": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.AllocateTemplate"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "storage",
+    "template"
+   ]
+  }
+ },
+ "/nodes/{node}/apt": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/apt/changelog": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "name",
+    "node",
+    "version"
+   ]
+  }
+ },
+ "/nodes/{node}/apt/repositories": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "enabled",
+    "index",
+    "node",
+    "path"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "handle",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/apt/update": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "notify",
+    "quiet"
+   ]
+  }
+ },
+ "/nodes/{node}/apt/versions": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/capabilities": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/capabilities/qemu": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/capabilities/qemu/cpu": {
+  "GET": {
+   "parameters": [
+    "arch",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/capabilities/qemu/cpu-flags": {
+  "GET": {
+   "parameters": [
+    "accel",
+    "arch",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/capabilities/qemu/machines": {
+  "GET": {
+   "parameters": [
+    "arch",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/capabilities/qemu/migration": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/cfg": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/cfg/db": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/cfg/raw": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/cfg/value": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "config-keys",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/cmd-safety": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "id",
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/crush": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/fs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/fs/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "name",
+    "node",
+    "remove-pools",
+    "remove-storages"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "add-storage",
+    "name",
+    "node",
+    "pg_num"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/init": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cluster-network",
+    "disable_cephx",
+    "min_size",
+    "network",
+    "node",
+    "pg_bits",
+    "size"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/log": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Syslog"
+    ]
+   ],
+   "parameters": [
+    "limit",
+    "node",
+    "start"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/mds": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/mds/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "name",
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "hotstandby",
+    "name",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/mgr": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/mgr/{id}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "id",
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "id",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/mon": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/mon/{monid}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "monid",
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "mon-address",
+    "monid",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/osd": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "parameters": [
+    "crush-device-class",
+    "db_dev",
+    "db_dev_size",
+    "dev",
+    "encrypted",
+    "node",
+    "osds-per-device",
+    "wal_dev",
+    "wal_dev_size"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/osd/{osdid}": {
+  "DELETE": {
+   "parameters": [
+    "cleanup",
+    "node",
+    "osdid"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node",
+    "osdid"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/osd/{osdid}/in": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "osdid"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/osd/{osdid}/lv-info": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "osdid",
+    "type"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/osd/{osdid}/metadata": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "osdid"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/osd/{osdid}/out": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "osdid"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/osd/{osdid}/scrub": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "deep",
+    "node",
+    "osdid"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/pool": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "add_storages",
+    "application",
+    "crush_rule",
+    "erasure-coding",
+    "min_size",
+    "name",
+    "node",
+    "pg_autoscale_mode",
+    "pg_num",
+    "pg_num_min",
+    "size",
+    "target_size",
+    "target_size_ratio"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/pool/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "name",
+    "node",
+    "remove_ecprofile",
+    "remove_storages"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "name",
+    "node"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "application",
+    "crush_rule",
+    "min_size",
+    "name",
+    "node",
+    "pg_autoscale_mode",
+    "pg_num",
+    "pg_num_min",
+    "size",
+    "target_size",
+    "target_size_ratio"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/pool/{name}/status": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "name",
+    "node",
+    "verbose"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/releases": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/restart": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/restart-bulk": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "dry-run",
+    "force",
+    "node",
+    "only-outdated",
+    "resume",
+    "service-type",
+    "set-noout",
+    "timeout"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/rules": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/start": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/status": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Datastore.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/ceph/stop": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/certificates": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/certificates/acme": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/certificates/acme/certificate": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "node"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/certificates/custom": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "restart"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "certificates",
+    "force",
+    "key",
+    "node",
+    "restart"
+   ]
+  }
+ },
+ "/nodes/{node}/certificates/info": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/config": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "property"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "acme",
+    "acmedomain[n]",
+    "ballooning-target",
+    "delete",
+    "description",
+    "digest",
+    "location",
+    "node",
+    "startall-onboot-delay",
+    "wakeonlan"
+   ]
+  }
+ },
+ "/nodes/{node}/disks": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/directory": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "add_storage",
+    "device",
+    "filesystem",
+    "name",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/directory/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cleanup-config",
+    "cleanup-disks",
+    "name",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/initgpt": {
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "disk",
+    "node",
+    "uuid"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/list": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/",
+     [
+      "Sys.Audit"
+     ]
+    ],
+    [
+     "perm",
+     "/nodes/{node}",
+     [
+      "Sys.Audit"
+     ]
+    ]
+   ],
+   "parameters": [
+    "include-partitions",
+    "node",
+    "skipsmart",
+    "type"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/lvm": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "add_storage",
+    "device",
+    "name",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/lvm/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cleanup-config",
+    "cleanup-disks",
+    "name",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/lvmthin": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "add_storage",
+    "device",
+    "name",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/lvmthin/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cleanup-config",
+    "cleanup-disks",
+    "name",
+    "node",
+    "volume-group"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/smart": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "disk",
+    "healthonly",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/wipedisk": {
+  "PUT": {
+   "parameters": [
+    "disk",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/zfs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "add_storage",
+    "ashift",
+    "compression",
+    "devices",
+    "draid-config",
+    "name",
+    "node",
+    "raidlevel"
+   ]
+  }
+ },
+ "/nodes/{node}/disks/zfs/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "cleanup-config",
+    "cleanup-disks",
+    "name",
+    "node"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "name",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/dns": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "dns1",
+    "dns2",
+    "dns3",
+    "node",
+    "search"
+   ]
+  }
+ },
+ "/nodes/{node}/execute": {
+  "POST": {
+   "parameters": [
+    "commands",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/firewall": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/firewall/log": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Syslog"
+    ]
+   ],
+   "parameters": [
+    "limit",
+    "node",
+    "since",
+    "start",
+    "until"
+   ]
+  }
+ },
+ "/nodes/{node}/firewall/options": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "digest",
+    "enable",
+    "log_level_forward",
+    "log_level_in",
+    "log_level_out",
+    "log_nf_conntrack",
+    "ndp",
+    "nf_conntrack_allow_invalid",
+    "nf_conntrack_helpers",
+    "nf_conntrack_max",
+    "nf_conntrack_tcp_timeout_established",
+    "nf_conntrack_tcp_timeout_syn_recv",
+    "nftables",
+    "node",
+    "nosmurfs",
+    "protection_synflood",
+    "protection_synflood_burst",
+    "protection_synflood_rate",
+    "smurf_log_level",
+    "tcp_flags_log_level",
+    "tcpflags"
+   ]
+  }
+ },
+ "/nodes/{node}/firewall/rules": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "node",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type"
+   ]
+  }
+ },
+ "/nodes/{node}/firewall/rules/{pos}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "node",
+    "pos"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "pos"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "delete",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "moveto",
+    "node",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type"
+   ]
+  }
+ },
+ "/nodes/{node}/hardware": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/hardware/pci": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Sys.Modify"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "pci-class-blacklist",
+    "verbose"
+   ]
+  }
+ },
+ "/nodes/{node}/hardware/pci/{pci-id-or-mapping}": {
+  "GET": {
+   "parameters": [
+    "node",
+    "pci-id-or-mapping"
+   ]
+  }
+ },
+ "/nodes/{node}/hardware/pci/{pci-id-or-mapping}/mdev": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit",
+     "Sys.Modify"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "pci-id-or-mapping"
+   ]
+  }
+ },
+ "/nodes/{node}/hardware/usb": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/hosts": {
+  "GET": {
+   "check": [
+    "perm",
+    "/",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "data",
+    "digest",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/journal": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Syslog"
+    ]
+   ],
+   "parameters": [
+    "endcursor",
+    "identifiers",
+    "kernel",
+    "lastentries",
+    "node",
+    "priority",
+    "service",
+    "since",
+    "startcursor",
+    "structured",
+    "unit",
+    "units",
+    "until"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "parameters": [
+    "arch",
+    "bwlimit",
+    "cmode",
+    "console",
+    "cores",
+    "cpulimit",
+    "cpuunits",
+    "debug",
+    "description",
+    "dev[n]",
+    "entrypoint",
+    "env",
+    "features",
+    "force",
+    "ha-managed",
+    "hookscript",
+    "hostname",
+    "ignore-unpack-errors",
+    "lock",
+    "memory",
+    "mp[n]",
+    "nameserver",
+    "net[n]",
+    "node",
+    "onboot",
+    "ostemplate",
+    "ostype",
+    "password",
+    "pool",
+    "protection",
+    "restore",
+    "rootfs",
+    "searchdomain",
+    "ssh-public-keys",
+    "start",
+    "startup",
+    "storage",
+    "swap",
+    "tags",
+    "template",
+    "timezone",
+    "tty",
+    "unique",
+    "unprivileged",
+    "unused[n]",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Allocate"
+    ]
+   ],
+   "parameters": [
+    "destroy-unreferenced-disks",
+    "force",
+    "node",
+    "purge",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/clone": {
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/vms/{vmid}",
+     [
+      "VM.Clone"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/vms/{newid}",
+      [
+       "VM.Allocate"
+      ]
+     ],
+     [
+      "perm",
+      "/pool/{pool}",
+      [
+       "VM.Allocate"
+      ],
+      "require_param",
+      "pool"
+     ]
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "description",
+    "full",
+    "hostname",
+    "newid",
+    "node",
+    "pool",
+    "snapname",
+    "storage",
+    "target",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/config": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "current",
+    "node",
+    "snapshot",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Disk",
+     "VM.Config.CPU",
+     "VM.Config.Memory",
+     "VM.Config.Network",
+     "VM.Config.Options"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "arch",
+    "cmode",
+    "console",
+    "cores",
+    "cpulimit",
+    "cpuunits",
+    "debug",
+    "delete",
+    "description",
+    "dev[n]",
+    "digest",
+    "entrypoint",
+    "env",
+    "features",
+    "hookscript",
+    "hostname",
+    "lock",
+    "memory",
+    "mp[n]",
+    "nameserver",
+    "net[n]",
+    "node",
+    "onboot",
+    "ostype",
+    "protection",
+    "revert",
+    "rootfs",
+    "searchdomain",
+    "startup",
+    "swap",
+    "tags",
+    "template",
+    "timezone",
+    "tty",
+    "unprivileged",
+    "unused[n]",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/feature": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "feature",
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall": {
+  "GET": {
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/aliases": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "name",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/aliases/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "digest",
+    "name",
+    "node",
+    "rename",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/ipset": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "digest",
+    "name",
+    "node",
+    "rename",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "name",
+    "node",
+    "nomatch",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/ipset/{name}/{cidr}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "digest",
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "digest",
+    "name",
+    "node",
+    "nomatch",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/log": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "limit",
+    "node",
+    "since",
+    "start",
+    "until",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/options": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "dhcp",
+    "digest",
+    "enable",
+    "ipfilter",
+    "log_level_in",
+    "log_level_out",
+    "macfilter",
+    "ndp",
+    "node",
+    "policy_in",
+    "policy_out",
+    "radv",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/refs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "type",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/rules": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "node",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/firewall/rules/{pos}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "node",
+    "pos",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "pos",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "delete",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "moveto",
+    "node",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/interfaces": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/migrate": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Migrate"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "target",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Migrate"
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "node",
+    "online",
+    "restart",
+    "target",
+    "target-storage",
+    "timeout",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/move_volume": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Disk"
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "delete",
+    "digest",
+    "node",
+    "storage",
+    "target-digest",
+    "target-vmid",
+    "target-volume",
+    "vmid",
+    "volume"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/mtunnel": {
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/vms/{vmid}",
+     [
+      "VM.Allocate"
+     ]
+    ],
+    [
+     "perm",
+     "/",
+     [
+      "Sys.Incoming"
+     ]
+    ]
+   ],
+   "parameters": [
+    "bridges",
+    "node",
+    "storages",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/mtunnelwebsocket": {
+  "GET": {
+   "parameters": [
+    "node",
+    "socket",
+    "ticket",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/pending": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/remote_migrate": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Migrate"
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "delete",
+    "node",
+    "online",
+    "restart",
+    "target-bridge",
+    "target-endpoint",
+    "target-storage",
+    "target-vmid",
+    "timeout",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/resize": {
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Disk"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "digest",
+    "disk",
+    "node",
+    "size",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/rrd": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "cf",
+    "ds",
+    "node",
+    "timeframe",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/rrddata": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "cf",
+    "node",
+    "timeframe",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/snapshot": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot"
+    ]
+   ],
+   "parameters": [
+    "description",
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/snapshot/{snapname}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/snapshot/{snapname}/config": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot",
+     "VM.Snapshot.Rollback",
+     "VM.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot"
+    ]
+   ],
+   "parameters": [
+    "description",
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/snapshot/{snapname}/rollback": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot",
+     "VM.Snapshot.Rollback"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "snapname",
+    "start",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/spiceproxy": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "proxy",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/status": {
+  "GET": {
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/status/current": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/status/reboot": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "timeout",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/status/resume": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/status/shutdown": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "forceStop",
+    "node",
+    "timeout",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/status/start": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "debug",
+    "node",
+    "skiplock",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/status/stop": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "overrule-shutdown",
+    "skiplock",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/status/suspend": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/template": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Allocate"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/termproxy": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/vncproxy": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "height",
+    "node",
+    "vmid",
+    "websocket",
+    "width"
+   ]
+  }
+ },
+ "/nodes/{node}/lxc/{vmid}/vncwebsocket": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "port",
+    "vmid",
+    "vncticket"
+   ]
+  }
+ },
+ "/nodes/{node}/migrateall": {
+  "POST": {
+   "parameters": [
+    "max-workers",
+    "maxworkers",
+    "node",
+    "target",
+    "vms",
+    "with-local-disks"
+   ]
+  }
+ },
+ "/nodes/{node}/netstat": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/network": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node",
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "address",
+    "address6",
+    "autostart",
+    "bond-primary",
+    "bond_mode",
+    "bond_xmit_hash_policy",
+    "bridge_ports",
+    "bridge_vids",
+    "bridge_vlan_aware",
+    "cidr",
+    "cidr6",
+    "comments",
+    "comments6",
+    "gateway",
+    "gateway6",
+    "iface",
+    "mtu",
+    "netmask",
+    "netmask6",
+    "node",
+    "ovs_bonds",
+    "ovs_bridge",
+    "ovs_options",
+    "ovs_ports",
+    "ovs_tag",
+    "slaves",
+    "type",
+    "vlan-id",
+    "vlan-raw-device"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "regenerate-frr"
+   ]
+  }
+ },
+ "/nodes/{node}/network/{iface}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "iface",
+    "node"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "iface",
+    "node"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "address",
+    "address6",
+    "autostart",
+    "bond-primary",
+    "bond_mode",
+    "bond_xmit_hash_policy",
+    "bridge_ports",
+    "bridge_vids",
+    "bridge_vlan_aware",
+    "cidr",
+    "cidr6",
+    "comments",
+    "comments6",
+    "delete",
+    "gateway",
+    "gateway6",
+    "iface",
+    "mtu",
+    "netmask",
+    "netmask6",
+    "node",
+    "ovs_bonds",
+    "ovs_bridge",
+    "ovs_options",
+    "ovs_ports",
+    "ovs_tag",
+    "slaves",
+    "type",
+    "vlan-id",
+    "vlan-raw-device"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu": {
+  "GET": {
+   "parameters": [
+    "full",
+    "node"
+   ]
+  },
+  "POST": {
+   "parameters": [
+    "acpi",
+    "affinity",
+    "agent",
+    "allow-ksm",
+    "amd-sev",
+    "arch",
+    "archive",
+    "args",
+    "audio0",
+    "autostart",
+    "balloon",
+    "bios",
+    "boot",
+    "bootdisk",
+    "bwlimit",
+    "cdrom",
+    "cicustom",
+    "cipassword",
+    "citype",
+    "ciupgrade",
+    "ciuser",
+    "cores",
+    "cpu",
+    "cpulimit",
+    "cpuunits",
+    "description",
+    "efidisk0",
+    "force",
+    "freeze",
+    "ha-managed",
+    "hookscript",
+    "hostpci[n]",
+    "hotplug",
+    "hugepages",
+    "ide[n]",
+    "import-working-storage",
+    "intel-tdx",
+    "ipconfig[n]",
+    "ivshmem",
+    "keephugepages",
+    "keyboard",
+    "kvm",
+    "live-restore",
+    "localtime",
+    "lock",
+    "machine",
+    "memory",
+    "migrate_downtime",
+    "migrate_speed",
+    "name",
+    "nameserver",
+    "net[n]",
+    "node",
+    "numa",
+    "numa[n]",
+    "onboot",
+    "ostype",
+    "parallel[n]",
+    "pool",
+    "protection",
+    "reboot",
+    "rng0",
+    "sata[n]",
+    "scsi[n]",
+    "scsihw",
+    "searchdomain",
+    "serial[n]",
+    "shares",
+    "smbios1",
+    "smp",
+    "sockets",
+    "spice_enhancements",
+    "sshkeys",
+    "start",
+    "startdate",
+    "startup",
+    "storage",
+    "tablet",
+    "tags",
+    "tdf",
+    "template",
+    "tpmstate0",
+    "unique",
+    "unused[n]",
+    "usb[n]",
+    "vcpus",
+    "vga",
+    "virtio[n]",
+    "virtiofs[n]",
+    "vmgenid",
+    "vmid",
+    "vmstatestorage",
+    "watchdog"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Allocate"
+    ]
+   ],
+   "parameters": [
+    "destroy-unreferenced-disks",
+    "node",
+    "purge",
+    "skiplock",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent": {
+  "GET": {
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Unrestricted",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "command",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/exec": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Unrestricted"
+    ]
+   ],
+   "parameters": [
+    "command",
+    "input-data",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/exec-status": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Unrestricted"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "pid",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/file-read": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.FileRead",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "count",
+    "decode",
+    "file",
+    "node",
+    "offset",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/file-write": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.FileWrite",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "content",
+    "encode",
+    "file",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-freeze": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.FileSystemMgmt",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-status": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.FileSystemMgmt",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/fsfreeze-thaw": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.FileSystemMgmt",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/fstrim": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.FileSystemMgmt",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-fsinfo": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-host-name": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-memory-block-info": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-memory-blocks": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-osinfo": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-time": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-timezone": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-users": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-vcpus": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/info": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/network-get-interfaces": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/ping": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/set-user-password": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Unrestricted"
+    ]
+   ],
+   "parameters": [
+    "crypted",
+    "node",
+    "password",
+    "username",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/shutdown": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/suspend-disk": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/suspend-hybrid": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/suspend-ram": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/clone": {
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/vms/{vmid}",
+     [
+      "VM.Clone"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/vms/{newid}",
+      [
+       "VM.Allocate"
+      ]
+     ],
+     [
+      "perm",
+      "/pool/{pool}",
+      [
+       "VM.Allocate"
+      ],
+      "require_param",
+      "pool"
+     ]
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "description",
+    "format",
+    "full",
+    "name",
+    "newid",
+    "node",
+    "pool",
+    "snapname",
+    "storage",
+    "target",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/cloudinit": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Cloudinit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/cloudinit/dump": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "type",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/config": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "current",
+    "node",
+    "snapshot",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Disk",
+     "VM.Config.CDROM",
+     "VM.Config.CPU",
+     "VM.Config.Memory",
+     "VM.Config.Network",
+     "VM.Config.HWType",
+     "VM.Config.Options",
+     "VM.Config.Cloudinit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "acpi",
+    "affinity",
+    "agent",
+    "allow-ksm",
+    "amd-sev",
+    "arch",
+    "args",
+    "audio0",
+    "autostart",
+    "background_delay",
+    "balloon",
+    "bios",
+    "boot",
+    "bootdisk",
+    "cdrom",
+    "cicustom",
+    "cipassword",
+    "citype",
+    "ciupgrade",
+    "ciuser",
+    "cores",
+    "cpu",
+    "cpulimit",
+    "cpuunits",
+    "delete",
+    "description",
+    "digest",
+    "efidisk0",
+    "force",
+    "freeze",
+    "hookscript",
+    "hostpci[n]",
+    "hotplug",
+    "hugepages",
+    "ide[n]",
+    "import-working-storage",
+    "intel-tdx",
+    "ipconfig[n]",
+    "ivshmem",
+    "keephugepages",
+    "keyboard",
+    "kvm",
+    "localtime",
+    "lock",
+    "machine",
+    "memory",
+    "migrate_downtime",
+    "migrate_speed",
+    "name",
+    "nameserver",
+    "net[n]",
+    "node",
+    "numa",
+    "numa[n]",
+    "onboot",
+    "ostype",
+    "parallel[n]",
+    "protection",
+    "reboot",
+    "revert",
+    "rng0",
+    "sata[n]",
+    "scsi[n]",
+    "scsihw",
+    "searchdomain",
+    "serial[n]",
+    "shares",
+    "skiplock",
+    "smbios1",
+    "smp",
+    "sockets",
+    "spice_enhancements",
+    "sshkeys",
+    "startdate",
+    "startup",
+    "tablet",
+    "tags",
+    "tdf",
+    "template",
+    "tpmstate0",
+    "unused[n]",
+    "usb[n]",
+    "vcpus",
+    "vga",
+    "virtio[n]",
+    "virtiofs[n]",
+    "vmgenid",
+    "vmid",
+    "vmstatestorage",
+    "watchdog"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Disk",
+     "VM.Config.CDROM",
+     "VM.Config.CPU",
+     "VM.Config.Memory",
+     "VM.Config.Network",
+     "VM.Config.HWType",
+     "VM.Config.Options",
+     "VM.Config.Cloudinit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "acpi",
+    "affinity",
+    "agent",
+    "allow-ksm",
+    "amd-sev",
+    "arch",
+    "args",
+    "audio0",
+    "autostart",
+    "balloon",
+    "bios",
+    "boot",
+    "bootdisk",
+    "cdrom",
+    "cicustom",
+    "cipassword",
+    "citype",
+    "ciupgrade",
+    "ciuser",
+    "cores",
+    "cpu",
+    "cpulimit",
+    "cpuunits",
+    "delete",
+    "description",
+    "digest",
+    "efidisk0",
+    "force",
+    "freeze",
+    "hookscript",
+    "hostpci[n]",
+    "hotplug",
+    "hugepages",
+    "ide[n]",
+    "intel-tdx",
+    "ipconfig[n]",
+    "ivshmem",
+    "keephugepages",
+    "keyboard",
+    "kvm",
+    "localtime",
+    "lock",
+    "machine",
+    "memory",
+    "migrate_downtime",
+    "migrate_speed",
+    "name",
+    "nameserver",
+    "net[n]",
+    "node",
+    "numa",
+    "numa[n]",
+    "onboot",
+    "ostype",
+    "parallel[n]",
+    "protection",
+    "reboot",
+    "revert",
+    "rng0",
+    "sata[n]",
+    "scsi[n]",
+    "scsihw",
+    "searchdomain",
+    "serial[n]",
+    "shares",
+    "skiplock",
+    "smbios1",
+    "smp",
+    "sockets",
+    "spice_enhancements",
+    "sshkeys",
+    "startdate",
+    "startup",
+    "tablet",
+    "tags",
+    "tdf",
+    "template",
+    "tpmstate0",
+    "unused[n]",
+    "usb[n]",
+    "vcpus",
+    "vga",
+    "virtio[n]",
+    "virtiofs[n]",
+    "vmgenid",
+    "vmid",
+    "vmstatestorage",
+    "watchdog"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/dbus-vmstate": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Migrate"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/feature": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "feature",
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall": {
+  "GET": {
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/aliases": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "name",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/aliases/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "digest",
+    "name",
+    "node",
+    "rename",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/ipset": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "digest",
+    "name",
+    "node",
+    "rename",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "name",
+    "node",
+    "nomatch",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/ipset/{name}/{cidr}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "digest",
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "name",
+    "node",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "cidr",
+    "comment",
+    "digest",
+    "name",
+    "node",
+    "nomatch",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/log": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "limit",
+    "node",
+    "since",
+    "start",
+    "until",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/options": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "delete",
+    "dhcp",
+    "digest",
+    "enable",
+    "ipfilter",
+    "log_level_in",
+    "log_level_out",
+    "macfilter",
+    "ndp",
+    "node",
+    "policy_in",
+    "policy_out",
+    "radv",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/refs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "type",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/rules": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "node",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/firewall/rules/{pos}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "node",
+    "pos",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "pos",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Network"
+    ]
+   ],
+   "parameters": [
+    "action",
+    "comment",
+    "delete",
+    "dest",
+    "digest",
+    "dport",
+    "enable",
+    "icmp-type",
+    "iface",
+    "log",
+    "macro",
+    "moveto",
+    "node",
+    "pos",
+    "proto",
+    "source",
+    "sport",
+    "type",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/migrate": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Migrate"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "target",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Migrate"
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "force",
+    "migration_network",
+    "migration_type",
+    "node",
+    "online",
+    "target",
+    "targetstorage",
+    "vmid",
+    "with-conntrack-state",
+    "with-local-disks"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/monitor": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "Sys.Audit",
+     "Sys.Modify"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "command",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/move_disk": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Disk"
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "delete",
+    "digest",
+    "disk",
+    "format",
+    "node",
+    "storage",
+    "target-digest",
+    "target-disk",
+    "target-vmid",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/mtunnel": {
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/vms/{vmid}",
+     [
+      "VM.Allocate"
+     ]
+    ],
+    [
+     "perm",
+     "/",
+     [
+      "Sys.Incoming"
+     ]
+    ]
+   ],
+   "parameters": [
+    "bridges",
+    "node",
+    "storages",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/mtunnelwebsocket": {
+  "GET": {
+   "parameters": [
+    "node",
+    "socket",
+    "ticket",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/pending": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/remote_migrate": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Migrate"
+    ]
+   ],
+   "parameters": [
+    "bwlimit",
+    "delete",
+    "node",
+    "online",
+    "target-bridge",
+    "target-endpoint",
+    "target-storage",
+    "target-vmid",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/resize": {
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Disk"
+    ]
+   ],
+   "parameters": [
+    "digest",
+    "disk",
+    "node",
+    "size",
+    "skiplock",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/rrd": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "cf",
+    "ds",
+    "node",
+    "timeframe",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/rrddata": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "cf",
+    "node",
+    "timeframe",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/sendkey": {
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "key",
+    "node",
+    "skiplock",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/snapshot": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot"
+    ]
+   ],
+   "parameters": [
+    "description",
+    "node",
+    "snapname",
+    "vmid",
+    "vmstate"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/config": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot",
+     "VM.Snapshot.Rollback",
+     "VM.Audit"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot"
+    ]
+   ],
+   "parameters": [
+    "description",
+    "node",
+    "snapname",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/snapshot/{snapname}/rollback": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Snapshot",
+     "VM.Snapshot.Rollback"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "snapname",
+    "start",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/spiceproxy": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "proxy",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status": {
+  "GET": {
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status/current": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status/reboot": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "timeout",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status/reset": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "skiplock",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status/resume": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "nocheck",
+    "node",
+    "skiplock",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status/shutdown": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "forceStop",
+    "keepActive",
+    "node",
+    "skiplock",
+    "timeout",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status/start": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "force-cpu",
+    "machine",
+    "migratedfrom",
+    "migration_network",
+    "migration_type",
+    "nets-host-mtu",
+    "node",
+    "skiplock",
+    "stateuri",
+    "targetstorage",
+    "timeout",
+    "vmid",
+    "with-conntrack-state"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status/stop": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "keepActive",
+    "migratedfrom",
+    "node",
+    "overrule-shutdown",
+    "skiplock",
+    "timeout",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/status/suspend": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "skiplock",
+    "statestorage",
+    "todisk",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/template": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Allocate"
+    ]
+   ],
+   "parameters": [
+    "disk",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/termproxy": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "serial",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/unlink": {
+  "PUT": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Config.Disk"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "idlist",
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/vncproxy": {
+  "POST": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "generate-password",
+    "node",
+    "vmid",
+    "websocket"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/vncwebsocket": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "port",
+    "vmid",
+    "vncticket"
+   ]
+  }
+ },
+ "/nodes/{node}/query-oci-repo-tags": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.AccessNetwork"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "reference"
+   ]
+  }
+ },
+ "/nodes/{node}/query-url-metadata": {
+  "GET": {
+   "check": [
+    "or",
+    [
+     "perm",
+     "/",
+     [
+      "Sys.Audit",
+      "Sys.Modify"
+     ]
+    ],
+    [
+     "perm",
+     "/nodes/{node}",
+     [
+      "Sys.AccessNetwork"
+     ]
+    ]
+   ],
+   "parameters": [
+    "node",
+    "url",
+    "verify-certificates"
+   ]
+  }
+ },
+ "/nodes/{node}/replication": {
+  "GET": {
+   "parameters": [
+    "guest",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/replication/{id}": {
+  "GET": {
+   "parameters": [
+    "id",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/replication/{id}/log": {
+  "GET": {
+   "parameters": [
+    "id",
+    "limit",
+    "node",
+    "start"
+   ]
+  }
+ },
+ "/nodes/{node}/replication/{id}/schedule_now": {
+  "POST": {
+   "parameters": [
+    "id",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/replication/{id}/status": {
+  "GET": {
+   "parameters": [
+    "id",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/report": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/rrd": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "cf",
+    "ds",
+    "node",
+    "timeframe"
+   ]
+  }
+ },
+ "/nodes/{node}/rrddata": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "cf",
+    "node",
+    "timeframe"
+   ]
+  }
+ },
+ "/nodes/{node}/scan": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/scan/cifs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "domain",
+    "node",
+    "password",
+    "server",
+    "username"
+   ]
+  }
+ },
+ "/nodes/{node}/scan/iscsi": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "portal"
+   ]
+  }
+ },
+ "/nodes/{node}/scan/lvm": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/scan/lvmthin": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "vg"
+   ]
+  }
+ },
+ "/nodes/{node}/scan/nfs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "server"
+   ]
+  }
+ },
+ "/nodes/{node}/scan/pbs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "fingerprint",
+    "node",
+    "password",
+    "port",
+    "server",
+    "username"
+   ]
+  }
+ },
+ "/nodes/{node}/scan/zfs": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/fabrics/{fabric}": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/fabrics/{fabric}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "fabric",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/fabrics/{fabric}/interfaces": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/fabrics/{fabric}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "fabric",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/fabrics/{fabric}/neighbors": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/fabrics/{fabric}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "fabric",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/fabrics/{fabric}/routes": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/fabrics/{fabric}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "fabric",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/vnets/{vnet}": {
+  "GET": {
+   "parameters": [
+    "node",
+    "vnet"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/vnets/{vnet}/mac-vrf": {
+  "GET": {
+   "parameters": [
+    "node",
+    "vnet"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/zones": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/zones/{zone}": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "zone"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/zones/{zone}/bridges": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "zone"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/zones/{zone}/content": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "zone"
+   ]
+  }
+ },
+ "/nodes/{node}/sdn/zones/{zone}/ip-vrf": {
+  "GET": {
+   "check": [
+    "perm",
+    "/sdn/zones/{zone}",
+    [
+     "SDN.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "zone"
+   ]
+  }
+ },
+ "/nodes/{node}/services": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/services/{service}": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/services/{service}/reload": {
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/services/{service}/restart": {
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/services/{service}/start": {
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/services/{service}/state": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/services/{service}/stop": {
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "service"
+   ]
+  }
+ },
+ "/nodes/{node}/spiceshell": {
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "cmd",
+    "cmd-opts",
+    "node",
+    "proxy"
+   ]
+  }
+ },
+ "/nodes/{node}/startall": {
+  "POST": {
+   "parameters": [
+    "force",
+    "max-workers",
+    "node",
+    "vms"
+   ]
+  }
+ },
+ "/nodes/{node}/status": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "command",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/stopall": {
+  "POST": {
+   "parameters": [
+    "force-stop",
+    "max-workers",
+    "node",
+    "timeout",
+    "vms"
+   ]
+  }
+ },
+ "/nodes/{node}/storage": {
+  "GET": {
+   "parameters": [
+    "content",
+    "enabled",
+    "format",
+    "node",
+    "storage",
+    "target"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.Audit",
+     "Datastore.AllocateSpace"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "storage"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/content": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.Audit",
+     "Datastore.AllocateSpace"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "content",
+    "node",
+    "storage",
+    "vmid"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.AllocateSpace"
+    ]
+   ],
+   "parameters": [
+    "filename",
+    "format",
+    "node",
+    "size",
+    "storage",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/content/{volume}": {
+  "DELETE": {
+   "parameters": [
+    "delay",
+    "node",
+    "storage",
+    "volume"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node",
+    "storage",
+    "volume"
+   ]
+  },
+  "POST": {
+   "parameters": [
+    "node",
+    "storage",
+    "target",
+    "target_node",
+    "volume"
+   ]
+  },
+  "PUT": {
+   "parameters": [
+    "node",
+    "notes",
+    "protected",
+    "storage",
+    "volume"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/download-url": {
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/storage/{storage}",
+     [
+      "Datastore.AllocateTemplate"
+     ]
+    ],
+    [
+     "or",
+     [
+      "perm",
+      "/",
+      [
+       "Sys.Audit",
+       "Sys.Modify"
+      ]
+     ],
+     [
+      "perm",
+      "/nodes/{node}",
+      [
+       "Sys.AccessNetwork"
+      ]
+     ]
+    ]
+   ],
+   "parameters": [
+    "checksum",
+    "checksum-algorithm",
+    "compression",
+    "content",
+    "filename",
+    "node",
+    "storage",
+    "url",
+    "verify-certificates"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/file-restore/download": {
+  "GET": {
+   "parameters": [
+    "filepath",
+    "node",
+    "storage",
+    "tar",
+    "volume"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/file-restore/list": {
+  "GET": {
+   "parameters": [
+    "filepath",
+    "node",
+    "storage",
+    "volume"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/identity": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.Audit",
+     "Datastore.AllocateSpace"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "storage"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/import-metadata": {
+  "GET": {
+   "parameters": [
+    "node",
+    "storage",
+    "volume"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/oci-registry-pull": {
+  "POST": {
+   "check": [
+    "and",
+    [
+     "perm",
+     "/storage/{storage}",
+     [
+      "Datastore.AllocateTemplate"
+     ]
+    ],
+    [
+     "perm",
+     "/nodes/{node}",
+     [
+      "Sys.AccessNetwork"
+     ]
+    ]
+   ],
+   "parameters": [
+    "filename",
+    "node",
+    "reference",
+    "storage"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/prunebackups": {
+  "DELETE": {
+   "parameters": [
+    "node",
+    "prune-backups",
+    "storage",
+    "type",
+    "vmid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.Audit",
+     "Datastore.AllocateSpace"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "prune-backups",
+    "storage",
+    "type",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/rrd": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.Audit",
+     "Datastore.AllocateSpace"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "cf",
+    "ds",
+    "node",
+    "storage",
+    "timeframe"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/rrddata": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.Audit",
+     "Datastore.AllocateSpace"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "cf",
+    "node",
+    "storage",
+    "timeframe"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/status": {
+  "GET": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.Audit",
+     "Datastore.AllocateSpace"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "storage"
+   ]
+  }
+ },
+ "/nodes/{node}/storage/{storage}/upload": {
+  "POST": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.AllocateTemplate"
+    ]
+   ],
+   "parameters": [
+    "checksum",
+    "checksum-algorithm",
+    "content",
+    "filename",
+    "node",
+    "storage",
+    "tmpfilename"
+   ]
+  }
+ },
+ "/nodes/{node}/subscription": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "force",
+    "node"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "key",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/suspendall": {
+  "POST": {
+   "parameters": [
+    "max-workers",
+    "node",
+    "vms"
+   ]
+  }
+ },
+ "/nodes/{node}/syslog": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Syslog"
+    ]
+   ],
+   "parameters": [
+    "limit",
+    "node",
+    "service",
+    "since",
+    "start",
+    "until"
+   ]
+  }
+ },
+ "/nodes/{node}/tasks": {
+  "GET": {
+   "parameters": [
+    "errors",
+    "limit",
+    "node",
+    "since",
+    "source",
+    "start",
+    "statusfilter",
+    "typefilter",
+    "until",
+    "userfilter",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/tasks/{upid}": {
+  "DELETE": {
+   "parameters": [
+    "node",
+    "upid"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "node",
+    "upid"
+   ]
+  }
+ },
+ "/nodes/{node}/tasks/{upid}/log": {
+  "GET": {
+   "parameters": [
+    "download",
+    "limit",
+    "node",
+    "start",
+    "upid"
+   ]
+  }
+ },
+ "/nodes/{node}/tasks/{upid}/status": {
+  "GET": {
+   "parameters": [
+    "node",
+    "upid"
+   ]
+  }
+ },
+ "/nodes/{node}/termproxy": {
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "cmd",
+    "cmd-opts",
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/time": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Audit"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Modify"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "timezone"
+   ]
+  }
+ },
+ "/nodes/{node}/version": {
+  "GET": {
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/nodes/{node}/vncshell": {
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "cmd",
+    "cmd-opts",
+    "height",
+    "node",
+    "websocket",
+    "width"
+   ]
+  }
+ },
+ "/nodes/{node}/vncwebsocket": {
+  "GET": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.Console"
+    ]
+   ],
+   "parameters": [
+    "node",
+    "port",
+    "vncticket"
+   ]
+  }
+ },
+ "/nodes/{node}/vzdump": {
+  "POST": {
+   "parameters": [
+    "all",
+    "bwlimit",
+    "compress",
+    "dumpdir",
+    "exclude",
+    "exclude-path",
+    "fleecing",
+    "ionice",
+    "job-id",
+    "lockwait",
+    "mailnotification",
+    "mailto",
+    "mode",
+    "node",
+    "notes-template",
+    "notification-mode",
+    "pbs-change-detection-mode",
+    "performance",
+    "pigz",
+    "pool",
+    "protected",
+    "prune-backups",
+    "quiet",
+    "remove",
+    "script",
+    "stdexcludes",
+    "stdout",
+    "stop",
+    "stopwait",
+    "storage",
+    "tmpdir",
+    "vmid",
+    "zstd"
+   ]
+  }
+ },
+ "/nodes/{node}/vzdump/defaults": {
+  "GET": {
+   "parameters": [
+    "node",
+    "storage"
+   ]
+  }
+ },
+ "/nodes/{node}/vzdump/extractconfig": {
+  "GET": {
+   "parameters": [
+    "node",
+    "volume"
+   ]
+  }
+ },
+ "/nodes/{node}/wakeonlan": {
+  "POST": {
+   "check": [
+    "perm",
+    "/nodes/{node}",
+    [
+     "Sys.PowerMgmt"
+    ]
+   ],
+   "parameters": [
+    "node"
+   ]
+  }
+ },
+ "/pools": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/pool/{poolid}",
+    [
+     "Pool.Allocate"
+    ]
+   ],
+   "parameters": [
+    "poolid"
+   ]
+  },
+  "GET": {
+   "parameters": [
+    "poolid",
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/pool/{poolid}",
+    [
+     "Pool.Allocate"
+    ]
+   ],
+   "parameters": [
+    "comment",
+    "poolid"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/pool/{poolid}",
+    [
+     "Pool.Allocate"
+    ]
+   ],
+   "parameters": [
+    "allow-move",
+    "comment",
+    "delete",
+    "poolid",
+    "storage",
+    "vms"
+   ]
+  }
+ },
+ "/pools/{poolid}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/pool/{poolid}",
+    [
+     "Pool.Allocate"
+    ]
+   ],
+   "parameters": [
+    "poolid"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/pool/{poolid}",
+    [
+     "Pool.Audit"
+    ]
+   ],
+   "parameters": [
+    "poolid",
+    "type"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/pool/{poolid}",
+    [
+     "Pool.Allocate"
+    ]
+   ],
+   "parameters": [
+    "allow-move",
+    "comment",
+    "delete",
+    "poolid",
+    "storage",
+    "vms"
+   ]
+  }
+ },
+ "/storage": {
+  "GET": {
+   "parameters": [
+    "type"
+   ]
+  },
+  "POST": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "authsupported",
+    "base",
+    "blocksize",
+    "bwlimit",
+    "comstar_hg",
+    "comstar_tg",
+    "content",
+    "content-dirs",
+    "create-base-path",
+    "create-subdirs",
+    "data-pool",
+    "datastore",
+    "disable",
+    "domain",
+    "encryption-key",
+    "export",
+    "fingerprint",
+    "format",
+    "fs-name",
+    "fuse",
+    "is_mountpoint",
+    "iscsiprovider",
+    "keyring",
+    "krbd",
+    "lio_tpg",
+    "master-pubkey",
+    "max-protected-backups",
+    "mkdir",
+    "monhost",
+    "mountpoint",
+    "namespace",
+    "nocow",
+    "nodes",
+    "nowritecache",
+    "options",
+    "password",
+    "path",
+    "pool",
+    "port",
+    "portal",
+    "preallocation",
+    "prune-backups",
+    "saferemove",
+    "saferemove-stepsize",
+    "saferemove_throughput",
+    "server",
+    "share",
+    "shared",
+    "skip-cert-verification",
+    "smbversion",
+    "snapshot-as-volume-chain",
+    "sparse",
+    "storage",
+    "subdir",
+    "tagged_only",
+    "target",
+    "thinpool",
+    "type",
+    "username",
+    "vgname",
+    "zfs-base-path"
+   ]
+  }
+ },
+ "/storage/{storage}": {
+  "DELETE": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "storage"
+   ]
+  },
+  "GET": {
+   "check": [
+    "perm",
+    "/storage/{storage}",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "storage"
+   ]
+  },
+  "PUT": {
+   "check": [
+    "perm",
+    "/storage",
+    [
+     "Datastore.Allocate"
+    ]
+   ],
+   "parameters": [
+    "blocksize",
+    "bwlimit",
+    "comstar_hg",
+    "comstar_tg",
+    "content",
+    "content-dirs",
+    "create-base-path",
+    "create-subdirs",
+    "data-pool",
+    "delete",
+    "digest",
+    "disable",
+    "domain",
+    "encryption-key",
+    "fingerprint",
+    "format",
+    "fs-name",
+    "fuse",
+    "is_mountpoint",
+    "keyring",
+    "krbd",
+    "lio_tpg",
+    "master-pubkey",
+    "max-protected-backups",
+    "mkdir",
+    "monhost",
+    "mountpoint",
+    "namespace",
+    "nocow",
+    "nodes",
+    "nowritecache",
+    "options",
+    "password",
+    "pool",
+    "port",
+    "preallocation",
+    "prune-backups",
+    "saferemove",
+    "saferemove-stepsize",
+    "saferemove_throughput",
+    "server",
+    "shared",
+    "skip-cert-verification",
+    "smbversion",
+    "snapshot-as-volume-chain",
+    "sparse",
+    "storage",
+    "subdir",
+    "tagged_only",
+    "username",
+    "zfs-base-path"
+   ]
+  }
+ },
+ "/version": {
+  "GET": {
+   "parameters": []
+  }
+ }
+}
