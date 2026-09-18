@@ -59,4 +59,42 @@ factory gave it) is listed as such, and the test fails if that list
 changes: a refactor that hides the paths from the reader would otherwise
 quietly mute the whole file.
 
+## Privileges
+
+The same schema states which privilege Proxmox checks before it answers a
+route, so the library does not have to name one from memory:
+
+```python
+from aioproxmox.privileges import privileges_for
+
+check = privileges_for("GET", "nodes/pve/qemu/101/agent/get-fsinfo")
+check.render()
+# ['perm','/vms/101',['VM.GuestAgent.Audit','VM.GuestAgent.Unrestricted'],'any',1]
+```
+
+`required_privileges(method, template)` answers the same by route
+template; both hand back the alternatives that satisfy a route, since a
+check can offer a choice — the disk list takes `Sys.Audit` on `/` *or* on
+`/nodes/{node}`.
+
+`None` means the schema states no check. That is not "anyone may call
+it": several routes filter what they return by what the credentials can
+see (`cluster/resources`, `nodes/{node}/qemu`), and a few describe the
+requirement in prose instead — `vzdump` wants `VM.Backup` on the guests
+and `Datastore.AllocateSpace` on the storage, which the schema does not
+express.
+
+The data is generated into `aioproxmox/_privilege_data.py` — 39 routes,
+so no schema file has to ship with the library:
+
+```
+python script/generate_privileges.py
+```
+
+A test compares the committed module with what the generator would write
+now, so a refreshed schema that changes a privilege cannot slip through
+unregenerated. Shapes the generator cannot describe faithfully (`and`,
+and the other forms the wider schema uses) make it raise rather than
+flatten them into something that reads true and is not.
+
 [apidoc]: https://pve.proxmox.com/pve-docs/api-viewer/apidoc.js
