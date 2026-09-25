@@ -19,6 +19,7 @@ def _client_with_session() -> tuple[ProxmoxVE, AsyncMock]:
     pve = ProxmoxVE(
         session=session, host="192.0.2.1", user="root@pam", password="secret"
     )
+    assert isinstance(pve.auth, ProxmoxHTTPAuth)
     pve.auth.birth_time = time.monotonic()
     pve.auth.pve_auth_ticket = "t1"
     return pve, session
