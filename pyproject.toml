@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name            = "aioproxmox"
-version         = "0.0.3a9"
+version         = "0.0.3a10"
 license         = "MIT"
 description     = "Asynchronous Python library for Proxmox products."
 readme          = "README.md"

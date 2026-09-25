@@ -251,3 +251,29 @@ async def test_the_second_request_repeats_where_the_first_moved_to():
     assert pve.host == "192.0.2.2"
     # Nothing was asked of anyone: the switch had already happened.
     assert session.request.call_count == asked
+
+
+@pytest.mark.asyncio
+async def test_a_host_that_refuses_the_credentials_is_still_a_host():
+    """A 401 is an answer: the host is there, it only wants a ticket.
+
+    `version` needs authentication, and before a password login there is
+    no ticket to send - so every healthy candidate replies 401. Counting
+    that as silence left a client whose host had gone unable to log in
+    anywhere else: the fallback found nothing and setup failed with
+    "connection is unreachable" for as long as the node stayed down.
+    """
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.post.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the login on host 1
+        _response(200, {"ticket": "t2", "CSRFPreventionToken": "c2"}),  # on host 2
+    ]
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="no ticket"),  # host 2, asked without a ticket
+        _response(200, {"ok": 1}),  # the request there
+    ]
+    pve.auth.birth_time = time.monotonic() - 2 * pve.auth.renew_age
+
+    assert await pve.request("GET", "nodes") == {"ok": 1}
+    assert pve.host == "192.0.2.2"
