@@ -183,6 +183,10 @@ jobs:
 
   test-publishing:
     name: Build and publish Python 🐍 distributions 📦 to TestPyPI
+    # TestPyPI's trusted publisher is bound to the upstream repository and
+    # its workflow, so this job can only ever fail in a fork - on every
+    # version bump, which buries the checks that do say something.
+    if: github.repository == 'CoMPaTech/aioproxmox'
     runs-on: ubuntu-latest
     environment: testpypi
     permissions:
