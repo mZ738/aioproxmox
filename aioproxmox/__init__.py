@@ -326,9 +326,17 @@ class ProxmoxVE:
 
         `version` is the one read every credential may make, and it is
         answered by the host itself rather than forwarded to another node.
+
+        Any answer counts, a refusal included: a host that says 401 is a
+        host that is there. Before a password login there is no ticket to
+        send, so 401 is exactly what a healthy host replies - counting that
+        as silence left a client that had lost its host unable to log in
+        anywhere else.
         """
         try:
             await self._request_once("GET", "version", timeout=PROBE_TIMEOUT)
+        except ProxmoxAPIError as err:
+            _LOGGER.debug("Host %s answered %s; it is there", self.host, err.status)
         except (ProxmoxError, aiohttp.ClientError, TimeoutError) as err:
             _LOGGER.debug("Host %s did not answer: %s", self.host, err)
             return False

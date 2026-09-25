@@ -43,7 +43,12 @@ request has moved on already. Otherwise a burst - and a consumer with
 forty coordinators polls in bursts - would have every request either walk
 one more node or fail for a cycle while the new host answers the probe.
 
-A candidate has to answer `version` too before it counts. The probes get
+A candidate has to answer `version` too before it counts, and any answer
+counts - a refusal included. Before a password login there is no ticket
+to send, so `401` is what a perfectly healthy host replies; taking that
+for silence left a client that had lost its host unable to log in
+anywhere else. Only a connection that fails, or one that never answers,
+means the host is gone. The probes get
 `PROBE_TIMEOUT` rather than the client's own timeout: they run after a
 request has already waited out `timeout`, and a cluster of four would
 otherwise spend a minute establishing what it could say in ten seconds.
