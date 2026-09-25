@@ -36,6 +36,13 @@ walks the cluster — each request switching one host further, repeating the
 same doomed read, with nothing to fix at the end of it. On a cluster of two
 the walk lands on the node that is down.
 
+A request that failed on a host the client has already left is repeated
+without any of that: `request()` remembers the host it was on and passes
+it as `from_host`, and where that is no longer the host in use, another
+request has moved on already. Otherwise a burst - and a consumer with
+forty coordinators polls in bursts - would have every request either walk
+one more node or fail for a cycle while the new host answers the probe.
+
 A candidate has to answer `version` too before it counts. The probes get
 `PROBE_TIMEOUT` rather than the client's own timeout: they run after a
 request has already waited out `timeout`, and a cluster of four would

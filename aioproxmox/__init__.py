@@ -334,7 +334,9 @@ class ProxmoxVE:
             return False
         return True
 
-    async def failover(self, *, verify_current: bool = True) -> bool:
+    async def failover(
+        self, *, from_host: str | None = None, verify_current: bool = True
+    ) -> bool:
         """Move to the next node that answers, once the current one stopped.
 
         The host is asked first whether it is really gone, because a failed
@@ -349,12 +351,24 @@ class ProxmoxVE:
         leave it alone. A candidate has to answer `version` before it
         counts. Returns whether this call moved to a working host.
 
+        `from_host` is the host the caller was on when its request
+        failed. Where that is no longer the host in use, another request
+        has already moved the client and this one only has to be repeated
+        - which is what keeps a burst of requests from each taking another
+        step around the cluster.
+
         `verify_current` is for the callers that already have their proof:
         the ticket renewal is answered by the host itself and never
         forwarded, so a connection error there leaves nothing to check.
         """
         async with self._switch_lock:
             start = self._host_index
+            if from_host is not None and from_host != self.host:
+                _LOGGER.debug(
+                    "Another request already moved to %s; repeating this one there",
+                    self.host,
+                )
+                return True
             if verify_current and await self._answers():
                 _LOGGER.debug(
                     "%s still answers; leaving the request to fail on its own",
@@ -399,6 +413,7 @@ class ProxmoxVE:
             if len(self._hosts) < 2 or not await self.failover(verify_current=False):
                 raise
             await self.auth.check_and_refresh(method=method)
+        host_before = self.host
         try:
             return await self._request_once(method, path, json_data, params)
         except ProxmoxAPIError as err:
@@ -408,7 +423,7 @@ class ProxmoxVE:
             await self.auth.relogin()
             return await self._request_once(method, path, json_data, params)
         except aiohttp.ClientConnectionError, TimeoutError:
-            if len(self._hosts) < 2 or not await self.failover():
+            if len(self._hosts) < 2 or not await self.failover(from_host=host_before):
                 raise
             return await self._request_once(method, path, json_data, params)
 
