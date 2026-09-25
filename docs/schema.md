@@ -32,7 +32,7 @@ API, not a copy of Proxmox's prose.
 
 ## Refreshing it
 
-```
+```bash
 python script/refresh_pve_api.py
 ```
 
