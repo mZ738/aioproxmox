@@ -125,7 +125,7 @@ print(f"Container Memory: {lxc_status.get('mem')} bytes")
 
 ## Documentation
 
-- [The Proxmox API schema](docs/schema.md) — where `schema/pve_api.json` comes from, and how the endpoints are held against it.
+* [The Proxmox API schema](docs/schema.md) — where `schema/pve_api.json` comes from, and how the endpoints are held against it.
 
 ## Development Diagnostics
 
