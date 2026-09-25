@@ -221,3 +221,33 @@ async def test_a_probe_does_not_wait_out_the_whole_timeout():
 
     timeouts = [call.kwargs["timeout"].total for call in session.request.call_args_list]
     assert timeouts == [30.0, PROBE_TIMEOUT, PROBE_TIMEOUT, 30.0]
+
+
+@pytest.mark.asyncio
+async def test_the_second_request_repeats_where_the_first_moved_to():
+    """A request that failed on the host another one has already left.
+
+    Every consumer polls on its own, so a dead host is met by several
+    requests at once. The first moves the client; the rest failed on a
+    host that is no longer the one in use, and are simply repeated on the
+    new one - instead of each taking another step around the cluster, or
+    failing for a cycle because the new host answers the probe.
+    """
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the first request
+        aiohttp.ClientConnectionError("refused"),  # host 1 is really gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, {"first": 1}),  # the first request, repeated
+    ]
+
+    assert await pve.request("GET", "nodes") == {"first": 1}
+    assert pve.host == "192.0.2.2"
+    asked = session.request.call_count
+
+    assert await pve.failover(from_host="192.0.2.1") is True
+
+    assert pve.host == "192.0.2.2"
+    # Nothing was asked of anyone: the switch had already happened.
+    assert session.request.call_count == asked
