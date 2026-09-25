@@ -7,6 +7,7 @@ import aiohttp
 import pytest
 
 from aioproxmox import ProxmoxHTTPAuth, ProxmoxVE
+from aioproxmox.const import PROBE_TIMEOUT
 from aioproxmox.endpoints import ClusterEndpoint
 
 
@@ -40,6 +41,7 @@ async def test_failover_moves_to_the_next_host_that_answers():
     pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
     session.request.return_value.__aenter__.side_effect = [
         aiohttp.ClientConnectionError("refused"),  # the request on host 1
+        aiohttp.ClientConnectionError("refused"),  # host 1, asked whether it is there
         aiohttp.ClientConnectionError("refused"),  # version probe on host 2
         _response(200, {"version": "9.2"}),  # version probe on host 3
         _response(200, {"ok": 1}),  # the request, repeated on host 3
@@ -144,3 +146,78 @@ async def test_cluster_status_lists_the_nodes():
     entries = await ClusterEndpoint(mock_client).status()
     assert [entry["type"] for entry in entries] == ["cluster", "node"]
     mock_client.request.assert_called_with("GET", "cluster/status")
+
+
+@pytest.mark.asyncio
+async def test_a_request_for_a_node_that_is_down_keeps_the_host():
+    """A host that answers is kept, whatever the request ran into.
+
+    A path names a node, and the host forwards what is not its own. With
+    that node down, pveproxy fails the connection - which used to read as
+    "this host stopped answering", so the client walked the cluster,
+    repeating the same doomed request on every node. On a cluster of two
+    the walk lands on the node that is down.
+    """
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("no route to host"),  # the request
+        _response(200, {"version": "9.2"}),  # the host itself is fine
+    ]
+
+    with pytest.raises(aiohttp.ClientConnectionError):
+        await pve.request("GET", "nodes/pve-04/lxc/505/status/current")
+
+    assert pve.host == "192.0.2.1"
+    assert pve.base_url == "https://192.0.2.1:8006/api2/json"
+
+
+@pytest.mark.asyncio
+async def test_the_second_request_to_meet_a_dead_host_does_not_switch_again():
+    """Once one request has moved the client, the next one stays put.
+
+    Every consumer polls on its own, so several requests hit the dead host
+    at once. The first moves; the rest find a host that answers and leave
+    it alone instead of each taking another step around the cluster.
+    """
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # first request
+        aiohttp.ClientConnectionError("refused"),  # host 1, asked and silent
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, {"ok": 1}),  # first request, repeated
+        aiohttp.ClientConnectionError("refused"),  # second request
+        _response(200, {"version": "9.2"}),  # host 2 still answers
+    ]
+
+    assert await pve.request("GET", "nodes") == {"ok": 1}
+    assert pve.host == "192.0.2.2"
+
+    with pytest.raises(aiohttp.ClientConnectionError):
+        await pve.request("GET", "nodes/pve-04/status/current")
+
+    assert pve.host == "192.0.2.2"
+
+
+@pytest.mark.asyncio
+async def test_a_probe_does_not_wait_out_the_whole_timeout():
+    """The probe is given its own, shorter timeout.
+
+    It runs after a request has already waited out `timeout`, and a cluster
+    of four would otherwise spend a minute of probes before giving up.
+    """
+    pve, session = _client_with_session()
+    pve.timeout = 30.0
+    pve.learn_hosts(["192.0.2.2"])
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the request
+        aiohttp.ClientConnectionError("refused"),  # host 1 is really gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, {"ok": 1}),  # the request, repeated
+    ]
+
+    assert await pve.request("GET", "nodes") == {"ok": 1}
+
+    timeouts = [call.kwargs["timeout"].total for call in session.request.call_args_list]
+    assert timeouts == [30.0, PROBE_TIMEOUT, PROBE_TIMEOUT, 30.0]

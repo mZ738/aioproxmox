@@ -8,7 +8,7 @@ from typing import Any
 
 import aiohttp
 
-from .const import DEFAULT_PVE_PORT
+from .const import DEFAULT_PVE_PORT, PROBE_TIMEOUT
 from .endpoints import AccessEndpoint, ClusterEndpoint, NodeEndpoint
 from .exceptions import ProxmoxAPIError, ProxmoxAuthError, ProxmoxError
 from .model import PVECapabilities, PVEPermissions
@@ -321,23 +321,50 @@ class ProxmoxVE:
         self.base_url = f"https://{self._hosts[index]}:{self._port}/api2/json"
         self.auth.base_url = self.base_url
 
-    async def failover(self) -> bool:
+    async def _answers(self) -> bool:
+        """Whether the current host answers `version` within the probe timeout.
+
+        `version` is the one read every credential may make, and it is
+        answered by the host itself rather than forwarded to another node.
+        """
+        try:
+            await self._request_once("GET", "version", timeout=PROBE_TIMEOUT)
+        except (ProxmoxError, aiohttp.ClientError, TimeoutError) as err:
+            _LOGGER.debug("Host %s did not answer: %s", self.host, err)
+            return False
+        return True
+
+    async def failover(self, *, verify_current: bool = True) -> bool:
         """Move to the next node that answers, once the current one stopped.
 
-        Several requests may hit the dead host at once; the lock lets the
-        first one switch and the rest find the switch done. A candidate has
-        to answer `version` before it counts. Returns whether a working host
-        is in place.
+        The host is asked first whether it is really gone, because a failed
+        request is not proof that it is: a path names a node, and the host
+        forwards what is not its own - so a guest or a storage on a node
+        that is down fails the connection while the host answering is
+        perfectly well. Switching on that walks the whole cluster and, on a
+        cluster of two, lands on the node that is actually down.
+
+        Several requests may hit a dead host at once; the lock lets the
+        first one switch, and the rest then find a host that answers and
+        leave it alone. A candidate has to answer `version` before it
+        counts. Returns whether this call moved to a working host.
+
+        `verify_current` is for the callers that already have their proof:
+        the ticket renewal is answered by the host itself and never
+        forwarded, so a connection error there leaves nothing to check.
         """
         async with self._switch_lock:
             start = self._host_index
+            if verify_current and await self._answers():
+                _LOGGER.debug(
+                    "%s still answers; leaving the request to fail on its own",
+                    self.host,
+                )
+                return False
             for offset in range(1, len(self._hosts)):
                 index = (start + offset) % len(self._hosts)
                 self._use_host(index)
-                try:
-                    await self._request_once("GET", "version")
-                except (ProxmoxError, aiohttp.ClientError, TimeoutError) as err:
-                    _LOGGER.debug("Fallback host %s did not answer: %s", self.host, err)
+                if not await self._answers():
                     continue
                 _LOGGER.warning(
                     "Proxmox at %s stopped answering; using %s until it is back",
@@ -367,7 +394,9 @@ class ProxmoxVE:
         try:
             await self.auth.check_and_refresh(method=method)
         except aiohttp.ClientConnectionError, TimeoutError:
-            if len(self._hosts) < 2 or not await self.failover():
+            # The renewal goes to the host itself, so its failure is proof
+            # enough and there is nothing to ask the host again.
+            if len(self._hosts) < 2 or not await self.failover(verify_current=False):
                 raise
             await self.auth.check_and_refresh(method=method)
         try:
@@ -389,8 +418,9 @@ class ProxmoxVE:
         path: str,
         json_data: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
+        timeout: float | None = None,
     ) -> Any:
-        """One attempt against the current host."""
+        """One attempt against the current host, in `timeout` at most."""
 
         headers: dict[str, str] = {
             "Accept": "application/json",
@@ -415,13 +445,13 @@ class ProxmoxVE:
             request_kwargs["json"] = json_data
 
         url = f"{self.base_url.rstrip('/')}/{path.lstrip('/')}"
-        timeout = aiohttp.ClientTimeout(total=self.timeout)
+        client_timeout = aiohttp.ClientTimeout(total=timeout or self.timeout)
 
         async with self.auth.session.request(
             method=method,
             url=url,
             headers=headers,
-            timeout=timeout,
+            timeout=client_timeout,
             ssl=self.verify_ssl,
             **request_kwargs,
         ) as response:
