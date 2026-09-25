@@ -73,4 +73,4 @@ def test_a_shared_storage_nobody_sees_still_has_a_row():
     )
     nas = shared_storage(resources, "nas")
     assert nas is not None
-    assert nas.nodes == ()
+    assert not nas.nodes

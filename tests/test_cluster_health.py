@@ -36,7 +36,7 @@ def test_ceph_status_reads_health_checks_and_the_two_totals():
 
     empty = CephStatus.from_api({})
     assert empty.health is CephHealth.UNKNOWN
-    assert empty.checks == []
+    assert not empty.checks
     assert empty.bytes_used is None
     assert (
         CephStatus.from_api({"health": {"status": "HEALTH_ODD"}}).health

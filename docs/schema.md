@@ -32,7 +32,7 @@ API, not a copy of Proxmox's prose.
 
 ## Refreshing it
 
-```
+```bash
 python script/refresh_pve_api.py
 ```
 
@@ -87,7 +87,7 @@ express.
 The data is generated into `aioproxmox/_privilege_data.py` — 39 routes,
 so no schema file has to ship with the library:
 
-```
+```bash
 python script/generate_privileges.py
 ```
 
