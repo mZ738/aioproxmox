@@ -276,7 +276,7 @@ class ProxmoxVE:
             await self.auth.async_init()
         return await self.cluster.resources()
 
-    def learn_hosts(self, hosts: list[str]) -> None:
+    def learn_hosts(self, hosts: list[str], *, replace: bool = False) -> None:
         """Remember other nodes of the cluster as places to fall back to.
 
         `cluster/status` says what address every node answers on. That is
@@ -284,10 +284,22 @@ class ProxmoxVE:
         network is not reachable from outside - so these are tried, not
         relied on. The configured host stays first and is used again after
         a reconnect.
+
+        `replace` is for a caller holding a fresh membership list: a cluster
+        that was reduced, or split into standalone servers, otherwise leaves
+        its former peers in the list for good - and an address that once
+        belonged to a peer can by then answer for a machine of its own. The
+        configured host is kept, and so is the host in use, even when the
+        cluster does not name it.
         """
+        current = self.host
+        kept = [self._hosts[0]] if replace else list(self._hosts)
         for host in hosts:
-            if isinstance(host, str) and host and host not in self._hosts:
-                self._hosts.append(host)
+            if isinstance(host, str) and host and host not in kept:
+                kept.append(host)
+        if current not in kept:
+            kept.append(current)
+        self._hosts, self._host_index = kept, kept.index(current)
 
     async def learn_hosts_from_cluster(self) -> None:
         """Ask the cluster where else the API answers and remember it."""

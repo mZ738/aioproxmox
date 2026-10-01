@@ -13,6 +13,17 @@ from anywhere else, for a consumer that has its own, better source — one it
 stored from an earlier session, or one the user typed. The configured host
 stays first in the list, whatever is added.
 
+Adding is the default because a list that only grows cannot lose an address
+that is still good. A caller with a fresh membership list can pass
+`replace=True` instead: a cluster that was reduced, or split into standalone
+servers, otherwise keeps its former peers for good, and an address that once
+belonged to a peer can by then answer for a machine of its own. Replacing
+keeps the configured host and the host in use — the latter even when the
+cluster does not name it, since dropping the address you are talking to
+would be absurd. It is for answers that name nodes; an empty or unreadable
+one is no evidence that anything was removed, and that judgement belongs to
+the caller.
+
 Two limits are worth knowing, and neither is the client's to solve. The
 addresses in `cluster/status` are corosync's; a cluster with a separate
 cluster network answers there and nowhere Home Assistant can reach. And
