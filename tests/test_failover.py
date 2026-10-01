@@ -277,3 +277,47 @@ async def test_a_host_that_refuses_the_credentials_is_still_a_host():
 
     assert await pve.request("GET", "nodes") == {"ok": 1}
     assert pve.host == "192.0.2.2"
+
+
+@pytest.mark.asyncio
+async def test_a_fresh_membership_list_replaces_the_peers():
+    """A cluster that lost a node does not keep it as a fallback for good.
+
+    Suggested for the Home Assistant integration by Nick Triantos: after a
+    cluster is reduced, or split into standalone servers, an address that
+    once belonged to a peer can by then answer for a machine of its own.
+    """
+    pve, _session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+
+    pve.learn_hosts(["192.0.2.3"], replace=True)
+
+    assert pve.hosts == ("192.0.2.1", "192.0.2.3")
+    assert pve.host == "192.0.2.1"
+
+
+@pytest.mark.asyncio
+async def test_replacing_keeps_the_host_in_use():
+    """The address being talked to stays, named by the cluster or not.
+
+    Dropping it would leave the client pointing at a host it no longer
+    admits to knowing, and the index would move under the request in
+    flight.
+    """
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the request
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, {"ok": 1}),  # the request, repeated
+    ]
+    assert await pve.request("GET", "nodes") == {"ok": 1}
+    assert pve.host == "192.0.2.2"
+
+    # A membership list that knows neither the configured host's peer nor
+    # the host in use.
+    pve.learn_hosts(["192.0.2.9"], replace=True)
+
+    assert pve.host == "192.0.2.2"
+    assert pve.hosts == ("192.0.2.1", "192.0.2.9", "192.0.2.2")
