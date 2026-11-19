@@ -1,6 +1,8 @@
 """Proxmox Home Assistant Integration Service."""
 
 import asyncio
+from collections.abc import Iterator
+from contextlib import contextmanager
 import logging
 import ssl
 import time
@@ -10,16 +12,68 @@ import aiohttp
 
 from .const import DEFAULT_PVE_PORT, PROBE_TIMEOUT
 from .endpoints import AccessEndpoint, ClusterEndpoint, NodeEndpoint
-from .exceptions import ProxmoxAPIError, ProxmoxAuthError, ProxmoxError
+from .exceptions import (
+    ProxmoxAPIError,
+    ProxmoxAuthError,
+    ProxmoxConnectionError,
+    ProxmoxError,
+    ProxmoxNodeUnreachableError,
+    ProxmoxResponseError,
+    ProxmoxSSLError,
+    ProxmoxTimeoutError,
+)
 from .model import PVECapabilities, PVEPermissions
 from .model.pve import ClusterCache, ClusterResourcesCollection
 
 _LOGGER = logging.getLogger(__name__)
 
+NODE_UNREACHABLE_STATUSES = frozenset({595, 596})
+
 SERVICES: dict[str, dict[str, Any]] = {
     "PVE": {"default_port": DEFAULT_PVE_PORT, "token_separator": "="}
     # Future PDM, PBS
 }
+
+
+@contextmanager
+def _translate_client_errors(url: str) -> Iterator[None]:
+    """Raise transport failures as aioproxmox errors instead of aiohttp ones."""
+    try:
+        yield
+    except aiohttp.ClientSSLError as err:
+        raise ProxmoxSSLError(f"SSL error connecting to {url}: {err}") from err
+    except TimeoutError as err:
+        raise ProxmoxTimeoutError(f"Timeout connecting to {url}") from err
+    except aiohttp.ClientError as err:
+        raise ProxmoxConnectionError(f"Error connecting to {url}: {err}") from err
+
+
+async def _read_json(response: aiohttp.ClientResponse, endpoint: str) -> Any:
+    """Decode a JSON body, raising a response that is not JSON as an API error."""
+    try:
+        return await response.json()
+    except aiohttp.ContentTypeError as err:
+        raise ProxmoxResponseError(response.status, err.message, endpoint) from err
+    except ValueError as err:
+        # JSONDecodeError, or UnicodeDecodeError for a body that isn't text
+        raise ProxmoxResponseError(
+            response.status, f"Invalid JSON: {err}", endpoint
+        ) from err
+
+
+def _normalize_host(host: str) -> str:
+    """Strip a trailing port from the host and bracket IPv6 addresses for URLs."""
+    if host.startswith("["):
+        # "[2001:db8::1]" or "[2001:db8::1]:8006"
+        end = host.find("]")
+        return host[: end + 1] if end != -1 else host
+    if host.count(":") == 1:
+        # "pve.local:8006" or "192.0.2.1:8006"
+        return host.split(":", 1)[0]
+    if ":" in host:
+        # Bare IPv6 address such as "2001:db8::1" or "::1"
+        return f"[{host}]"
+    return host
 
 
 class ProxmoxHTTPAuthBase:
@@ -86,9 +140,10 @@ class ProxmoxHTTPAuth(ProxmoxHTTPAuthBase):
 
     async def async_init(self) -> Any:
         """Initial token acquisition loop."""
-        await self._get_new_tokens(
-            password=self.password, otp=self.otp, otptype=self.otptype
-        )
+        with _translate_client_errors(self.base_url):
+            await self._get_new_tokens(
+                password=self.password, otp=self.otp, otptype=self.otptype
+            )
         return self
 
     async def _get_new_tokens(
@@ -108,11 +163,15 @@ class ProxmoxHTTPAuth(ProxmoxHTTPAuthBase):
             timeout=timeout,
             ssl=self.verify_ssl,
         ) as response:
-            if response.status != 200:
+            if response.status == 401:
                 raise ProxmoxAuthError(
                     f"Couldn't authenticate user {self.username} to {self.base_url}/access/ticket: Code {response.status}"
                 )
-            res_json = await response.json()
+            if response.status != 200:
+                raise ProxmoxAPIError(
+                    response.status, await response.text(), "access/ticket"
+                )
+            res_json = await _read_json(response, "access/ticket")
             response_data = res_json["data"]
 
             self.birth_time = time.monotonic()
@@ -135,7 +194,15 @@ class ProxmoxHTTPAuth(ProxmoxHTTPAuthBase):
                     timeout=timeout,
                     ssl=self.verify_ssl,
                 ) as otpresp:
-                    otp_json = await otpresp.json()
+                    if otpresp.status == 401:
+                        raise ProxmoxAuthError(
+                            f"Couldn't authenticate user {self.username} to {self.base_url}/access/ticket: Code {otpresp.status}"
+                        )
+                    if otpresp.status != 200:
+                        raise ProxmoxAPIError(
+                            otpresp.status, await otpresp.text(), "access/ticket"
+                        )
+                    otp_json = await _read_json(otpresp, "access/ticket")
                     otpresp_data = otp_json.get("data")
                 if not otpresp_data:
                     raise ProxmoxAuthError(
@@ -202,11 +269,6 @@ class ProxmoxHTTPApiTokenAuth(ProxmoxHTTPAuthBase):
         return {"Authorization": auth_string}
 
 
-def _says_nothing(body: str) -> bool:
-    """Whether an error body is Proxmox's empty `{"data":null}` or blank."""
-    return body.replace(" ", "").replace("\n", "") in ("", '{"data":null}')
-
-
 class ProxmoxVE:
     """Backend Engine coordinating configuration endpoints and session mapping."""
 
@@ -231,9 +293,7 @@ class ProxmoxVE:
         Proxmox that presents a certificate from a private CA: load that CA
         into the context and every request verifies against it.
         """
-        if ":" in host and not host.startswith("["):
-            # Clean up base IPv4 parsing strings; ignore legacy bracket rules
-            host, _ = host.split(":", 1)
+        host = _normalize_host(host)
 
         if not port:
             port = int(SERVICES[service]["default_port"])
@@ -249,7 +309,7 @@ class ProxmoxVE:
         self.verify_ssl = verify_ssl
         self.timeout = timeout
         self.permissions = PVEPermissions()
-        self.cluster_resources: ClusterResourcesCollection
+        self.cluster_resources = ClusterResourcesCollection()
         self.cluster_cache = ClusterCache()
 
         auth_kwargs: dict[str, Any] = {
@@ -330,7 +390,9 @@ class ProxmoxVE:
 
     def _use_host(self, index: int) -> None:
         self._host_index = index
-        self.base_url = f"https://{self._hosts[index]}:{self._port}/api2/json"
+        self.base_url = (
+            f"https://{_normalize_host(self._hosts[index])}:{self._port}/api2/json"
+        )
         self.auth.base_url = self.base_url
 
     async def _answers(self) -> bool:
@@ -349,7 +411,10 @@ class ProxmoxVE:
             await self._request_once("GET", "version", timeout=PROBE_TIMEOUT)
         except ProxmoxAPIError as err:
             _LOGGER.debug("Host %s answered %s; it is there", self.host, err.status)
-        except (ProxmoxError, aiohttp.ClientError, TimeoutError) as err:
+        except ProxmoxAuthError:
+            # 401 comes as its own error since the 401 split; still an answer.
+            _LOGGER.debug("Host %s answered 401; it is there", self.host)
+        except ProxmoxError as err:
             _LOGGER.debug("Host %s did not answer: %s", self.host, err)
             return False
         return True
@@ -426,23 +491,27 @@ class ProxmoxVE:
         the ticket is an hour old.
         """
         try:
-            await self.auth.check_and_refresh(method=method)
-        except aiohttp.ClientConnectionError, TimeoutError:
+            with _translate_client_errors(self.base_url):
+                await self.auth.check_and_refresh(method=method)
+        except ProxmoxConnectionError:
             # The renewal goes to the host itself, so its failure is proof
             # enough and there is nothing to ask the host again.
             if len(self._hosts) < 2 or not await self.failover(verify_current=False):
                 raise
-            await self.auth.check_and_refresh(method=method)
+            with _translate_client_errors(self.base_url):
+                await self.auth.check_and_refresh(method=method)
         host_before = self.host
         try:
             return await self._request_once(method, path, json_data, params)
-        except ProxmoxAPIError as err:
-            if err.status != 401 or not hasattr(self.auth, "relogin"):
+        except ProxmoxAuthError:
+            relogin = getattr(self.auth, "relogin", None)
+            if relogin is None:
                 raise
             _LOGGER.debug("Request to %s refused with 401, logging in again", path)
-            await self.auth.relogin()
+            with _translate_client_errors(self.base_url):
+                await relogin()
             return await self._request_once(method, path, json_data, params)
-        except aiohttp.ClientConnectionError, TimeoutError:
+        except ProxmoxConnectionError:
             if len(self._hosts) < 2 or not await self.failover(from_host=host_before):
                 raise
             return await self._request_once(method, path, json_data, params)
@@ -482,30 +551,47 @@ class ProxmoxVE:
         url = f"{self.base_url.rstrip('/')}/{path.lstrip('/')}"
         client_timeout = aiohttp.ClientTimeout(total=timeout or self.timeout)
 
-        async with self.auth.session.request(
-            method=method,
-            url=url,
-            headers=headers,
-            timeout=client_timeout,
-            ssl=self.verify_ssl,
-            **request_kwargs,
-        ) as response:
-            if response.status not in (200, 201):
-                # Proxmox puts what went wrong into the HTTP reason phrase -
-                # "Permission check failed (/nodes/pve, Sys.PowerMgmt)" - and
-                # answers with a body of `{"data":null}`; keep the reason, and
-                # the body only where it says more.
-                text = await response.text()
-                reason = response.reason if isinstance(response.reason, str) else ""
-                message = reason if reason and _says_nothing(text) else text
-                if reason and message is text and reason not in text:
-                    message = f"{reason}: {text}"
-                raise ProxmoxAPIError(response.status, message.strip(), path)
+        with _translate_client_errors(url):
+            async with self.auth.session.request(
+                method=method,
+                url=url,
+                headers=headers,
+                timeout=client_timeout,
+                ssl=self.verify_ssl,
+                **request_kwargs,
+            ) as response:
+                if response.status == 401:
+                    # A rejected API token or an expired ticket - the
+                    # credentials are the problem, not the request
+                    raise ProxmoxAuthError(
+                        f"Couldn't authenticate to {url}: Code {response.status}"
+                    )
+                if response.status not in (200, 201):
+                    # Proxmox puts what went wrong into the HTTP reason phrase -
+                    # "Permission check failed (/nodes/pve, Sys.PowerMgmt)" - and
+                    # answers with a body of `{"data":null}`. Keeping the body
+                    # alone left the caller with nothing to report, so keep the
+                    # reason, and the body where it says more.
+                    text = (await response.text()).strip()
+                    reason = response.reason if isinstance(response.reason, str) else ""
+                    message = text
+                    if not text or text.replace(" ", "") == '{"data":null}':
+                        message = reason
+                    elif reason and reason not in text:
+                        message = f"{reason}: {text}"
+                    if response.status in NODE_UNREACHABLE_STATUSES:
+                        raise ProxmoxNodeUnreachableError(
+                            response.status, message, path
+                        )
+                    raise ProxmoxAPIError(response.status, message, path)
 
-            payload = await response.json()
-            # Reads answer with a dict or a list; a command answers with the
-            # task id it queued - a string. Hand back what Proxmox said.
-            return payload.get("data") if isinstance(payload, dict) else payload
+                payload = await _read_json(response, path)
+                # A read answers with an object or a list; a command answers
+                # with the task id it queued, which is a string. Turning
+                # anything else into `{}` dropped exactly that - every
+                # `start`, `stop` or `vzdump` came back as if it had said
+                # nothing. Hand back what Proxmox said.
+                return payload.get("data") if isinstance(payload, dict) else payload
 
     @property
     def cluster(self) -> ClusterEndpoint:

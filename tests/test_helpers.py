@@ -40,3 +40,17 @@ def test_pve_cluster_cache(mock_pve_dual_node_cluster_raw):
     assert 888 not in updated_cache.lxc
 
     assert pve_cluster_cache(None) == ClusterCache()
+
+
+def test_cluster_resources_by_type(mock_pve_dual_node_cluster_raw):
+    """Test the collection hands out its resources split by type."""
+    collection = ClusterResourcesCollection.from_dict(
+        {"resources": mock_pve_dual_node_cluster_raw}
+    )
+
+    assert [node.node for node in collection.nodes] == ["pve-01", "pve-02"]
+    assert [vm.vmid for vm in collection.qemu] == [101, 102]
+    assert [ct.vmid for ct in collection.lxc] == [201, 202]
+    assert collection.storage == []
+
+    assert ClusterResourcesCollection().nodes == []

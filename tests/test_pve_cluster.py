@@ -77,6 +77,10 @@ def test_deserialize_resilience_to_unknown_elements(caplog):
     parsed_vm = collection.resources[0]
     assert parsed_vm.status == OperationalStatus.UNKNOWN
     assert "Unknown Proxmox resource status encountered" in caplog.text
+    assert (
+        "Skipping unknown Proxmox resource type: 'brand-new-pve-resource-type'"
+        in caplog.text
+    )
 
 
 def test_deserialize_handles_broken_items(caplog):
@@ -144,6 +148,11 @@ def test_resource_enum_fallbacks(caplog):
         res_type = ResourceType("_future_pve_type_")
         assert res_type == ResourceType.UNKNOWN
         assert "Unknown Proxmox resource type encountered" in caplog.text
+        caplog.clear()
+
+        for kind in ("pool", "sdn", "openvz"):
+            assert ResourceType(kind) != ResourceType.UNKNOWN
+        assert not caplog.records
 
         plugin_type = StoragePluginType("_future_plugin_")
         assert plugin_type == StoragePluginType.UNKNOWN
@@ -193,7 +202,7 @@ def test_deserialize_lxc_and_network(caplog):
     assert iterable[0].vmid == 202
 
 
-def test_deserialize_resource_list_raw():
+def test_deserialize_resource_list_raw(caplog):
     """Directly test the static deserializer list parsing and edge cases."""
     raw_list = [
         {
@@ -209,13 +218,21 @@ def test_deserialize_resource_list_raw():
             "maxdisk": 1,
             "uptime": 1,
         },
+        {"type": "pool", "id": "/pool/example"},  # Documented, skipped silently
+        {"type": "sdn", "id": "sdn/pve-01/localnetwork"},
+        {"type": "openvz", "id": "openvz/100"},
         {"type": "unknown_type_entirely"},  # Handled by case _
         "not_a_dict_should_skip",  # Handled by isinstance(item, dict) check
     ]
 
-    parsed = deserialize_resource_list(raw_list)
+    with caplog.at_level(logging.WARNING):
+        parsed = deserialize_resource_list(raw_list)
     assert len(parsed) == 1
     assert parsed[0].resource_type == ResourceType.NODE
+    # Only the undocumented type warns
+    assert [r.getMessage() for r in caplog.records] == [
+        "Skipping unknown Proxmox resource type: 'unknown_type_entirely'"
+    ]
 
     # Check invalid master payload entirely
     assert not deserialize_resource_list(None)
@@ -231,3 +248,35 @@ def test_cluster_collection_iteration(mock_pve_dual_node_cluster_raw):
     # Passing the collection directly to list() calls __iter__ under the hood
     items = list(collection)
     assert len(items) == 6
+
+
+def test_offline_node_without_capacity_fields():
+    """Ensure an offline node without capacity fields still parses."""
+    collection = ClusterResourcesCollection.from_dict(
+        {
+            "resources": [
+                {
+                    "id": "node/pve-02",
+                    "node": "pve-02",
+                    "status": "offline",
+                    "type": "node",
+                }
+            ]
+        }
+    )
+
+    node = collection.resources[0]
+    assert isinstance(node, ClusterNodeResource)
+    assert node.status == OperationalStatus.OFFLINE
+    assert node.cpu is None
+    assert node.maxmem is None
+    assert node.uptime is None
+
+
+def test_cluster_collection_default_empty():
+    """Ensure the collection defaults to no resources."""
+    collection = ClusterResourcesCollection()
+
+    assert not collection.resources
+    assert not list(collection)
+    assert not ClusterResourcesCollection.from_dict({}).resources

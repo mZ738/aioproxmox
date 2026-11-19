@@ -307,6 +307,37 @@ async def test_access_permissions():
 
 
 @pytest.mark.asyncio
+async def test_access_permissions_for_path():
+    """Test a single-path permission query is resolved but not cached."""
+    client = MagicMock()
+    client.request = AsyncMock(return_value={"/vms/101": {}})
+    cached = client.permissions
+
+    endpoint = AccessEndpoint(client)
+    perms = await endpoint.permissions(path="/vms/101")
+
+    client.request.assert_called_once_with(
+        "GET", "access/permissions", params={"path": "/vms/101"}
+    )
+    # NoAccess on /vms/101 yields an empty response
+    assert perms.has_vm_permission(101, "VM.PowerMgmt") is False
+    assert client.permissions is cached
+
+
+@pytest.mark.asyncio
+async def test_access_permissions_for_parent_path():
+    """Test a scoped parent query does not grant for its children."""
+    client = MagicMock()
+    client.request = AsyncMock(return_value={"/vms": {"VM.PowerMgmt": 1}})
+
+    endpoint = AccessEndpoint(client)
+    perms = await endpoint.permissions(path="/vms")
+
+    assert perms.has_permission("/vms", "VM.PowerMgmt") is True
+    assert perms.has_vm_permission(101, "VM.PowerMgmt") is False
+
+
+@pytest.mark.asyncio
 async def test_tasks_endpoint(mock_cluster_backup_tasks):
     """Test task history retrieval with parameters."""
     client = MagicMock()
@@ -339,7 +370,7 @@ async def test_qemu_snapshot_creation():
     mock_client.request.assert_called_once_with(
         "POST",
         "nodes/pve-01/qemu/100/snapshot",
-        data={
+        json_data={
             "snapname": "pre-upgrade",
             "vmstate": 1,
             "description": "Backup before OS update",
@@ -358,16 +389,37 @@ async def test_lxc_snapshot_creation():
     upid = await endpoint.status.snapshot(
         snap_name="quick-snap",
         snap_description=None,
-        snap_state=False,
     )
 
     assert upid == "UPID:pve-01:00005678..."
     mock_client.request.assert_called_once_with(
         "POST",
         "nodes/pve-01/lxc/202/snapshot",
-        data={
+        json_data={
             "snapname": "quick-snap",
-            "vmstate": False,
+        },
+    )
+
+
+@pytest.mark.asyncio
+async def test_lxc_snapshot_creation_with_description():
+    """Test LXC snapshot creation with description."""
+    mock_client = MagicMock()
+    mock_client.request = AsyncMock(return_value="UPID:pve-01:00005678...")
+
+    endpoint = NodeEndpoint(mock_client, "pve-01").lxc(202)
+
+    await endpoint.status.snapshot(
+        snap_name="quick-snap",
+        snap_description="Before upgrade",
+    )
+
+    mock_client.request.assert_called_once_with(
+        "POST",
+        "nodes/pve-01/lxc/202/snapshot",
+        json_data={
+            "snapname": "quick-snap",
+            "description": "Before upgrade",
         },
     )
 
@@ -404,6 +456,7 @@ async def test_node_apt_update():
                 "Section": "security",
                 "Title": "OpenSSL update",
                 "Version": "1.1.1u-1",
+                "Origin": "Proxmox",
                 "NotifyStatus": "",
                 "OldVersion": "1.1.1t-1",
             }

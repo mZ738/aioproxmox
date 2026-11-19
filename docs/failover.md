@@ -75,3 +75,9 @@ logged as a warning naming both ends, every probe that came back empty at
 debug level. `request()` repeats the request once on the new host; where no
 host answers, the original error is raised and the consumer decides what
 that means.
+
+What counts as "the host stopped" is a `ProxmoxConnectionError` - a
+connection that failed, timed out or broke its TLS. Anything the host
+answered, a `401` (`ProxmoxAuthError`) or a `595`
+(`ProxmoxNodeUnreachableError`, a forwarded node that is down) included,
+is an answer and never moves the client.

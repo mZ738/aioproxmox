@@ -40,6 +40,9 @@ class ResourceType(StrEnum):
     LXC = "lxc"
     STORAGE = "storage"
     NETWORK = "network"
+    POOL = "pool"
+    SDN = "sdn"
+    OPENVZ = "openvz"
     UNKNOWN = "unknown"
 
     @classmethod
@@ -128,14 +131,16 @@ class ClusterNodeResource(ProxmoxVEDataClass):
     id: str
     node: str
     status: OperationalStatus
-    cpu: float
-    maxcpu: int
-    mem: int
-    maxmem: int
-    disk: int
-    maxdisk: int
-    uptime: int
     resource_type: ResourceType = field(metadata={"alias": "type"})
+    # Capacity fields are NOT included when node
+    # is offline/inactive
+    cpu: float | None = None
+    maxcpu: int | None = None
+    mem: int | None = None
+    maxmem: int | None = None
+    disk: int | None = None
+    maxdisk: int | None = None
+    uptime: int | None = None
 
     class Config(BaseConfig):
         """Class configuration."""
@@ -227,6 +232,7 @@ class NodeAptUpdateProperty(DataClassDictMixin):
     section: str = field(metadata={"alias": "Section"})
     title: str = field(metadata={"alias": "Title"})
     version: str = field(metadata={"alias": "Version"})
+    origin: str = field(default="", metadata={"alias": "Origin"})
 
     notify_status: str = field(default="", metadata={"alias": "NotifyStatus"})
     old_version: str = field(default="", metadata={"alias": "OldVersion"})
@@ -418,12 +424,12 @@ class NodeStorageResource(ProxmoxVEDataClass):
     active: bool
     storage: str
     resource_type: StoragePluginType = field(metadata={"alias": "type"})
-    # Capacity fields are NOT included when storage
+    # Capacity fields are NOT included when the node or storage
     # is offline/inactive
-    total: int = 0
-    avail: int = 0
-    used: int = 0
-    used_fraction: float = 0.0
+    total: int | None = None
+    avail: int | None = None
+    used: int | None = None
+    used_fraction: float | None = None
 
 
 @dataclass(slots=True)
@@ -525,6 +531,8 @@ def deserialize_resource_list(value: Any) -> list[Any]:
                     parsed_items.append(ClusterStorageResource.from_dict(item))
                 case "network":
                     parsed_items.append(ClusterNetworkResource.from_dict(item))
+                case "pool" | "sdn" | "openvz":
+                    continue
                 case _:
                     _LOGGER.warning("Skipping unknown Proxmox resource type: %r", kind)
         except Exception:
@@ -543,11 +551,34 @@ class ClusterResourcesCollection(ProxmoxVEDataClass):
         | ClusterContainerResource
         | ClusterStorageResource
         | ClusterNetworkResource
-    ] = field(metadata={"deserialize": deserialize_resource_list})
+    ] = field(
+        default_factory=list,
+        metadata={"deserialize": deserialize_resource_list},
+    )
 
     def __iter__(self) -> Any:
         """Provide iteration."""
         return iter(self.resources)
+
+    @property
+    def nodes(self) -> list[ClusterNodeResource]:
+        """Return the node resources."""
+        return [r for r in self.resources if isinstance(r, ClusterNodeResource)]
+
+    @property
+    def qemu(self) -> list[ClusterQemuResource]:
+        """Return the QEMU virtual machine resources."""
+        return [r for r in self.resources if isinstance(r, ClusterQemuResource)]
+
+    @property
+    def lxc(self) -> list[ClusterContainerResource]:
+        """Return the LXC container resources."""
+        return [r for r in self.resources if isinstance(r, ClusterContainerResource)]
+
+    @property
+    def storage(self) -> list[ClusterStorageResource]:
+        """Return the storage resources."""
+        return [r for r in self.resources if isinstance(r, ClusterStorageResource)]
 
 
 @dataclass(slots=True)

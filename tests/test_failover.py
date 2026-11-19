@@ -9,6 +9,7 @@ import pytest
 from aioproxmox import ProxmoxHTTPAuth, ProxmoxVE
 from aioproxmox.const import PROBE_TIMEOUT
 from aioproxmox.endpoints import ClusterEndpoint
+from aioproxmox.exceptions import ProxmoxConnectionError
 
 
 def _client_with_session() -> tuple[ProxmoxVE, AsyncMock]:
@@ -96,7 +97,7 @@ async def test_without_another_host_the_failure_is_reported():
         "refused"
     )
 
-    with pytest.raises(aiohttp.ClientConnectionError):
+    with pytest.raises(ProxmoxConnectionError):
         await pve.request("GET", "nodes")
     assert pve.hosts == ("192.0.2.1",)
 
@@ -165,7 +166,7 @@ async def test_a_request_for_a_node_that_is_down_keeps_the_host():
         _response(200, {"version": "9.2"}),  # the host itself is fine
     ]
 
-    with pytest.raises(aiohttp.ClientConnectionError):
+    with pytest.raises(ProxmoxConnectionError):
         await pve.request("GET", "nodes/pve-04/lxc/505/status/current")
 
     assert pve.host == "192.0.2.1"
@@ -194,7 +195,7 @@ async def test_the_second_request_to_meet_a_dead_host_does_not_switch_again():
     assert await pve.request("GET", "nodes") == {"ok": 1}
     assert pve.host == "192.0.2.2"
 
-    with pytest.raises(aiohttp.ClientConnectionError):
+    with pytest.raises(ProxmoxConnectionError):
         await pve.request("GET", "nodes/pve-04/status/current")
 
     assert pve.host == "192.0.2.2"
