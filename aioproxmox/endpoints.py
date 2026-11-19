@@ -101,7 +101,8 @@ class NodeStatusCommand:
     """Descriptor for the node commands that go through `nodes/{node}/status`.
 
     A node is rebooted or shut down with `POST nodes/{node}/status` and a
-    `command` parameter (PVE::API2::Nodes); there is no `nodes/{node}/reboot`.
+    `command` parameter (PVE::API2::Nodes); there is no
+    `nodes/{node}/reboot` to post to.
     """
 
     def __init__(self, command: str) -> None:
@@ -259,7 +260,7 @@ class QemuStatusEndpoint:
             await self.client.request(
                 "POST",
                 f"nodes/{self.node}/qemu/{self.vmid}/snapshot",
-                data=payload,
+                json_data=payload,
             )
         )
 
@@ -291,8 +292,8 @@ class QemuStatusEndpoint:
     start = qemu_action("start")
     stop = qemu_action("stop")
     reboot = qemu_action("reboot")
-    # Proxmox has no `restart` command; the attribute stays for callers
-    # that used it and now reaches the command it meant.
+    # Proxmox has no `restart` command for a guest; the attribute stays
+    # for callers that used it and now reaches the command it meant.
     restart = qemu_action("reboot")
     suspend = qemu_action("suspend")
     resume = qemu_action("resume")
@@ -370,14 +371,12 @@ class LXCStatusEndpoint:
 
     async def snapshot(
         self,
-        snap_name: str | None = None,
+        snap_name: str,
         snap_description: str | None = None,
-        snap_state: bool = True,
     ) -> str:
         """Create a new Snapshot for a VM."""
         payload = {
             "snapname": snap_name,
-            "vmstate": int(snap_state),  # Note, convert bool back to int
         }
         if snap_description:
             payload["description"] = snap_description
@@ -386,7 +385,7 @@ class LXCStatusEndpoint:
             await self.client.request(
                 "POST",
                 f"nodes/{self.node}/lxc/{self.vmid}/snapshot",
-                data=payload,
+                json_data=payload,
             )
         )
 
@@ -402,7 +401,7 @@ class LXCStatusEndpoint:
 
     start = lxc_action("start")
     reboot = lxc_action("reboot")
-    # Proxmox has no `restart` command; see QemuStatusEndpoint.
+    # Proxmox has no `restart` command for a guest; see QemuStatusEndpoint.
     restart = lxc_action("reboot")
     stop = lxc_action("stop")
     shutdown = lxc_action("shutdown")
@@ -442,8 +441,20 @@ class AccessEndpoint:
         """Endpoint initialisation."""
         self.client = client
 
-    async def permissions(self) -> PVEPermissions:
-        """Fetch the full, granular ACL permissions map for the active session."""
+    async def permissions(self, path: str | None = None) -> PVEPermissions:
+        """Fetch effective ACL permissions for the active session.
+
+        Without ``path`` the whole tree is fetched and cached on the client.
+        With ``path`` only that path is resolved, which also reflects a NoAccess
+        ACL the whole-tree response cannot show; the result is not cached and
+        only answers for that exact path.
+        """
+        if path is not None:
+            raw = await self.client.request(
+                "GET", "access/permissions", params={"path": path}
+            )
+            return PVEPermissions.from_api_response(raw, scope=path)
+
         raw = await self.client.request("GET", "access/permissions")
         self.client.permissions = PVEPermissions.from_api_response(raw)
 

@@ -21,11 +21,12 @@ def pve_find_node_in_cache(
     """Helper to extract the node location from the resource model instances."""
     if not cluster_resources:
         return None
-    for res in cluster_resources.resources:
-        if (
-            isinstance(res, (ClusterQemuResource, ClusterContainerResource))
-            and res.vmid == vmid
-        ):
+    guests: list[ClusterQemuResource | ClusterContainerResource] = [
+        *cluster_resources.qemu,
+        *cluster_resources.lxc,
+    ]
+    for res in guests:
+        if res.vmid == vmid:
             return str(res.node)
     return None
 
