@@ -6,7 +6,7 @@ library calls that states a check; the entry is the alternatives that
 satisfy it, and each alternative is the ACL path, the privileges, and
 whether one of them is enough.
 
-    ("GET", "nodes/{node}/apt/update"): ((("/nodes/{node}", ("Sys.Modify",), False),),)
+    ("GET", "nodes/{node}/apt/update"): (("/nodes/{node}", ("Sys.Modify",), False),)
 
 `aioproxmox.privileges` is the way to read this.
 """

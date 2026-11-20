@@ -87,12 +87,14 @@ def _check(entry: tuple[tuple[str, tuple[str, ...], bool], ...]) -> Check:
 def required_privileges(method: str, path: str) -> Check | None:
     """Return what a route requires, by its template: `nodes/{node}/apt/update`.
 
-    None means the schema states no check for it. That is not the same as
-    "anyone may call it": several endpoints filter what they return by
-    what the credentials may see (`cluster/resources`, `nodes/{node}/qemu`),
-    and a few describe their requirement in prose instead (`vzdump` wants
-    `VM.Backup` on the guests and `Datastore.AllocateSpace` on the
-    storage). Both are in the documentation, neither is machine-readable.
+    The map holds the routes this library calls, so None means one of two
+    things: the route states no check, or it is not one this library
+    calls. Neither is "anyone may call it". Several endpoints filter what
+    they return by what the credentials may see (`cluster/resources`,
+    `nodes/{node}/qemu`), and a few describe their requirement in prose
+    instead (`vzdump` wants `VM.Backup` on the guests and
+    `Datastore.AllocateSpace` on the storage); for a route outside the map,
+    the schema in `schema/pve_api.json` is the place to ask.
     """
     entry = CHECKS.get((method.upper(), path.strip("/")))
     return _check(entry) if entry else None
@@ -103,7 +105,16 @@ def privileges_for(method: str, path: str, **values: str | int) -> Check | None:
 
     `privileges_for("GET", "nodes/pve/apt/update")` finds the template
     the path belongs to and hands back the check with the node filled in,
-    so the answer names `/nodes/pve` rather than `/nodes/{node}`.
+    so the answer names `/nodes/pve` rather than `/nodes/{node}`. None has
+    the same two meanings as for `required_privileges()`, and an empty
+    segment (`nodes//status`) matches nothing.
+
+    `values` fills placeholders the path does not carry. One the path does
+    carry has to agree with it: `vmid=999` on `.../qemu/101/...` raises
+    `ValueError` rather than quietly answering for one of the two - once
+    the path is a route's at all; a path that matches nothing is None
+    whatever is passed along. A value for a placeholder the route does not
+    have is left unused.
     """
     method = method.upper()
     parts = path.strip("/").split("/")
@@ -113,13 +124,19 @@ def privileges_for(method: str, path: str, **values: str | int) -> Check | None:
         segments = template.split("/")
         if len(segments) != len(parts):
             continue
-        filled = dict(values)
+        carried: dict[str, str] = {}
         for segment, part in zip(segments, parts, strict=True):
             if segment.startswith("{") and segment.endswith("}"):
-                filled[segment[1:-1]] = part
+                if not part:
+                    break
+                carried[segment[1:-1]] = part
                 continue
             if segment != part:
                 break
         else:
-            return _check(entry).substitute(**filled)
+            for name, part in carried.items():
+                if name in values and str(values[name]) != part:
+                    msg = f"{name}={values[name]!r} contradicts the path {path!r}"
+                    raise ValueError(msg)
+            return _check(entry).substitute(**{**values, **carried})
     return None
