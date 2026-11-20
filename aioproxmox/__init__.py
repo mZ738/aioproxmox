@@ -375,18 +375,27 @@ class ProxmoxVE:
         its former peers in the list for good - and an address that once
         belonged to a peer can by then answer for a machine of its own. The
         configured host is kept, and so is the host in use, even when the
-        cluster does not name it.
+        cluster does not name it. A host that was known and is named again
+        keeps its place.
         """
         current = self.host
-        kept = [self._hosts[0]] if replace else list(self._hosts)
+        named: list[str] = []
         for host in hosts:
             if not isinstance(host, str) or not host:
                 continue
             # Spelled the way the configured host is, or a bare IPv6
             # address and its bracketed self count as two.
             host = _normalize_host(host)
-            if host not in kept:
-                kept.append(host)
+            if host not in named:
+                named.append(host)
+        # The cluster names its nodes in a different order every time it is
+        # asked, and the order here is the order they are tried in.
+        kept = [
+            host
+            for index, host in enumerate(self._hosts)
+            if index == 0 or not replace or host in named
+        ]
+        kept += [host for host in named if host not in kept]
         if current not in kept:
             kept.append(current)
         self._hosts, self._host_index = kept, kept.index(current)

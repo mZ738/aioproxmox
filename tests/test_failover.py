@@ -372,6 +372,28 @@ async def test_a_fresh_membership_list_replaces_the_peers():
 
 
 @pytest.mark.asyncio
+async def test_replacing_keeps_known_hosts_in_their_place():
+    """The cluster names its nodes in a different order every time it is asked.
+
+    The order here is the order the hosts are tried in, and what a caller
+    stores. Neither should be reshuffled by the same nodes coming back in
+    another order.
+    """
+    pve, _session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3", "192.0.2.4"], replace=True)
+
+    pve.learn_hosts(["192.0.2.4", "192.0.2.2", "192.0.2.3"], replace=True)
+
+    assert pve.hosts == ("192.0.2.1", "192.0.2.2", "192.0.2.3", "192.0.2.4")
+
+    # One node gone and one new: the others stay where they were.
+    pve.learn_hosts(["192.0.2.5", "192.0.2.4", "192.0.2.2"], replace=True)
+
+    assert pve.hosts == ("192.0.2.1", "192.0.2.2", "192.0.2.4", "192.0.2.5")
+    assert pve.host == "192.0.2.1"
+
+
+@pytest.mark.asyncio
 async def test_replacing_keeps_the_host_in_use():
     """The address being talked to stays, named by the cluster or not.
 

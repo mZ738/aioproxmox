@@ -30,6 +30,11 @@ would be absurd. It is for answers that name nodes; an empty or unreadable
 one is no evidence that anything was removed, and that judgement belongs to
 the caller.
 
+A host that was known and is named again keeps its place in the list.
+`cluster/status` names the nodes in a different order from one call to the
+next, and the order of the list is the order they are tried in - and what a
+caller that stores the list compares against.
+
 Two limits are worth knowing, and neither is the client's to solve. The
 addresses in `cluster/status` are corosync's; a cluster with a separate
 cluster network answers there and nowhere Home Assistant can reach. And
