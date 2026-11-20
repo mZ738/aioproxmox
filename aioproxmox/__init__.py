@@ -76,6 +76,18 @@ def _normalize_host(host: str) -> str:
     return host
 
 
+def _repeatable(method: str, err: ProxmoxConnectionError) -> bool:
+    """Whether a request that failed may be sent again on another node.
+
+    A read always may. Anything else only where the connection was never
+    made: one that broke or timed out afterwards may have delivered the
+    command, and a second `shutdown` or `vzdump` is worse than an error.
+    """
+    return method.upper() == "GET" or isinstance(
+        err.__cause__, aiohttp.ClientConnectorError
+    )
+
+
 class ProxmoxHTTPAuthBase:
     """Base class for authentication structures."""
 
@@ -331,9 +343,22 @@ class ProxmoxVE:
             raise ProxmoxAuthError("No valid authentication credentials were supplied")
 
     async def connect(self) -> ClusterResourcesCollection:
-        """Authenticate and gather cluster resources."""
+        """Authenticate and gather cluster resources.
+
+        Where other hosts are known already - `learn_hosts()` with a list
+        kept from an earlier session - a configured host that does not
+        answer the login is left for one of them, the way `request()`
+        leaves it.
+        """
         if hasattr(self.auth, "async_init"):
-            await self.auth.async_init()
+            try:
+                await self.auth.async_init()
+            except ProxmoxConnectionError as err:
+                # The login goes to the host itself, so there is nothing
+                # to ask it again.
+                if not await self._moved_on(err, verify_current=False):
+                    raise
+                await self.auth.async_init()
         return await self.cluster.resources()
 
     def learn_hosts(self, hosts: list[str], *, replace: bool = False) -> None:
@@ -355,7 +380,12 @@ class ProxmoxVE:
         current = self.host
         kept = [self._hosts[0]] if replace else list(self._hosts)
         for host in hosts:
-            if isinstance(host, str) and host and host not in kept:
+            if not isinstance(host, str) or not host:
+                continue
+            # Spelled the way the configured host is, or a bare IPv6
+            # address and its bracketed self count as two.
+            host = _normalize_host(host)
+            if host not in kept:
                 kept.append(host)
         if current not in kept:
             kept.append(current)
@@ -388,18 +418,22 @@ class ProxmoxVE:
         """Every host this client may use, the configured one first."""
         return tuple(self._hosts)
 
+    def _base_url_of(self, host: str) -> str:
+        return f"https://{_normalize_host(host)}:{self._port}/api2/json"
+
     def _use_host(self, index: int) -> None:
         self._host_index = index
-        self.base_url = (
-            f"https://{_normalize_host(self._hosts[index])}:{self._port}/api2/json"
-        )
+        self.base_url = self._base_url_of(self._hosts[index])
         self.auth.base_url = self.base_url
 
-    async def _answers(self) -> bool:
-        """Whether the current host answers `version` within the probe timeout.
+    async def _answers(self, host: str) -> bool:
+        """Whether `host` answers `version` within the probe timeout.
 
         `version` is the one read every credential may make, and it is
         answered by the host itself rather than forwarded to another node.
+        The host is asked by its own address and the client left where it
+        is, so the requests running meanwhile are not sent to a host
+        nobody has heard from yet.
 
         Any answer counts, a refusal included: a host that says 401 is a
         host that is there. Before a password login there is no ticket to
@@ -408,16 +442,38 @@ class ProxmoxVE:
         anywhere else.
         """
         try:
-            await self._request_once("GET", "version", timeout=PROBE_TIMEOUT)
+            await self._request_once(
+                "GET",
+                "version",
+                # Never longer than a request itself waits.
+                timeout=min(PROBE_TIMEOUT, self.timeout),
+                base_url=self._base_url_of(host),
+            )
         except ProxmoxAPIError as err:
-            _LOGGER.debug("Host %s answered %s; it is there", self.host, err.status)
+            _LOGGER.debug("Host %s answered %s; it is there", host, err.status)
         except ProxmoxAuthError:
             # 401 comes as its own error since the 401 split; still an answer.
-            _LOGGER.debug("Host %s answered 401; it is there", self.host)
+            _LOGGER.debug("Host %s answered 401; it is there", host)
         except ProxmoxError as err:
-            _LOGGER.debug("Host %s did not answer: %s", self.host, err)
+            _LOGGER.debug("Host %s did not answer: %s", host, err)
             return False
         return True
+
+    async def _moved_on(
+        self,
+        err: ProxmoxConnectionError,
+        *,
+        from_host: str | None = None,
+        verify_current: bool = True,
+    ) -> bool:
+        """Whether a connection error was answered by moving to another node.
+
+        A certificate that does not verify is not a host that is gone, and
+        the node next to it is no answer to it: that one is reported.
+        """
+        if isinstance(err, ProxmoxSSLError) or len(self._hosts) < 2:
+            return False
+        return await self.failover(from_host=from_host, verify_current=verify_current)
 
     async def failover(
         self, *, from_host: str | None = None, verify_current: bool = True
@@ -434,7 +490,9 @@ class ProxmoxVE:
         Several requests may hit a dead host at once; the lock lets the
         first one switch, and the rest then find a host that answers and
         leave it alone. A candidate has to answer `version` before it
-        counts. Returns whether this call moved to a working host.
+        counts, and is asked by its own address: the client moves once,
+        to the first that answered, and not at all where none did.
+        Returns whether this call moved to a working host.
 
         `from_host` is the host the caller was on when its request
         failed. Where that is no longer the host in use, another request
@@ -447,31 +505,31 @@ class ProxmoxVE:
         forwarded, so a connection error there leaves nothing to check.
         """
         async with self._switch_lock:
-            start = self._host_index
             if from_host is not None and from_host != self.host:
                 _LOGGER.debug(
                     "Another request already moved to %s; repeating this one there",
                     self.host,
                 )
                 return True
-            if verify_current and await self._answers():
+            left = self.host
+            if verify_current and await self._answers(left):
                 _LOGGER.debug(
                     "%s still answers; leaving the request to fail on its own",
-                    self.host,
+                    left,
                 )
                 return False
-            for offset in range(1, len(self._hosts)):
-                index = (start + offset) % len(self._hosts)
-                self._use_host(index)
-                if not await self._answers():
+            start = self._host_index
+            for host in self._hosts[start + 1 :] + self._hosts[:start]:
+                # The list may have been replaced while the host was asked.
+                if not await self._answers(host) or host not in self._hosts:
                     continue
+                self._use_host(self._hosts.index(host))
                 _LOGGER.warning(
                     "Proxmox at %s stopped answering; using %s until it is back",
-                    self._hosts[start],
-                    self.host,
+                    left,
+                    host,
                 )
                 return True
-            self._use_host(start)
             return False
 
     async def request(
@@ -489,14 +547,21 @@ class ProxmoxVE:
         known, and the request repeated there - the ticket renewal that
         comes first included, since that is where a dead host is met once
         the ticket is an hour old.
+
+        Repeated there is a read, always. A command is repeated only where
+        the connection was never made; one that broke after it may have
+        reached Proxmox, so the client moves and the error is raised.
         """
+        host_before = self.host
         try:
             with _translate_client_errors(self.base_url):
                 await self.auth.check_and_refresh(method=method)
-        except ProxmoxConnectionError:
+        except ProxmoxConnectionError as err:
             # The renewal goes to the host itself, so its failure is proof
             # enough and there is nothing to ask the host again.
-            if len(self._hosts) < 2 or not await self.failover(verify_current=False):
+            if not await self._moved_on(
+                err, from_host=host_before, verify_current=False
+            ):
                 raise
             with _translate_client_errors(self.base_url):
                 await self.auth.check_and_refresh(method=method)
@@ -511,8 +576,12 @@ class ProxmoxVE:
             with _translate_client_errors(self.base_url):
                 await relogin()
             return await self._request_once(method, path, json_data, params)
-        except ProxmoxConnectionError:
-            if len(self._hosts) < 2 or not await self.failover(from_host=host_before):
+        except ProxmoxConnectionError as err:
+            if not await self._moved_on(err, from_host=host_before):
+                raise
+            if not _repeatable(method, err):
+                # The client has moved, but Proxmox may hold this command
+                # already.
                 raise
             return await self._request_once(method, path, json_data, params)
 
@@ -523,8 +592,13 @@ class ProxmoxVE:
         json_data: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
         timeout: float | None = None,
+        *,
+        base_url: str | None = None,
     ) -> Any:
-        """One attempt against the current host, in `timeout` at most."""
+        """One attempt in `timeout` at most, against the current host.
+
+        `base_url` is for asking another host without moving to it.
+        """
 
         headers: dict[str, str] = {
             "Accept": "application/json",
@@ -548,7 +622,7 @@ class ProxmoxVE:
         elif json_data:
             request_kwargs["json"] = json_data
 
-        url = f"{self.base_url.rstrip('/')}/{path.lstrip('/')}"
+        url = f"{(base_url or self.base_url).rstrip('/')}/{path.lstrip('/')}"
         client_timeout = aiohttp.ClientTimeout(total=timeout or self.timeout)
 
         with _translate_client_errors(url):
