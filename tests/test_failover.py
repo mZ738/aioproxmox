@@ -3,6 +3,7 @@
 import asyncio
 import ssl
 import time
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import aiohttp
@@ -355,6 +356,28 @@ async def test_a_host_that_refuses_the_credentials_is_still_a_host():
 
 
 @pytest.mark.asyncio
+async def test_a_host_that_answers_with_an_error_is_still_a_host():
+    """Any status is an answer: the question is whether the host is there."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+    in_use = _answering(
+        pve,
+        session,
+        [
+            aiohttp.ClientConnectionError("refused"),  # the request on host 1
+            aiohttp.ClientConnectionError("refused"),  # host 1, asked again
+            _response(500, text="internal error"),  # host 2, asked
+            _response(200, {"ok": 1}),  # the request there
+        ],
+    )
+
+    assert await pve.request("GET", "nodes") == {"ok": 1}
+    assert pve.host == "192.0.2.2"
+    # Asked from where the client was, and host 3 never needed.
+    assert in_use == ["192.0.2.1", "192.0.2.1", "192.0.2.1", "192.0.2.2"]
+
+
+@pytest.mark.asyncio
 async def test_a_fresh_membership_list_replaces_the_peers():
     """A cluster that lost a node does not keep it as a fallback for good.
 
@@ -646,6 +669,17 @@ async def test_a_learned_host_is_kept_once_however_it_is_spelled():
     pve, _session = _client_with_session()
 
     pve.learn_hosts(["192.0.2.1:8006", "192.0.2.2:8006", "192.0.2.2"])
+
+    assert pve.hosts == ("192.0.2.1", "192.0.2.2")
+
+
+@pytest.mark.asyncio
+async def test_what_is_not_an_address_is_not_learned():
+    """An entry of `cluster/status` need not carry an address at all."""
+    pve, _session = _client_with_session()
+    named: list[Any] = ["192.0.2.2", "", None, 7]
+
+    pve.learn_hosts(named)
 
     assert pve.hosts == ("192.0.2.1", "192.0.2.2")
 
