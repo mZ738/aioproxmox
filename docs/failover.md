@@ -106,9 +106,12 @@ port that refused, an address with no route, a name that did not resolve. A
 connection that broke or timed out after it was made may have delivered the
 command, and a second `shutdown` or `vzdump` is worse than an error. So the
 client still moves, the `ProxmoxConnectionError` is raised, and the next
-call goes to the new host. A host that is switched off is met as a timeout,
-which says nothing about how far the request got - a command sent to it is
-raised, not repeated.
+call goes to the new host.
+
+A host that is switched off is met in one of two ways, depending on the
+network and on the system the client runs on: as an address with no route,
+where a command is repeated, or as a timeout, which says nothing about how
+far the request got - there a command is raised, not repeated.
 
 The client stays on the node it moved to until that one stops answering
 too. It does not go back on its own when the configured host returns; a
