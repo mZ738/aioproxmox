@@ -36,6 +36,26 @@
      "Realm.Allocate"
     ]
    ],
+   "enums": {
+    "mode": [
+     "ldap",
+     "ldaps",
+     "ldap+starttls"
+    ],
+    "sslversion": [
+     "tlsv1",
+     "tlsv1_1",
+     "tlsv1_2",
+     "tlsv1_3"
+    ],
+    "type": [
+     "ad",
+     "ldap",
+     "openid",
+     "pam",
+     "pve"
+    ]
+   },
    "parameters": [
     "acr-values",
     "audiences",
@@ -119,6 +139,19 @@
      "Realm.Allocate"
     ]
    ],
+   "enums": {
+    "mode": [
+     "ldap",
+     "ldaps",
+     "ldap+starttls"
+    ],
+    "sslversion": [
+     "tlsv1",
+     "tlsv1_1",
+     "tlsv1_2",
+     "tlsv1_3"
+    ]
+   },
    "parameters": [
     "acr-values",
     "audiences",
@@ -185,6 +218,13 @@
      ]
     ]
    ],
+   "enums": {
+    "scope": [
+     "users",
+     "groups",
+     "both"
+    ]
+   },
    "parameters": [
     "dry-run",
     "enable-new",
@@ -405,6 +445,15 @@
      ]
     ]
    ],
+   "enums": {
+    "type": [
+     "totp",
+     "u2f",
+     "webauthn",
+     "recovery",
+     "yubico"
+    ]
+   },
    "parameters": [
     "challenge",
     "description",
@@ -816,6 +865,12 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "type": [
+     "dns",
+     "standalone"
+    ]
+   },
    "parameters": [
     "type"
    ]
@@ -828,6 +883,212 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "api": [
+     "1984hosting",
+     "acmedns",
+     "acmeproxy",
+     "active24",
+     "ad",
+     "ali",
+     "alviy",
+     "anx",
+     "artfiles",
+     "arubabusiness",
+     "arvan",
+     "aurora",
+     "autodns",
+     "aws",
+     "azion",
+     "azure",
+     "baidu",
+     "beget",
+     "bh",
+     "bhosted",
+     "bookmyname",
+     "bunny",
+     "calrissia",
+     "cdmon",
+     "cf",
+     "clouddns",
+     "cloudns",
+     "cn",
+     "comlaude",
+     "conoha",
+     "constellix",
+     "cpanel",
+     "cpanel_uapi",
+     "creoline",
+     "curanet",
+     "cyon",
+     "czechia",
+     "da",
+     "ddnss",
+     "desec",
+     "df",
+     "dgon",
+     "dnsexit",
+     "dnshome",
+     "dnsimple",
+     "dnsmint",
+     "dnsservices",
+     "doapi",
+     "domeneshop",
+     "dp",
+     "dpi",
+     "dreamhost",
+     "duckdns",
+     "durabledns",
+     "dyn",
+     "dynu",
+     "dynv6",
+     "easydns",
+     "edgecenter",
+     "edgedns",
+     "efficientip",
+     "eurodns",
+     "euserv",
+     "exoscale",
+     "firestorm",
+     "fornex",
+     "freedns",
+     "freemyip",
+     "gandi_livedns",
+     "gcloud",
+     "gcore",
+     "gd",
+     "geoscaling",
+     "glesys",
+     "gname",
+     "googledomains",
+     "he",
+     "he_ddns",
+     "hestiacp",
+     "hetznercloud",
+     "hexonet",
+     "hostingde",
+     "hostinger",
+     "hostup",
+     "huaweicloud",
+     "hw",
+     "infoblox",
+     "infoblox_uddi",
+     "infomaniak",
+     "internetbs",
+     "inwx",
+     "ionos",
+     "ionos_cloud",
+     "ipprojects",
+     "ipv64",
+     "ispconfig",
+     "jd",
+     "joker",
+     "kappernet",
+     "kas",
+     "kinghost",
+     "knot",
+     "la",
+     "laodc",
+     "leaseweb",
+     "level27",
+     "lexicon",
+     "limacity",
+     "linode_v4",
+     "loopia",
+     "lua",
+     "maradns",
+     "me",
+     "mgwm",
+     "miab",
+     "mijnhost",
+     "misaka",
+     "muumuu",
+     "myapi",
+     "mydevil",
+     "mydnsjp",
+     "myloc",
+     "mythic_beasts",
+     "namecheap",
+     "namecom",
+     "namesilo",
+     "nanelo",
+     "nederhost",
+     "neodigit",
+     "netcup",
+     "netlify",
+     "nexdns",
+     "nic",
+     "njalla",
+     "nm",
+     "nsd",
+     "nsone",
+     "nsupdate",
+     "nw",
+     "oci",
+     "omglol",
+     "one",
+     "online",
+     "openprovider",
+     "openprovider_rest",
+     "openstack",
+     "opnsense",
+     "opteamax",
+     "optidata",
+     "opusdns",
+     "ovh",
+     "pdns",
+     "pleskxml",
+     "pointhq",
+     "porkbun",
+     "poweradmin",
+     "qc",
+     "rackcorp",
+     "rackspace",
+     "rage4",
+     "rcode0",
+     "regru",
+     "rltx",
+     "scaleway",
+     "schlundtech",
+     "selectel",
+     "selfhost",
+     "servercow",
+     "simply",
+     "sitehost",
+     "sotoon",
+     "spaceship",
+     "subreg",
+     "technitium",
+     "tele3",
+     "tencent",
+     "timeweb",
+     "transip",
+     "udr",
+     "ultra",
+     "unoeuro",
+     "variomedia",
+     "veesp",
+     "vercel",
+     "virakcloud",
+     "volcengine",
+     "vscale",
+     "vultr",
+     "websupport",
+     "wedos",
+     "west_cn",
+     "world4you",
+     "yandex360",
+     "yc",
+     "zilore",
+     "zone",
+     "zoneedit",
+     "zonomi"
+    ],
+    "type": [
+     "dns",
+     "standalone"
+    ]
+   },
    "parameters": [
     "api",
     "data",
@@ -872,6 +1133,208 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "api": [
+     "1984hosting",
+     "acmedns",
+     "acmeproxy",
+     "active24",
+     "ad",
+     "ali",
+     "alviy",
+     "anx",
+     "artfiles",
+     "arubabusiness",
+     "arvan",
+     "aurora",
+     "autodns",
+     "aws",
+     "azion",
+     "azure",
+     "baidu",
+     "beget",
+     "bh",
+     "bhosted",
+     "bookmyname",
+     "bunny",
+     "calrissia",
+     "cdmon",
+     "cf",
+     "clouddns",
+     "cloudns",
+     "cn",
+     "comlaude",
+     "conoha",
+     "constellix",
+     "cpanel",
+     "cpanel_uapi",
+     "creoline",
+     "curanet",
+     "cyon",
+     "czechia",
+     "da",
+     "ddnss",
+     "desec",
+     "df",
+     "dgon",
+     "dnsexit",
+     "dnshome",
+     "dnsimple",
+     "dnsmint",
+     "dnsservices",
+     "doapi",
+     "domeneshop",
+     "dp",
+     "dpi",
+     "dreamhost",
+     "duckdns",
+     "durabledns",
+     "dyn",
+     "dynu",
+     "dynv6",
+     "easydns",
+     "edgecenter",
+     "edgedns",
+     "efficientip",
+     "eurodns",
+     "euserv",
+     "exoscale",
+     "firestorm",
+     "fornex",
+     "freedns",
+     "freemyip",
+     "gandi_livedns",
+     "gcloud",
+     "gcore",
+     "gd",
+     "geoscaling",
+     "glesys",
+     "gname",
+     "googledomains",
+     "he",
+     "he_ddns",
+     "hestiacp",
+     "hetznercloud",
+     "hexonet",
+     "hostingde",
+     "hostinger",
+     "hostup",
+     "huaweicloud",
+     "hw",
+     "infoblox",
+     "infoblox_uddi",
+     "infomaniak",
+     "internetbs",
+     "inwx",
+     "ionos",
+     "ionos_cloud",
+     "ipprojects",
+     "ipv64",
+     "ispconfig",
+     "jd",
+     "joker",
+     "kappernet",
+     "kas",
+     "kinghost",
+     "knot",
+     "la",
+     "laodc",
+     "leaseweb",
+     "level27",
+     "lexicon",
+     "limacity",
+     "linode_v4",
+     "loopia",
+     "lua",
+     "maradns",
+     "me",
+     "mgwm",
+     "miab",
+     "mijnhost",
+     "misaka",
+     "muumuu",
+     "myapi",
+     "mydevil",
+     "mydnsjp",
+     "myloc",
+     "mythic_beasts",
+     "namecheap",
+     "namecom",
+     "namesilo",
+     "nanelo",
+     "nederhost",
+     "neodigit",
+     "netcup",
+     "netlify",
+     "nexdns",
+     "nic",
+     "njalla",
+     "nm",
+     "nsd",
+     "nsone",
+     "nsupdate",
+     "nw",
+     "oci",
+     "omglol",
+     "one",
+     "online",
+     "openprovider",
+     "openprovider_rest",
+     "openstack",
+     "opnsense",
+     "opteamax",
+     "optidata",
+     "opusdns",
+     "ovh",
+     "pdns",
+     "pleskxml",
+     "pointhq",
+     "porkbun",
+     "poweradmin",
+     "qc",
+     "rackcorp",
+     "rackspace",
+     "rage4",
+     "rcode0",
+     "regru",
+     "rltx",
+     "scaleway",
+     "schlundtech",
+     "selectel",
+     "selfhost",
+     "servercow",
+     "simply",
+     "sitehost",
+     "sotoon",
+     "spaceship",
+     "subreg",
+     "technitium",
+     "tele3",
+     "tencent",
+     "timeweb",
+     "transip",
+     "udr",
+     "ultra",
+     "unoeuro",
+     "variomedia",
+     "veesp",
+     "vercel",
+     "virakcloud",
+     "volcengine",
+     "vscale",
+     "vultr",
+     "websupport",
+     "wedos",
+     "west_cn",
+     "world4you",
+     "yandex360",
+     "yc",
+     "zilore",
+     "zone",
+     "zoneedit",
+     "zonomi"
+    ]
+   },
    "parameters": [
     "api",
     "data",
@@ -910,6 +1373,35 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "compress": [
+     "0",
+     "1",
+     "gzip",
+     "lzo",
+     "zstd"
+    ],
+    "mailnotification": [
+     "always",
+     "failure"
+    ],
+    "mode": [
+     "snapshot",
+     "suspend",
+     "stop"
+    ],
+    "notification-mode": [
+     "auto",
+     "legacy-sendmail",
+     "notification-system",
+     "none"
+    ],
+    "pbs-change-detection-mode": [
+     "legacy",
+     "data",
+     "metadata"
+    ]
+   },
    "parameters": [
     "all",
     "bwlimit",
@@ -1002,6 +1494,35 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "compress": [
+     "0",
+     "1",
+     "gzip",
+     "lzo",
+     "zstd"
+    ],
+    "mailnotification": [
+     "always",
+     "failure"
+    ],
+    "mode": [
+     "snapshot",
+     "suspend",
+     "stop"
+    ],
+    "notification-mode": [
+     "auto",
+     "legacy-sendmail",
+     "notification-system",
+     "none"
+    ],
+    "pbs-change-detection-mode": [
+     "legacy",
+     "data",
+     "metadata"
+    ]
+   },
    "parameters": [
     "all",
     "bwlimit",
@@ -1138,6 +1659,7 @@
     ]
    ],
    "parameters": [
+    "noautoscale",
     "nobackfill",
     "nodeep-scrub",
     "nodown",
@@ -1161,6 +1683,22 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "flag": [
+     "noautoscale",
+     "nobackfill",
+     "nodeep-scrub",
+     "nodown",
+     "noin",
+     "noout",
+     "norebalance",
+     "norecover",
+     "noscrub",
+     "notieragent",
+     "noup",
+     "pause"
+    ]
+   },
    "parameters": [
     "flag"
    ]
@@ -1173,6 +1711,22 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "flag": [
+     "noautoscale",
+     "nobackfill",
+     "nodeep-scrub",
+     "nodown",
+     "noin",
+     "noout",
+     "norebalance",
+     "norecover",
+     "noscrub",
+     "notieragent",
+     "noup",
+     "pause"
+    ]
+   },
    "parameters": [
     "flag",
     "value"
@@ -1223,6 +1777,12 @@
     "any",
     1
    ],
+   "enums": {
+    "scope": [
+     "all",
+     "versions"
+    ]
+   },
    "parameters": [
     "scope"
    ]
@@ -1237,6 +1797,14 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "service-type": [
+     "mon",
+     "mgr",
+     "mds",
+     "osd"
+    ]
+   },
    "parameters": [
     "dry-run",
     "force",
@@ -1500,6 +2068,25 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -1556,6 +2143,25 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -1716,6 +2322,22 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "policy_forward": [
+     "ACCEPT",
+     "DROP"
+    ],
+    "policy_in": [
+     "ACCEPT",
+     "REJECT",
+     "DROP"
+    ],
+    "policy_out": [
+     "ACCEPT",
+     "REJECT",
+     "DROP"
+    ]
+   },
    "parameters": [
     "delete",
     "digest",
@@ -1737,6 +2359,12 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "type": [
+     "alias",
+     "ipset"
+    ]
+   },
    "parameters": [
     "type"
    ]
@@ -1761,6 +2389,25 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -1814,6 +2461,25 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -1866,6 +2532,11 @@
      "Sys.Console"
     ]
    ],
+   "enums": {
+    "type": [
+     "group"
+    ]
+   },
    "parameters": [
     "comment",
     "group",
@@ -1929,6 +2600,12 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "type": [
+     "ct",
+     "vm"
+    ]
+   },
    "parameters": [
     "type"
    ]
@@ -1941,6 +2618,19 @@
      "Sys.Console"
     ]
    ],
+   "enums": {
+    "state": [
+     "started",
+     "stopped",
+     "enabled",
+     "disabled",
+     "ignored"
+    ],
+    "type": [
+     "ct",
+     "vm"
+    ]
+   },
    "parameters": [
     "auto-rebalance",
     "comment",
@@ -1988,6 +2678,15 @@
      "Sys.Console"
     ]
    ],
+   "enums": {
+    "state": [
+     "started",
+     "stopped",
+     "enabled",
+     "disabled",
+     "ignored"
+    ]
+   },
    "parameters": [
     "auto-rebalance",
     "comment",
@@ -2041,6 +2740,12 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "type": [
+     "node-affinity",
+     "resource-affinity"
+    ]
+   },
    "parameters": [
     "resource",
     "type"
@@ -2131,6 +2836,12 @@
      "Sys.Console"
     ]
    ],
+   "enums": {
+    "resource-mode": [
+     "freeze",
+     "ignore"
+    ]
+   },
    "parameters": [
     "resource-mode"
    ]
@@ -2208,6 +2919,13 @@
      ]
     ]
    ],
+   "enums": {
+    "scope": [
+     "users",
+     "groups",
+     "both"
+    ]
+   },
    "parameters": [
     "comment",
     "enable-new",
@@ -2237,6 +2955,13 @@
      ]
     ]
    ],
+   "enums": {
+    "scope": [
+     "users",
+     "groups",
+     "both"
+    ]
+   },
    "parameters": [
     "comment",
     "delete",
@@ -2581,6 +3306,30 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "influxdbproto": [
+     "udp",
+     "http",
+     "https"
+    ],
+    "otel-compression": [
+     "none",
+     "gzip"
+    ],
+    "otel-protocol": [
+     "http",
+     "https"
+    ],
+    "proto": [
+     "udp",
+     "tcp"
+    ],
+    "type": [
+     "graphite",
+     "influxdb",
+     "opentelemetry"
+    ]
+   },
    "parameters": [
     "api-path-prefix",
     "bucket",
@@ -2616,6 +3365,25 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "influxdbproto": [
+     "udp",
+     "http",
+     "https"
+    ],
+    "otel-compression": [
+     "none",
+     "gzip"
+    ],
+    "otel-protocol": [
+     "http",
+     "https"
+    ],
+    "proto": [
+     "udp",
+     "tcp"
+    ]
+   },
    "parameters": [
     "api-path-prefix",
     "bucket",
@@ -2974,6 +3742,13 @@
      ]
     ]
    ],
+   "enums": {
+    "mode": [
+     "insecure",
+     "starttls",
+     "tls"
+    ]
+   },
    "parameters": [
     "author",
     "comment",
@@ -3054,6 +3829,13 @@
      ]
     ]
    ],
+   "enums": {
+    "mode": [
+     "insecure",
+     "starttls",
+     "tls"
+    ]
+   },
    "parameters": [
     "author",
     "comment",
@@ -3112,6 +3894,13 @@
      ]
     ]
    ],
+   "enums": {
+    "method": [
+     "post",
+     "put",
+     "get"
+    ]
+   },
    "parameters": [
     "body",
     "comment",
@@ -3188,6 +3977,13 @@
      ]
     ]
    ],
+   "enums": {
+    "method": [
+     "post",
+     "put",
+     "get"
+    ]
+   },
    "parameters": [
     "body",
     "comment",
@@ -3282,9 +4078,16 @@
      "Mapping.Modify"
     ]
    ],
+   "enums": {
+    "mode": [
+     "all",
+     "any"
+    ]
+   },
    "parameters": [
     "comment",
     "disable",
+    "expression",
     "invert-match",
     "match-calendar",
     "match-field",
@@ -3327,6 +4130,7 @@
     ]
    ],
    "parameters": [
+    "migrate-to-expression",
     "name"
    ]
   },
@@ -3338,11 +4142,18 @@
      "Mapping.Modify"
     ]
    ],
+   "enums": {
+    "mode": [
+     "all",
+     "any"
+    ]
+   },
    "parameters": [
     "comment",
     "delete",
     "digest",
     "disable",
+    "expression",
     "invert-match",
     "match-calendar",
     "match-field",
@@ -3432,6 +4243,75 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "console": [
+     "applet",
+     "vv",
+     "html5",
+     "xtermjs"
+    ],
+    "fencing": [
+     "watchdog",
+     "hardware",
+     "both"
+    ],
+    "keyboard": [
+     "de",
+     "de-ch",
+     "da",
+     "en-gb",
+     "en-us",
+     "es",
+     "fi",
+     "fr",
+     "fr-be",
+     "fr-ca",
+     "fr-ch",
+     "hu",
+     "is",
+     "it",
+     "ja",
+     "lt",
+     "mk",
+     "nl",
+     "no",
+     "pl",
+     "pt",
+     "pt-br",
+     "sv",
+     "sl",
+     "tr"
+    ],
+    "language": [
+     "ar",
+     "ca",
+     "da",
+     "de",
+     "en",
+     "es",
+     "eu",
+     "fa",
+     "fr",
+     "hr",
+     "he",
+     "it",
+     "ja",
+     "ka",
+     "kr",
+     "nb",
+     "nl",
+     "nn",
+     "pl",
+     "pt_BR",
+     "ru",
+     "sl",
+     "sv",
+     "tr",
+     "ukr",
+     "zh_CN",
+     "zh_TW"
+    ]
+   },
    "parameters": [
     "bwlimit",
     "consent-text",
@@ -3489,6 +4369,16 @@
      1
     ]
    ],
+   "enums": {
+    "accel": [
+     "kvm",
+     "tcg"
+    ],
+    "arch": [
+     "x86_64",
+     "aarch64"
+    ]
+   },
    "parameters": [
     "accel",
     "arch"
@@ -3507,6 +4397,136 @@
      "Mapping.Modify"
     ]
    ],
+   "enums": {
+    "reported-model": [
+     "486",
+     "a64fx",
+     "athlon",
+     "Broadwell",
+     "Broadwell-IBRS",
+     "Broadwell-noTSX",
+     "Broadwell-noTSX-IBRS",
+     "Cascadelake-Server",
+     "Cascadelake-Server-noTSX",
+     "Cascadelake-Server-v2",
+     "Cascadelake-Server-v4",
+     "Cascadelake-Server-v5",
+     "Cascadelake-Server-v6",
+     "Cascadelake-Server-v7",
+     "ClearwaterForest",
+     "ClearwaterForest-v2",
+     "ClearwaterForest-v3",
+     "ClearwaterForest-v4",
+     "Conroe",
+     "Cooperlake",
+     "Cooperlake-v2",
+     "core2duo",
+     "coreduo",
+     "cortex-a35",
+     "cortex-a53",
+     "cortex-a55",
+     "cortex-a57",
+     "cortex-a710",
+     "cortex-a72",
+     "cortex-a76",
+     "cortex-a78ae",
+     "DiamondRapids",
+     "DiamondRapids-v2",
+     "EPYC",
+     "EPYC-Genoa",
+     "EPYC-Genoa-v2",
+     "EPYC-Genoa-v3",
+     "EPYC-IBPB",
+     "EPYC-Milan",
+     "EPYC-Milan-v2",
+     "EPYC-Milan-v3",
+     "EPYC-Milan-v4",
+     "EPYC-Rome",
+     "EPYC-Rome-v2",
+     "EPYC-Rome-v3",
+     "EPYC-Rome-v4",
+     "EPYC-Rome-v5",
+     "EPYC-Turin",
+     "EPYC-Turin-v2",
+     "EPYC-v3",
+     "EPYC-v4",
+     "EPYC-v5",
+     "GraniteRapids",
+     "GraniteRapids-v2",
+     "GraniteRapids-v3",
+     "GraniteRapids-v4",
+     "GraniteRapids-v5",
+     "GraniteRapids-v6",
+     "GraniteRapids-v7",
+     "Haswell",
+     "Haswell-IBRS",
+     "Haswell-noTSX",
+     "Haswell-noTSX-IBRS",
+     "host",
+     "Icelake-Client",
+     "Icelake-Client-noTSX",
+     "Icelake-Server",
+     "Icelake-Server-noTSX",
+     "Icelake-Server-v3",
+     "Icelake-Server-v4",
+     "Icelake-Server-v5",
+     "Icelake-Server-v6",
+     "Icelake-Server-v7",
+     "Icelake-Server-v8",
+     "Icelake-Server-v9",
+     "IvyBridge",
+     "IvyBridge-IBRS",
+     "KnightsMill",
+     "kvm32",
+     "kvm64",
+     "max",
+     "Nehalem",
+     "Nehalem-IBRS",
+     "neoverse-n1",
+     "neoverse-n2",
+     "neoverse-v1",
+     "Opteron_G1",
+     "Opteron_G2",
+     "Opteron_G3",
+     "Opteron_G4",
+     "Opteron_G5",
+     "Penryn",
+     "pentium",
+     "pentium2",
+     "pentium3",
+     "phenom",
+     "qemu32",
+     "qemu64",
+     "SandyBridge",
+     "SandyBridge-IBRS",
+     "SapphireRapids",
+     "SapphireRapids-v2",
+     "SapphireRapids-v3",
+     "SapphireRapids-v4",
+     "SapphireRapids-v5",
+     "SapphireRapids-v6",
+     "SapphireRapids-v7",
+     "SapphireRapids-v8",
+     "SierraForest",
+     "SierraForest-v2",
+     "SierraForest-v3",
+     "SierraForest-v4",
+     "SierraForest-v5",
+     "SierraForest-v6",
+     "Skylake-Client",
+     "Skylake-Client-IBRS",
+     "Skylake-Client-noTSX-IBRS",
+     "Skylake-Client-v4",
+     "Skylake-Server",
+     "Skylake-Server-IBRS",
+     "Skylake-Server-noTSX-IBRS",
+     "Skylake-Server-v4",
+     "Skylake-Server-v5",
+     "Skylake-Server-v6",
+     "Westmere",
+     "Westmere-IBRS"
+    ]
+   },
    "parameters": [
     "cputype",
     "flags",
@@ -3569,6 +4589,136 @@
      "Mapping.Modify"
     ]
    ],
+   "enums": {
+    "reported-model": [
+     "486",
+     "a64fx",
+     "athlon",
+     "Broadwell",
+     "Broadwell-IBRS",
+     "Broadwell-noTSX",
+     "Broadwell-noTSX-IBRS",
+     "Cascadelake-Server",
+     "Cascadelake-Server-noTSX",
+     "Cascadelake-Server-v2",
+     "Cascadelake-Server-v4",
+     "Cascadelake-Server-v5",
+     "Cascadelake-Server-v6",
+     "Cascadelake-Server-v7",
+     "ClearwaterForest",
+     "ClearwaterForest-v2",
+     "ClearwaterForest-v3",
+     "ClearwaterForest-v4",
+     "Conroe",
+     "Cooperlake",
+     "Cooperlake-v2",
+     "core2duo",
+     "coreduo",
+     "cortex-a35",
+     "cortex-a53",
+     "cortex-a55",
+     "cortex-a57",
+     "cortex-a710",
+     "cortex-a72",
+     "cortex-a76",
+     "cortex-a78ae",
+     "DiamondRapids",
+     "DiamondRapids-v2",
+     "EPYC",
+     "EPYC-Genoa",
+     "EPYC-Genoa-v2",
+     "EPYC-Genoa-v3",
+     "EPYC-IBPB",
+     "EPYC-Milan",
+     "EPYC-Milan-v2",
+     "EPYC-Milan-v3",
+     "EPYC-Milan-v4",
+     "EPYC-Rome",
+     "EPYC-Rome-v2",
+     "EPYC-Rome-v3",
+     "EPYC-Rome-v4",
+     "EPYC-Rome-v5",
+     "EPYC-Turin",
+     "EPYC-Turin-v2",
+     "EPYC-v3",
+     "EPYC-v4",
+     "EPYC-v5",
+     "GraniteRapids",
+     "GraniteRapids-v2",
+     "GraniteRapids-v3",
+     "GraniteRapids-v4",
+     "GraniteRapids-v5",
+     "GraniteRapids-v6",
+     "GraniteRapids-v7",
+     "Haswell",
+     "Haswell-IBRS",
+     "Haswell-noTSX",
+     "Haswell-noTSX-IBRS",
+     "host",
+     "Icelake-Client",
+     "Icelake-Client-noTSX",
+     "Icelake-Server",
+     "Icelake-Server-noTSX",
+     "Icelake-Server-v3",
+     "Icelake-Server-v4",
+     "Icelake-Server-v5",
+     "Icelake-Server-v6",
+     "Icelake-Server-v7",
+     "Icelake-Server-v8",
+     "Icelake-Server-v9",
+     "IvyBridge",
+     "IvyBridge-IBRS",
+     "KnightsMill",
+     "kvm32",
+     "kvm64",
+     "max",
+     "Nehalem",
+     "Nehalem-IBRS",
+     "neoverse-n1",
+     "neoverse-n2",
+     "neoverse-v1",
+     "Opteron_G1",
+     "Opteron_G2",
+     "Opteron_G3",
+     "Opteron_G4",
+     "Opteron_G5",
+     "Penryn",
+     "pentium",
+     "pentium2",
+     "pentium3",
+     "phenom",
+     "qemu32",
+     "qemu64",
+     "SandyBridge",
+     "SandyBridge-IBRS",
+     "SapphireRapids",
+     "SapphireRapids-v2",
+     "SapphireRapids-v3",
+     "SapphireRapids-v4",
+     "SapphireRapids-v5",
+     "SapphireRapids-v6",
+     "SapphireRapids-v7",
+     "SapphireRapids-v8",
+     "SierraForest",
+     "SierraForest-v2",
+     "SierraForest-v3",
+     "SierraForest-v4",
+     "SierraForest-v5",
+     "SierraForest-v6",
+     "Skylake-Client",
+     "Skylake-Client-IBRS",
+     "Skylake-Client-noTSX-IBRS",
+     "Skylake-Client-v4",
+     "Skylake-Server",
+     "Skylake-Server-IBRS",
+     "Skylake-Server-noTSX-IBRS",
+     "Skylake-Server-v4",
+     "Skylake-Server-v5",
+     "Skylake-Server-v6",
+     "Westmere",
+     "Westmere-IBRS"
+    ]
+   },
    "parameters": [
     "cputype",
     "delete",
@@ -3588,6 +4738,15 @@
    "parameters": []
   },
   "POST": {
+   "enums": {
+    "remove_job": [
+     "local",
+     "full"
+    ],
+    "type": [
+     "local"
+    ]
+   },
    "parameters": [
     "comment",
     "disable",
@@ -3595,6 +4754,7 @@
     "rate",
     "remove_job",
     "schedule",
+    "skip-freeze-fs",
     "source",
     "target",
     "type"
@@ -3615,6 +4775,12 @@
    ]
   },
   "PUT": {
+   "enums": {
+    "remove_job": [
+     "local",
+     "full"
+    ]
+   },
    "parameters": [
     "comment",
     "delete",
@@ -3624,12 +4790,21 @@
     "rate",
     "remove_job",
     "schedule",
+    "skip-freeze-fs",
     "source"
    ]
   }
  },
  "/cluster/resources": {
   "GET": {
+   "enums": {
+    "type": [
+     "vm",
+     "storage",
+     "node",
+     "sdn"
+    ]
+   },
    "parameters": [
     "type"
    ]
@@ -3662,6 +4837,14 @@
  },
  "/cluster/sdn/controllers": {
   "GET": {
+   "enums": {
+    "type": [
+     "bgp",
+     "evpn",
+     "faucet",
+     "isis"
+    ]
+   },
    "parameters": [
     "pending",
     "running",
@@ -3676,6 +4859,19 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "bgp-mode": [
+     "auto",
+     "external",
+     "internal"
+    ],
+    "type": [
+     "bgp",
+     "evpn",
+     "faucet",
+     "isis"
+    ]
+   },
    "parameters": [
     "asn",
     "bgp-mode",
@@ -3735,6 +4931,13 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "bgp-mode": [
+     "auto",
+     "external",
+     "internal"
+    ]
+   },
    "parameters": [
     "asn",
     "bgp-mode",
@@ -3761,6 +4964,11 @@
  },
  "/cluster/sdn/dns": {
   "GET": {
+   "enums": {
+    "type": [
+     "powerdns"
+    ]
+   },
    "parameters": [
     "type"
    ]
@@ -3773,6 +4981,11 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "type": [
+     "powerdns"
+    ]
+   },
    "parameters": [
     "dns",
     "fingerprint",
@@ -3882,6 +5095,14 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "protocol": [
+     "openfabric",
+     "ospf",
+     "wireguard",
+     "bgp"
+    ]
+   },
    "parameters": [
     "area",
     "csnp_interval",
@@ -3934,6 +5155,14 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "protocol": [
+     "openfabric",
+     "ospf",
+     "wireguard",
+     "bgp"
+    ]
+   },
    "parameters": [
     "area",
     "csnp_interval",
@@ -3992,6 +5221,18 @@
      ]
     ]
    ],
+   "enums": {
+    "protocol": [
+     "openfabric",
+     "ospf",
+     "wireguard",
+     "bgp"
+    ],
+    "role": [
+     "internal",
+     "external"
+    ]
+   },
    "parameters": [
     "allowed_ips",
     "digest",
@@ -4080,6 +5321,18 @@
      ]
     ]
    ],
+   "enums": {
+    "protocol": [
+     "openfabric",
+     "ospf",
+     "wireguard",
+     "bgp"
+    ],
+    "role": [
+     "internal",
+     "external"
+    ]
+   },
    "parameters": [
     "allowed_ips",
     "delete",
@@ -4100,6 +5353,13 @@
  },
  "/cluster/sdn/ipams": {
   "GET": {
+   "enums": {
+    "type": [
+     "netbox",
+     "phpipam",
+     "pve"
+    ]
+   },
    "parameters": [
     "type"
    ]
@@ -4112,6 +5372,13 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "type": [
+     "netbox",
+     "phpipam",
+     "pve"
+    ]
+   },
    "parameters": [
     "fingerprint",
     "ipam",
@@ -4291,6 +5558,12 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "action": [
+     "permit",
+     "deny"
+    ]
+   },
    "parameters": [
     "action",
     "ge",
@@ -4336,6 +5609,12 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "action": [
+     "permit",
+     "deny"
+    ]
+   },
    "parameters": [
     "action",
     "delete",
@@ -4385,6 +5664,12 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "action": [
+     "permit",
+     "deny"
+    ]
+   },
    "parameters": [
     "action",
     "call",
@@ -4456,6 +5741,12 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "action": [
+     "permit",
+     "deny"
+    ]
+   },
    "parameters": [
     "action",
     "call",
@@ -4485,6 +5776,11 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "type": [
+     "vnet"
+    ]
+   },
    "parameters": [
     "alias",
     "isolate-ports",
@@ -4539,6 +5835,23 @@
    ]
   },
   "PUT": {
+   "enums": {
+    "log_level_forward": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "policy_forward": [
+     "ACCEPT",
+     "DROP"
+    ]
+   },
    "parameters": [
     "delete",
     "digest",
@@ -4556,6 +5869,25 @@
    ]
   },
   "POST": {
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -4591,6 +5923,25 @@
    ]
   },
   "PUT": {
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -4615,13 +5966,6 @@
  },
  "/cluster/sdn/vnets/{vnet}/ips": {
   "DELETE": {
-   "check": [
-    "perm",
-    "/sdn/zones/{zone}/{vnet}",
-    [
-     "SDN.Allocate"
-    ]
-   ],
    "parameters": [
     "ip",
     "mac",
@@ -4630,13 +5974,6 @@
    ]
   },
   "POST": {
-   "check": [
-    "perm",
-    "/sdn/zones/{zone}/{vnet}",
-    [
-     "SDN.Allocate"
-    ]
-   ],
    "parameters": [
     "ip",
     "mac",
@@ -4645,13 +5982,6 @@
    ]
   },
   "PUT": {
-   "check": [
-    "perm",
-    "/sdn/zones/{zone}/{vnet}",
-    [
-     "SDN.Allocate"
-    ]
-   ],
    "parameters": [
     "ip",
     "mac",
@@ -4670,6 +6000,11 @@
    ]
   },
   "POST": {
+   "enums": {
+    "type": [
+     "subnet"
+    ]
+   },
    "parameters": [
     "dhcp-dns-server",
     "dhcp-range",
@@ -4716,6 +6051,16 @@
  },
  "/cluster/sdn/zones": {
   "GET": {
+   "enums": {
+    "type": [
+     "evpn",
+     "faucet",
+     "qinq",
+     "simple",
+     "vlan",
+     "vxlan"
+    ]
+   },
    "parameters": [
     "pending",
     "running",
@@ -4730,6 +6075,23 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "dhcp": [
+     "dnsmasq"
+    ],
+    "type": [
+     "evpn",
+     "faucet",
+     "qinq",
+     "simple",
+     "vlan",
+     "vxlan"
+    ],
+    "vlan-protocol": [
+     "802.1q",
+     "802.1ad"
+    ]
+   },
    "parameters": [
     "advertise-subnets",
     "bridge",
@@ -4798,6 +6160,15 @@
      "SDN.Allocate"
     ]
    ],
+   "enums": {
+    "dhcp": [
+     "dnsmasq"
+    ],
+    "vlan-protocol": [
+     "802.1q",
+     "802.1ad"
+    ]
+   },
    "parameters": [
     "advertise-subnets",
     "bridge",
@@ -5006,6 +6377,12 @@
  },
  "/nodes/{node}/capabilities/qemu/cpu": {
   "GET": {
+   "enums": {
+    "arch": [
+     "x86_64",
+     "aarch64"
+    ]
+   },
    "parameters": [
     "arch",
     "node"
@@ -5014,6 +6391,16 @@
  },
  "/nodes/{node}/capabilities/qemu/cpu-flags": {
   "GET": {
+   "enums": {
+    "accel": [
+     "kvm",
+     "tcg"
+    ],
+    "arch": [
+     "x86_64",
+     "aarch64"
+    ]
+   },
    "parameters": [
     "accel",
     "arch",
@@ -5023,6 +6410,12 @@
  },
  "/nodes/{node}/capabilities/qemu/machines": {
   "GET": {
+   "enums": {
+    "arch": [
+     "x86_64",
+     "aarch64"
+    ]
+   },
    "parameters": [
     "arch",
     "node"
@@ -5125,6 +6518,17 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "action": [
+     "stop",
+     "destroy"
+    ],
+    "service": [
+     "osd",
+     "mon",
+     "mds"
+    ]
+   },
    "parameters": [
     "action",
     "id",
@@ -5443,6 +6847,13 @@
     "any",
     1
    ],
+   "enums": {
+    "type": [
+     "block",
+     "db",
+     "wal"
+    ]
+   },
    "parameters": [
     "node",
     "osdid",
@@ -5522,6 +6933,18 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "application": [
+     "rbd",
+     "cephfs",
+     "rgw"
+    ],
+    "pg_autoscale_mode": [
+     "on",
+     "off",
+     "warn"
+    ]
+   },
    "parameters": [
     "add_storages",
     "application",
@@ -5580,6 +7003,18 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "application": [
+     "rbd",
+     "cephfs",
+     "rgw"
+    ],
+    "pg_autoscale_mode": [
+     "on",
+     "off",
+     "warn"
+    ]
+   },
    "parameters": [
     "application",
     "crush_rule",
@@ -5655,6 +7090,11 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "service-type": [
+     "osd"
+    ]
+   },
    "parameters": [
     "dry-run",
     "force",
@@ -5749,7 +7189,7 @@
   "DELETE": {
    "check": [
     "perm",
-    "/nodes/{node}",
+    "/nodes/{node}/certificates",
     [
      "Sys.Modify"
     ]
@@ -5761,7 +7201,7 @@
   "POST": {
    "check": [
     "perm",
-    "/nodes/{node}",
+    "/nodes/{node}/certificates",
     [
      "Sys.Modify"
     ]
@@ -5774,7 +7214,7 @@
   "PUT": {
    "check": [
     "perm",
-    "/nodes/{node}",
+    "/nodes/{node}/certificates",
     [
      "Sys.Modify"
     ]
@@ -5789,7 +7229,7 @@
   "DELETE": {
    "check": [
     "perm",
-    "/nodes/{node}",
+    "/nodes/{node}/certificates",
     [
      "Sys.Modify"
     ]
@@ -5802,7 +7242,7 @@
   "POST": {
    "check": [
     "perm",
-    "/nodes/{node}",
+    "/nodes/{node}/certificates",
     [
      "Sys.Modify"
     ]
@@ -5832,6 +7272,22 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "property": [
+     "acme",
+     "acmedomain0",
+     "acmedomain1",
+     "acmedomain2",
+     "acmedomain3",
+     "acmedomain4",
+     "acmedomain5",
+     "ballooning-target",
+     "description",
+     "location",
+     "startall-onboot-delay",
+     "wakeonlan"
+    ]
+   },
    "parameters": [
     "node",
     "property"
@@ -5887,6 +7343,12 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "filesystem": [
+     "ext4",
+     "xfs"
+    ]
+   },
    "parameters": [
     "add_storage",
     "device",
@@ -5948,6 +7410,12 @@
      ]
     ]
    ],
+   "enums": {
+    "type": [
+     "unused",
+     "journal_disks"
+    ]
+   },
    "parameters": [
     "include-partitions",
     "node",
@@ -6094,6 +7562,28 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "compression": [
+     "on",
+     "off",
+     "gzip",
+     "lz4",
+     "lzjb",
+     "zle",
+     "zstd"
+    ],
+    "raidlevel": [
+     "single",
+     "mirror",
+     "raid10",
+     "raidz",
+     "raidz2",
+     "raidz3",
+     "draid",
+     "draid2",
+     "draid3"
+    ]
+   },
    "parameters": [
     "add_storage",
     "ashift",
@@ -6220,6 +7710,63 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "log_level_forward": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "log_level_in": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "log_level_out": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "smurf_log_level": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "tcp_flags_log_level": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ]
+   },
    "parameters": [
     "delete",
     "digest",
@@ -6267,6 +7814,25 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -6323,6 +7889,25 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -6381,16 +7966,6 @@
  },
  "/nodes/{node}/hardware/pci/{pci-id-or-mapping}/mdev": {
   "GET": {
-   "check": [
-    "perm",
-    "/",
-    [
-     "Sys.Audit",
-     "Sys.Modify"
-    ],
-    "any",
-    1
-   ],
    "parameters": [
     "node",
     "pci-id-or-mapping"
@@ -6472,6 +8047,46 @@
    ]
   },
   "POST": {
+   "enums": {
+    "arch": [
+     "amd64",
+     "i386",
+     "arm64",
+     "armhf",
+     "riscv32",
+     "riscv64"
+    ],
+    "cmode": [
+     "shell",
+     "console",
+     "tty"
+    ],
+    "lock": [
+     "backup",
+     "create",
+     "destroyed",
+     "disk",
+     "fstrim",
+     "migrate",
+     "mounted",
+     "rollback",
+     "snapshot",
+     "snapshot-delete"
+    ],
+    "ostype": [
+     "debian",
+     "devuan",
+     "ubuntu",
+     "centos",
+     "fedora",
+     "opensuse",
+     "archlinux",
+     "alpine",
+     "gentoo",
+     "nixos",
+     "unmanaged"
+    ]
+   },
    "parameters": [
     "arch",
     "bwlimit",
@@ -6622,6 +8237,46 @@
     "any",
     1
    ],
+   "enums": {
+    "arch": [
+     "amd64",
+     "i386",
+     "arm64",
+     "armhf",
+     "riscv32",
+     "riscv64"
+    ],
+    "cmode": [
+     "shell",
+     "console",
+     "tty"
+    ],
+    "lock": [
+     "backup",
+     "create",
+     "destroyed",
+     "disk",
+     "fstrim",
+     "migrate",
+     "mounted",
+     "rollback",
+     "snapshot",
+     "snapshot-delete"
+    ],
+    "ostype": [
+     "debian",
+     "devuan",
+     "ubuntu",
+     "centos",
+     "fedora",
+     "opensuse",
+     "archlinux",
+     "alpine",
+     "gentoo",
+     "nixos",
+     "unmanaged"
+    ]
+   },
    "parameters": [
     "arch",
     "cmode",
@@ -6672,6 +8327,13 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "feature": [
+     "snapshot",
+     "clone",
+     "copy"
+    ]
+   },
    "parameters": [
     "feature",
     "node",
@@ -6940,6 +8602,40 @@
      "VM.Config.Network"
     ]
    ],
+   "enums": {
+    "log_level_in": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "log_level_out": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "policy_in": [
+     "ACCEPT",
+     "REJECT",
+     "DROP"
+    ],
+    "policy_out": [
+     "ACCEPT",
+     "REJECT",
+     "DROP"
+    ]
+   },
    "parameters": [
     "delete",
     "dhcp",
@@ -6967,6 +8663,12 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "type": [
+     "alias",
+     "ipset"
+    ]
+   },
    "parameters": [
     "node",
     "type",
@@ -6996,6 +8698,25 @@
      "VM.Config.Network"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -7055,6 +8776,25 @@
      "VM.Config.Network"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -7137,6 +8877,1038 @@
      "VM.Config.Disk"
     ]
    ],
+   "enums": {
+    "target-volume": [
+     "rootfs",
+     "mp0",
+     "mp1",
+     "mp2",
+     "mp3",
+     "mp4",
+     "mp5",
+     "mp6",
+     "mp7",
+     "mp8",
+     "mp9",
+     "mp10",
+     "mp11",
+     "mp12",
+     "mp13",
+     "mp14",
+     "mp15",
+     "mp16",
+     "mp17",
+     "mp18",
+     "mp19",
+     "mp20",
+     "mp21",
+     "mp22",
+     "mp23",
+     "mp24",
+     "mp25",
+     "mp26",
+     "mp27",
+     "mp28",
+     "mp29",
+     "mp30",
+     "mp31",
+     "mp32",
+     "mp33",
+     "mp34",
+     "mp35",
+     "mp36",
+     "mp37",
+     "mp38",
+     "mp39",
+     "mp40",
+     "mp41",
+     "mp42",
+     "mp43",
+     "mp44",
+     "mp45",
+     "mp46",
+     "mp47",
+     "mp48",
+     "mp49",
+     "mp50",
+     "mp51",
+     "mp52",
+     "mp53",
+     "mp54",
+     "mp55",
+     "mp56",
+     "mp57",
+     "mp58",
+     "mp59",
+     "mp60",
+     "mp61",
+     "mp62",
+     "mp63",
+     "mp64",
+     "mp65",
+     "mp66",
+     "mp67",
+     "mp68",
+     "mp69",
+     "mp70",
+     "mp71",
+     "mp72",
+     "mp73",
+     "mp74",
+     "mp75",
+     "mp76",
+     "mp77",
+     "mp78",
+     "mp79",
+     "mp80",
+     "mp81",
+     "mp82",
+     "mp83",
+     "mp84",
+     "mp85",
+     "mp86",
+     "mp87",
+     "mp88",
+     "mp89",
+     "mp90",
+     "mp91",
+     "mp92",
+     "mp93",
+     "mp94",
+     "mp95",
+     "mp96",
+     "mp97",
+     "mp98",
+     "mp99",
+     "mp100",
+     "mp101",
+     "mp102",
+     "mp103",
+     "mp104",
+     "mp105",
+     "mp106",
+     "mp107",
+     "mp108",
+     "mp109",
+     "mp110",
+     "mp111",
+     "mp112",
+     "mp113",
+     "mp114",
+     "mp115",
+     "mp116",
+     "mp117",
+     "mp118",
+     "mp119",
+     "mp120",
+     "mp121",
+     "mp122",
+     "mp123",
+     "mp124",
+     "mp125",
+     "mp126",
+     "mp127",
+     "mp128",
+     "mp129",
+     "mp130",
+     "mp131",
+     "mp132",
+     "mp133",
+     "mp134",
+     "mp135",
+     "mp136",
+     "mp137",
+     "mp138",
+     "mp139",
+     "mp140",
+     "mp141",
+     "mp142",
+     "mp143",
+     "mp144",
+     "mp145",
+     "mp146",
+     "mp147",
+     "mp148",
+     "mp149",
+     "mp150",
+     "mp151",
+     "mp152",
+     "mp153",
+     "mp154",
+     "mp155",
+     "mp156",
+     "mp157",
+     "mp158",
+     "mp159",
+     "mp160",
+     "mp161",
+     "mp162",
+     "mp163",
+     "mp164",
+     "mp165",
+     "mp166",
+     "mp167",
+     "mp168",
+     "mp169",
+     "mp170",
+     "mp171",
+     "mp172",
+     "mp173",
+     "mp174",
+     "mp175",
+     "mp176",
+     "mp177",
+     "mp178",
+     "mp179",
+     "mp180",
+     "mp181",
+     "mp182",
+     "mp183",
+     "mp184",
+     "mp185",
+     "mp186",
+     "mp187",
+     "mp188",
+     "mp189",
+     "mp190",
+     "mp191",
+     "mp192",
+     "mp193",
+     "mp194",
+     "mp195",
+     "mp196",
+     "mp197",
+     "mp198",
+     "mp199",
+     "mp200",
+     "mp201",
+     "mp202",
+     "mp203",
+     "mp204",
+     "mp205",
+     "mp206",
+     "mp207",
+     "mp208",
+     "mp209",
+     "mp210",
+     "mp211",
+     "mp212",
+     "mp213",
+     "mp214",
+     "mp215",
+     "mp216",
+     "mp217",
+     "mp218",
+     "mp219",
+     "mp220",
+     "mp221",
+     "mp222",
+     "mp223",
+     "mp224",
+     "mp225",
+     "mp226",
+     "mp227",
+     "mp228",
+     "mp229",
+     "mp230",
+     "mp231",
+     "mp232",
+     "mp233",
+     "mp234",
+     "mp235",
+     "mp236",
+     "mp237",
+     "mp238",
+     "mp239",
+     "mp240",
+     "mp241",
+     "mp242",
+     "mp243",
+     "mp244",
+     "mp245",
+     "mp246",
+     "mp247",
+     "mp248",
+     "mp249",
+     "mp250",
+     "mp251",
+     "mp252",
+     "mp253",
+     "mp254",
+     "mp255",
+     "unused0",
+     "unused1",
+     "unused2",
+     "unused3",
+     "unused4",
+     "unused5",
+     "unused6",
+     "unused7",
+     "unused8",
+     "unused9",
+     "unused10",
+     "unused11",
+     "unused12",
+     "unused13",
+     "unused14",
+     "unused15",
+     "unused16",
+     "unused17",
+     "unused18",
+     "unused19",
+     "unused20",
+     "unused21",
+     "unused22",
+     "unused23",
+     "unused24",
+     "unused25",
+     "unused26",
+     "unused27",
+     "unused28",
+     "unused29",
+     "unused30",
+     "unused31",
+     "unused32",
+     "unused33",
+     "unused34",
+     "unused35",
+     "unused36",
+     "unused37",
+     "unused38",
+     "unused39",
+     "unused40",
+     "unused41",
+     "unused42",
+     "unused43",
+     "unused44",
+     "unused45",
+     "unused46",
+     "unused47",
+     "unused48",
+     "unused49",
+     "unused50",
+     "unused51",
+     "unused52",
+     "unused53",
+     "unused54",
+     "unused55",
+     "unused56",
+     "unused57",
+     "unused58",
+     "unused59",
+     "unused60",
+     "unused61",
+     "unused62",
+     "unused63",
+     "unused64",
+     "unused65",
+     "unused66",
+     "unused67",
+     "unused68",
+     "unused69",
+     "unused70",
+     "unused71",
+     "unused72",
+     "unused73",
+     "unused74",
+     "unused75",
+     "unused76",
+     "unused77",
+     "unused78",
+     "unused79",
+     "unused80",
+     "unused81",
+     "unused82",
+     "unused83",
+     "unused84",
+     "unused85",
+     "unused86",
+     "unused87",
+     "unused88",
+     "unused89",
+     "unused90",
+     "unused91",
+     "unused92",
+     "unused93",
+     "unused94",
+     "unused95",
+     "unused96",
+     "unused97",
+     "unused98",
+     "unused99",
+     "unused100",
+     "unused101",
+     "unused102",
+     "unused103",
+     "unused104",
+     "unused105",
+     "unused106",
+     "unused107",
+     "unused108",
+     "unused109",
+     "unused110",
+     "unused111",
+     "unused112",
+     "unused113",
+     "unused114",
+     "unused115",
+     "unused116",
+     "unused117",
+     "unused118",
+     "unused119",
+     "unused120",
+     "unused121",
+     "unused122",
+     "unused123",
+     "unused124",
+     "unused125",
+     "unused126",
+     "unused127",
+     "unused128",
+     "unused129",
+     "unused130",
+     "unused131",
+     "unused132",
+     "unused133",
+     "unused134",
+     "unused135",
+     "unused136",
+     "unused137",
+     "unused138",
+     "unused139",
+     "unused140",
+     "unused141",
+     "unused142",
+     "unused143",
+     "unused144",
+     "unused145",
+     "unused146",
+     "unused147",
+     "unused148",
+     "unused149",
+     "unused150",
+     "unused151",
+     "unused152",
+     "unused153",
+     "unused154",
+     "unused155",
+     "unused156",
+     "unused157",
+     "unused158",
+     "unused159",
+     "unused160",
+     "unused161",
+     "unused162",
+     "unused163",
+     "unused164",
+     "unused165",
+     "unused166",
+     "unused167",
+     "unused168",
+     "unused169",
+     "unused170",
+     "unused171",
+     "unused172",
+     "unused173",
+     "unused174",
+     "unused175",
+     "unused176",
+     "unused177",
+     "unused178",
+     "unused179",
+     "unused180",
+     "unused181",
+     "unused182",
+     "unused183",
+     "unused184",
+     "unused185",
+     "unused186",
+     "unused187",
+     "unused188",
+     "unused189",
+     "unused190",
+     "unused191",
+     "unused192",
+     "unused193",
+     "unused194",
+     "unused195",
+     "unused196",
+     "unused197",
+     "unused198",
+     "unused199",
+     "unused200",
+     "unused201",
+     "unused202",
+     "unused203",
+     "unused204",
+     "unused205",
+     "unused206",
+     "unused207",
+     "unused208",
+     "unused209",
+     "unused210",
+     "unused211",
+     "unused212",
+     "unused213",
+     "unused214",
+     "unused215",
+     "unused216",
+     "unused217",
+     "unused218",
+     "unused219",
+     "unused220",
+     "unused221",
+     "unused222",
+     "unused223",
+     "unused224",
+     "unused225",
+     "unused226",
+     "unused227",
+     "unused228",
+     "unused229",
+     "unused230",
+     "unused231",
+     "unused232",
+     "unused233",
+     "unused234",
+     "unused235",
+     "unused236",
+     "unused237",
+     "unused238",
+     "unused239",
+     "unused240",
+     "unused241",
+     "unused242",
+     "unused243",
+     "unused244",
+     "unused245",
+     "unused246",
+     "unused247",
+     "unused248",
+     "unused249",
+     "unused250",
+     "unused251",
+     "unused252",
+     "unused253",
+     "unused254",
+     "unused255"
+    ],
+    "volume": [
+     "rootfs",
+     "mp0",
+     "mp1",
+     "mp2",
+     "mp3",
+     "mp4",
+     "mp5",
+     "mp6",
+     "mp7",
+     "mp8",
+     "mp9",
+     "mp10",
+     "mp11",
+     "mp12",
+     "mp13",
+     "mp14",
+     "mp15",
+     "mp16",
+     "mp17",
+     "mp18",
+     "mp19",
+     "mp20",
+     "mp21",
+     "mp22",
+     "mp23",
+     "mp24",
+     "mp25",
+     "mp26",
+     "mp27",
+     "mp28",
+     "mp29",
+     "mp30",
+     "mp31",
+     "mp32",
+     "mp33",
+     "mp34",
+     "mp35",
+     "mp36",
+     "mp37",
+     "mp38",
+     "mp39",
+     "mp40",
+     "mp41",
+     "mp42",
+     "mp43",
+     "mp44",
+     "mp45",
+     "mp46",
+     "mp47",
+     "mp48",
+     "mp49",
+     "mp50",
+     "mp51",
+     "mp52",
+     "mp53",
+     "mp54",
+     "mp55",
+     "mp56",
+     "mp57",
+     "mp58",
+     "mp59",
+     "mp60",
+     "mp61",
+     "mp62",
+     "mp63",
+     "mp64",
+     "mp65",
+     "mp66",
+     "mp67",
+     "mp68",
+     "mp69",
+     "mp70",
+     "mp71",
+     "mp72",
+     "mp73",
+     "mp74",
+     "mp75",
+     "mp76",
+     "mp77",
+     "mp78",
+     "mp79",
+     "mp80",
+     "mp81",
+     "mp82",
+     "mp83",
+     "mp84",
+     "mp85",
+     "mp86",
+     "mp87",
+     "mp88",
+     "mp89",
+     "mp90",
+     "mp91",
+     "mp92",
+     "mp93",
+     "mp94",
+     "mp95",
+     "mp96",
+     "mp97",
+     "mp98",
+     "mp99",
+     "mp100",
+     "mp101",
+     "mp102",
+     "mp103",
+     "mp104",
+     "mp105",
+     "mp106",
+     "mp107",
+     "mp108",
+     "mp109",
+     "mp110",
+     "mp111",
+     "mp112",
+     "mp113",
+     "mp114",
+     "mp115",
+     "mp116",
+     "mp117",
+     "mp118",
+     "mp119",
+     "mp120",
+     "mp121",
+     "mp122",
+     "mp123",
+     "mp124",
+     "mp125",
+     "mp126",
+     "mp127",
+     "mp128",
+     "mp129",
+     "mp130",
+     "mp131",
+     "mp132",
+     "mp133",
+     "mp134",
+     "mp135",
+     "mp136",
+     "mp137",
+     "mp138",
+     "mp139",
+     "mp140",
+     "mp141",
+     "mp142",
+     "mp143",
+     "mp144",
+     "mp145",
+     "mp146",
+     "mp147",
+     "mp148",
+     "mp149",
+     "mp150",
+     "mp151",
+     "mp152",
+     "mp153",
+     "mp154",
+     "mp155",
+     "mp156",
+     "mp157",
+     "mp158",
+     "mp159",
+     "mp160",
+     "mp161",
+     "mp162",
+     "mp163",
+     "mp164",
+     "mp165",
+     "mp166",
+     "mp167",
+     "mp168",
+     "mp169",
+     "mp170",
+     "mp171",
+     "mp172",
+     "mp173",
+     "mp174",
+     "mp175",
+     "mp176",
+     "mp177",
+     "mp178",
+     "mp179",
+     "mp180",
+     "mp181",
+     "mp182",
+     "mp183",
+     "mp184",
+     "mp185",
+     "mp186",
+     "mp187",
+     "mp188",
+     "mp189",
+     "mp190",
+     "mp191",
+     "mp192",
+     "mp193",
+     "mp194",
+     "mp195",
+     "mp196",
+     "mp197",
+     "mp198",
+     "mp199",
+     "mp200",
+     "mp201",
+     "mp202",
+     "mp203",
+     "mp204",
+     "mp205",
+     "mp206",
+     "mp207",
+     "mp208",
+     "mp209",
+     "mp210",
+     "mp211",
+     "mp212",
+     "mp213",
+     "mp214",
+     "mp215",
+     "mp216",
+     "mp217",
+     "mp218",
+     "mp219",
+     "mp220",
+     "mp221",
+     "mp222",
+     "mp223",
+     "mp224",
+     "mp225",
+     "mp226",
+     "mp227",
+     "mp228",
+     "mp229",
+     "mp230",
+     "mp231",
+     "mp232",
+     "mp233",
+     "mp234",
+     "mp235",
+     "mp236",
+     "mp237",
+     "mp238",
+     "mp239",
+     "mp240",
+     "mp241",
+     "mp242",
+     "mp243",
+     "mp244",
+     "mp245",
+     "mp246",
+     "mp247",
+     "mp248",
+     "mp249",
+     "mp250",
+     "mp251",
+     "mp252",
+     "mp253",
+     "mp254",
+     "mp255",
+     "unused0",
+     "unused1",
+     "unused2",
+     "unused3",
+     "unused4",
+     "unused5",
+     "unused6",
+     "unused7",
+     "unused8",
+     "unused9",
+     "unused10",
+     "unused11",
+     "unused12",
+     "unused13",
+     "unused14",
+     "unused15",
+     "unused16",
+     "unused17",
+     "unused18",
+     "unused19",
+     "unused20",
+     "unused21",
+     "unused22",
+     "unused23",
+     "unused24",
+     "unused25",
+     "unused26",
+     "unused27",
+     "unused28",
+     "unused29",
+     "unused30",
+     "unused31",
+     "unused32",
+     "unused33",
+     "unused34",
+     "unused35",
+     "unused36",
+     "unused37",
+     "unused38",
+     "unused39",
+     "unused40",
+     "unused41",
+     "unused42",
+     "unused43",
+     "unused44",
+     "unused45",
+     "unused46",
+     "unused47",
+     "unused48",
+     "unused49",
+     "unused50",
+     "unused51",
+     "unused52",
+     "unused53",
+     "unused54",
+     "unused55",
+     "unused56",
+     "unused57",
+     "unused58",
+     "unused59",
+     "unused60",
+     "unused61",
+     "unused62",
+     "unused63",
+     "unused64",
+     "unused65",
+     "unused66",
+     "unused67",
+     "unused68",
+     "unused69",
+     "unused70",
+     "unused71",
+     "unused72",
+     "unused73",
+     "unused74",
+     "unused75",
+     "unused76",
+     "unused77",
+     "unused78",
+     "unused79",
+     "unused80",
+     "unused81",
+     "unused82",
+     "unused83",
+     "unused84",
+     "unused85",
+     "unused86",
+     "unused87",
+     "unused88",
+     "unused89",
+     "unused90",
+     "unused91",
+     "unused92",
+     "unused93",
+     "unused94",
+     "unused95",
+     "unused96",
+     "unused97",
+     "unused98",
+     "unused99",
+     "unused100",
+     "unused101",
+     "unused102",
+     "unused103",
+     "unused104",
+     "unused105",
+     "unused106",
+     "unused107",
+     "unused108",
+     "unused109",
+     "unused110",
+     "unused111",
+     "unused112",
+     "unused113",
+     "unused114",
+     "unused115",
+     "unused116",
+     "unused117",
+     "unused118",
+     "unused119",
+     "unused120",
+     "unused121",
+     "unused122",
+     "unused123",
+     "unused124",
+     "unused125",
+     "unused126",
+     "unused127",
+     "unused128",
+     "unused129",
+     "unused130",
+     "unused131",
+     "unused132",
+     "unused133",
+     "unused134",
+     "unused135",
+     "unused136",
+     "unused137",
+     "unused138",
+     "unused139",
+     "unused140",
+     "unused141",
+     "unused142",
+     "unused143",
+     "unused144",
+     "unused145",
+     "unused146",
+     "unused147",
+     "unused148",
+     "unused149",
+     "unused150",
+     "unused151",
+     "unused152",
+     "unused153",
+     "unused154",
+     "unused155",
+     "unused156",
+     "unused157",
+     "unused158",
+     "unused159",
+     "unused160",
+     "unused161",
+     "unused162",
+     "unused163",
+     "unused164",
+     "unused165",
+     "unused166",
+     "unused167",
+     "unused168",
+     "unused169",
+     "unused170",
+     "unused171",
+     "unused172",
+     "unused173",
+     "unused174",
+     "unused175",
+     "unused176",
+     "unused177",
+     "unused178",
+     "unused179",
+     "unused180",
+     "unused181",
+     "unused182",
+     "unused183",
+     "unused184",
+     "unused185",
+     "unused186",
+     "unused187",
+     "unused188",
+     "unused189",
+     "unused190",
+     "unused191",
+     "unused192",
+     "unused193",
+     "unused194",
+     "unused195",
+     "unused196",
+     "unused197",
+     "unused198",
+     "unused199",
+     "unused200",
+     "unused201",
+     "unused202",
+     "unused203",
+     "unused204",
+     "unused205",
+     "unused206",
+     "unused207",
+     "unused208",
+     "unused209",
+     "unused210",
+     "unused211",
+     "unused212",
+     "unused213",
+     "unused214",
+     "unused215",
+     "unused216",
+     "unused217",
+     "unused218",
+     "unused219",
+     "unused220",
+     "unused221",
+     "unused222",
+     "unused223",
+     "unused224",
+     "unused225",
+     "unused226",
+     "unused227",
+     "unused228",
+     "unused229",
+     "unused230",
+     "unused231",
+     "unused232",
+     "unused233",
+     "unused234",
+     "unused235",
+     "unused236",
+     "unused237",
+     "unused238",
+     "unused239",
+     "unused240",
+     "unused241",
+     "unused242",
+     "unused243",
+     "unused244",
+     "unused245",
+     "unused246",
+     "unused247",
+     "unused248",
+     "unused249",
+     "unused250",
+     "unused251",
+     "unused252",
+     "unused253",
+     "unused254",
+     "unused255"
+    ]
+   },
    "parameters": [
     "bwlimit",
     "delete",
@@ -7209,6 +9981,8 @@
     "perm",
     "/vms/{vmid}",
     [
+     "VM.Audit",
+     "VM.Config.Disk",
      "VM.Migrate"
     ]
    ],
@@ -7238,6 +10012,267 @@
     "any",
     1
    ],
+   "enums": {
+    "disk": [
+     "rootfs",
+     "mp0",
+     "mp1",
+     "mp2",
+     "mp3",
+     "mp4",
+     "mp5",
+     "mp6",
+     "mp7",
+     "mp8",
+     "mp9",
+     "mp10",
+     "mp11",
+     "mp12",
+     "mp13",
+     "mp14",
+     "mp15",
+     "mp16",
+     "mp17",
+     "mp18",
+     "mp19",
+     "mp20",
+     "mp21",
+     "mp22",
+     "mp23",
+     "mp24",
+     "mp25",
+     "mp26",
+     "mp27",
+     "mp28",
+     "mp29",
+     "mp30",
+     "mp31",
+     "mp32",
+     "mp33",
+     "mp34",
+     "mp35",
+     "mp36",
+     "mp37",
+     "mp38",
+     "mp39",
+     "mp40",
+     "mp41",
+     "mp42",
+     "mp43",
+     "mp44",
+     "mp45",
+     "mp46",
+     "mp47",
+     "mp48",
+     "mp49",
+     "mp50",
+     "mp51",
+     "mp52",
+     "mp53",
+     "mp54",
+     "mp55",
+     "mp56",
+     "mp57",
+     "mp58",
+     "mp59",
+     "mp60",
+     "mp61",
+     "mp62",
+     "mp63",
+     "mp64",
+     "mp65",
+     "mp66",
+     "mp67",
+     "mp68",
+     "mp69",
+     "mp70",
+     "mp71",
+     "mp72",
+     "mp73",
+     "mp74",
+     "mp75",
+     "mp76",
+     "mp77",
+     "mp78",
+     "mp79",
+     "mp80",
+     "mp81",
+     "mp82",
+     "mp83",
+     "mp84",
+     "mp85",
+     "mp86",
+     "mp87",
+     "mp88",
+     "mp89",
+     "mp90",
+     "mp91",
+     "mp92",
+     "mp93",
+     "mp94",
+     "mp95",
+     "mp96",
+     "mp97",
+     "mp98",
+     "mp99",
+     "mp100",
+     "mp101",
+     "mp102",
+     "mp103",
+     "mp104",
+     "mp105",
+     "mp106",
+     "mp107",
+     "mp108",
+     "mp109",
+     "mp110",
+     "mp111",
+     "mp112",
+     "mp113",
+     "mp114",
+     "mp115",
+     "mp116",
+     "mp117",
+     "mp118",
+     "mp119",
+     "mp120",
+     "mp121",
+     "mp122",
+     "mp123",
+     "mp124",
+     "mp125",
+     "mp126",
+     "mp127",
+     "mp128",
+     "mp129",
+     "mp130",
+     "mp131",
+     "mp132",
+     "mp133",
+     "mp134",
+     "mp135",
+     "mp136",
+     "mp137",
+     "mp138",
+     "mp139",
+     "mp140",
+     "mp141",
+     "mp142",
+     "mp143",
+     "mp144",
+     "mp145",
+     "mp146",
+     "mp147",
+     "mp148",
+     "mp149",
+     "mp150",
+     "mp151",
+     "mp152",
+     "mp153",
+     "mp154",
+     "mp155",
+     "mp156",
+     "mp157",
+     "mp158",
+     "mp159",
+     "mp160",
+     "mp161",
+     "mp162",
+     "mp163",
+     "mp164",
+     "mp165",
+     "mp166",
+     "mp167",
+     "mp168",
+     "mp169",
+     "mp170",
+     "mp171",
+     "mp172",
+     "mp173",
+     "mp174",
+     "mp175",
+     "mp176",
+     "mp177",
+     "mp178",
+     "mp179",
+     "mp180",
+     "mp181",
+     "mp182",
+     "mp183",
+     "mp184",
+     "mp185",
+     "mp186",
+     "mp187",
+     "mp188",
+     "mp189",
+     "mp190",
+     "mp191",
+     "mp192",
+     "mp193",
+     "mp194",
+     "mp195",
+     "mp196",
+     "mp197",
+     "mp198",
+     "mp199",
+     "mp200",
+     "mp201",
+     "mp202",
+     "mp203",
+     "mp204",
+     "mp205",
+     "mp206",
+     "mp207",
+     "mp208",
+     "mp209",
+     "mp210",
+     "mp211",
+     "mp212",
+     "mp213",
+     "mp214",
+     "mp215",
+     "mp216",
+     "mp217",
+     "mp218",
+     "mp219",
+     "mp220",
+     "mp221",
+     "mp222",
+     "mp223",
+     "mp224",
+     "mp225",
+     "mp226",
+     "mp227",
+     "mp228",
+     "mp229",
+     "mp230",
+     "mp231",
+     "mp232",
+     "mp233",
+     "mp234",
+     "mp235",
+     "mp236",
+     "mp237",
+     "mp238",
+     "mp239",
+     "mp240",
+     "mp241",
+     "mp242",
+     "mp243",
+     "mp244",
+     "mp245",
+     "mp246",
+     "mp247",
+     "mp248",
+     "mp249",
+     "mp250",
+     "mp251",
+     "mp252",
+     "mp253",
+     "mp254",
+     "mp255"
+    ]
+   },
    "parameters": [
     "digest",
     "disk",
@@ -7256,6 +10291,19 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "cf": [
+     "AVERAGE",
+     "MAX"
+    ],
+    "timeframe": [
+     "hour",
+     "day",
+     "week",
+     "month",
+     "year"
+    ]
+   },
    "parameters": [
     "cf",
     "ds",
@@ -7274,6 +10322,19 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "cf": [
+     "AVERAGE",
+     "MAX"
+    ],
+    "timeframe": [
+     "hour",
+     "day",
+     "week",
+     "month",
+     "year"
+    ]
+   },
    "parameters": [
     "cf",
     "node",
@@ -7632,6 +10693,24 @@
    ]
   },
   "GET": {
+   "enums": {
+    "type": [
+     "bridge",
+     "bond",
+     "eth",
+     "alias",
+     "vlan",
+     "fabric",
+     "OVSBridge",
+     "OVSBond",
+     "OVSPort",
+     "OVSIntPort",
+     "vnet",
+     "any_bridge",
+     "any_local_bridge",
+     "include_sdn"
+    ]
+   },
    "parameters": [
     "node",
     "type"
@@ -7645,6 +10724,39 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "bond_mode": [
+     "balance-rr",
+     "active-backup",
+     "balance-xor",
+     "broadcast",
+     "802.3ad",
+     "balance-tlb",
+     "balance-alb",
+     "balance-slb",
+     "lacp-balance-slb",
+     "lacp-balance-tcp"
+    ],
+    "bond_xmit_hash_policy": [
+     "layer2",
+     "layer2+3",
+     "layer3+4"
+    ],
+    "type": [
+     "bridge",
+     "bond",
+     "eth",
+     "alias",
+     "vlan",
+     "fabric",
+     "OVSBridge",
+     "OVSBond",
+     "OVSPort",
+     "OVSIntPort",
+     "vnet",
+     "unknown"
+    ]
+   },
    "parameters": [
     "address",
     "address6",
@@ -7726,6 +10838,39 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "bond_mode": [
+     "balance-rr",
+     "active-backup",
+     "balance-xor",
+     "broadcast",
+     "802.3ad",
+     "balance-tlb",
+     "balance-alb",
+     "balance-slb",
+     "lacp-balance-slb",
+     "lacp-balance-tcp"
+    ],
+    "bond_xmit_hash_policy": [
+     "layer2",
+     "layer2+3",
+     "layer3+4"
+    ],
+    "type": [
+     "bridge",
+     "bond",
+     "eth",
+     "alias",
+     "vlan",
+     "fabric",
+     "OVSBridge",
+     "OVSBond",
+     "OVSPort",
+     "OVSIntPort",
+     "vnet",
+     "unknown"
+    ]
+   },
    "parameters": [
     "address",
     "address6",
@@ -7768,6 +10913,88 @@
    ]
   },
   "POST": {
+   "enums": {
+    "arch": [
+     "x86_64",
+     "aarch64"
+    ],
+    "bios": [
+     "seabios",
+     "ovmf"
+    ],
+    "citype": [
+     "configdrive2",
+     "nocloud",
+     "opennebula"
+    ],
+    "hugepages": [
+     "any",
+     "2",
+     "1024"
+    ],
+    "keyboard": [
+     "de",
+     "de-ch",
+     "da",
+     "en-gb",
+     "en-us",
+     "es",
+     "fi",
+     "fr",
+     "fr-be",
+     "fr-ca",
+     "fr-ch",
+     "hu",
+     "is",
+     "it",
+     "ja",
+     "lt",
+     "mk",
+     "nl",
+     "no",
+     "pl",
+     "pt",
+     "pt-br",
+     "sv",
+     "sl",
+     "tr"
+    ],
+    "lock": [
+     "backup",
+     "clone",
+     "create",
+     "import",
+     "migrate",
+     "rollback",
+     "snapshot",
+     "snapshot-delete",
+     "suspending",
+     "suspended"
+    ],
+    "ostype": [
+     "other",
+     "wxp",
+     "w2k",
+     "w2k3",
+     "w2k8",
+     "wvista",
+     "win7",
+     "win8",
+     "win10",
+     "win11",
+     "l24",
+     "l26",
+     "solaris"
+    ],
+    "scsihw": [
+     "lsi",
+     "lsi53c810",
+     "virtio-scsi-pci",
+     "virtio-scsi-single",
+     "megasas",
+     "pvscsi"
+    ]
+   },
    "parameters": [
     "acpi",
     "affinity",
@@ -7907,6 +11134,34 @@
     "any",
     1
    ],
+   "enums": {
+    "command": [
+     "fsfreeze-freeze",
+     "fsfreeze-status",
+     "fsfreeze-thaw",
+     "fstrim",
+     "get-cpustats",
+     "get-disks",
+     "get-diskstats",
+     "get-fsinfo",
+     "get-host-name",
+     "get-load",
+     "get-memory-block-info",
+     "get-memory-blocks",
+     "get-osinfo",
+     "get-time",
+     "get-timezone",
+     "get-users",
+     "get-vcpus",
+     "info",
+     "network-get-interfaces",
+     "ping",
+     "shutdown",
+     "suspend-disk",
+     "suspend-hybrid",
+     "suspend-ram"
+    ]
+   },
    "parameters": [
     "command",
     "node",
@@ -8063,6 +11318,60 @@
    ]
   }
  },
+ "/nodes/{node}/qemu/{vmid}/agent/get-cpustats": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-disks": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-diskstats": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
  "/nodes/{node}/qemu/{vmid}/agent/get-fsinfo": {
   "GET": {
    "check": [
@@ -8082,6 +11391,24 @@
   }
  },
  "/nodes/{node}/qemu/{vmid}/agent/get-host-name": {
+  "GET": {
+   "check": [
+    "perm",
+    "/vms/{vmid}",
+    [
+     "VM.GuestAgent.Audit",
+     "VM.GuestAgent.Unrestricted"
+    ],
+    "any",
+    1
+   ],
+   "parameters": [
+    "node",
+    "vmid"
+   ]
+  }
+ },
+ "/nodes/{node}/qemu/{vmid}/agent/get-load": {
   "GET": {
    "check": [
     "perm",
@@ -8400,6 +11727,13 @@
      ]
     ]
    ],
+   "enums": {
+    "format": [
+     "raw",
+     "qcow2",
+     "vmdk"
+    ]
+   },
    "parameters": [
     "bwlimit",
     "description",
@@ -8453,6 +11787,13 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "type": [
+     "user",
+     "network",
+     "meta"
+    ]
+   },
    "parameters": [
     "node",
     "type",
@@ -8493,6 +11834,88 @@
     "any",
     1
    ],
+   "enums": {
+    "arch": [
+     "x86_64",
+     "aarch64"
+    ],
+    "bios": [
+     "seabios",
+     "ovmf"
+    ],
+    "citype": [
+     "configdrive2",
+     "nocloud",
+     "opennebula"
+    ],
+    "hugepages": [
+     "any",
+     "2",
+     "1024"
+    ],
+    "keyboard": [
+     "de",
+     "de-ch",
+     "da",
+     "en-gb",
+     "en-us",
+     "es",
+     "fi",
+     "fr",
+     "fr-be",
+     "fr-ca",
+     "fr-ch",
+     "hu",
+     "is",
+     "it",
+     "ja",
+     "lt",
+     "mk",
+     "nl",
+     "no",
+     "pl",
+     "pt",
+     "pt-br",
+     "sv",
+     "sl",
+     "tr"
+    ],
+    "lock": [
+     "backup",
+     "clone",
+     "create",
+     "import",
+     "migrate",
+     "rollback",
+     "snapshot",
+     "snapshot-delete",
+     "suspending",
+     "suspended"
+    ],
+    "ostype": [
+     "other",
+     "wxp",
+     "w2k",
+     "w2k3",
+     "w2k8",
+     "wvista",
+     "win7",
+     "win8",
+     "win10",
+     "win11",
+     "l24",
+     "l26",
+     "solaris"
+    ],
+    "scsihw": [
+     "lsi",
+     "lsi53c810",
+     "virtio-scsi-pci",
+     "virtio-scsi-single",
+     "megasas",
+     "pvscsi"
+    ]
+   },
    "parameters": [
     "acpi",
     "affinity",
@@ -8603,6 +12026,88 @@
     "any",
     1
    ],
+   "enums": {
+    "arch": [
+     "x86_64",
+     "aarch64"
+    ],
+    "bios": [
+     "seabios",
+     "ovmf"
+    ],
+    "citype": [
+     "configdrive2",
+     "nocloud",
+     "opennebula"
+    ],
+    "hugepages": [
+     "any",
+     "2",
+     "1024"
+    ],
+    "keyboard": [
+     "de",
+     "de-ch",
+     "da",
+     "en-gb",
+     "en-us",
+     "es",
+     "fi",
+     "fr",
+     "fr-be",
+     "fr-ca",
+     "fr-ch",
+     "hu",
+     "is",
+     "it",
+     "ja",
+     "lt",
+     "mk",
+     "nl",
+     "no",
+     "pl",
+     "pt",
+     "pt-br",
+     "sv",
+     "sl",
+     "tr"
+    ],
+    "lock": [
+     "backup",
+     "clone",
+     "create",
+     "import",
+     "migrate",
+     "rollback",
+     "snapshot",
+     "snapshot-delete",
+     "suspending",
+     "suspended"
+    ],
+    "ostype": [
+     "other",
+     "wxp",
+     "w2k",
+     "w2k3",
+     "w2k8",
+     "wvista",
+     "win7",
+     "win8",
+     "win10",
+     "win11",
+     "l24",
+     "l26",
+     "solaris"
+    ],
+    "scsihw": [
+     "lsi",
+     "lsi53c810",
+     "virtio-scsi-pci",
+     "virtio-scsi-single",
+     "megasas",
+     "pvscsi"
+    ]
+   },
    "parameters": [
     "acpi",
     "affinity",
@@ -8704,6 +12209,12 @@
      "VM.Migrate"
     ]
    ],
+   "enums": {
+    "action": [
+     "start",
+     "stop"
+    ]
+   },
    "parameters": [
     "action",
     "node",
@@ -8720,6 +12231,13 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "feature": [
+     "snapshot",
+     "clone",
+     "copy"
+    ]
+   },
    "parameters": [
     "feature",
     "node",
@@ -8988,6 +12506,40 @@
      "VM.Config.Network"
     ]
    ],
+   "enums": {
+    "log_level_in": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "log_level_out": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "policy_in": [
+     "ACCEPT",
+     "REJECT",
+     "DROP"
+    ],
+    "policy_out": [
+     "ACCEPT",
+     "REJECT",
+     "DROP"
+    ]
+   },
    "parameters": [
     "delete",
     "dhcp",
@@ -9015,6 +12567,12 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "type": [
+     "alias",
+     "ipset"
+    ]
+   },
    "parameters": [
     "node",
     "type",
@@ -9044,6 +12602,25 @@
      "VM.Config.Network"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -9103,6 +12680,25 @@
      "VM.Config.Network"
     ]
    ],
+   "enums": {
+    "log": [
+     "emerg",
+     "alert",
+     "crit",
+     "err",
+     "warning",
+     "notice",
+     "info",
+     "debug",
+     "nolog"
+    ],
+    "type": [
+     "in",
+     "out",
+     "forward",
+     "group"
+    ]
+   },
    "parameters": [
     "action",
     "comment",
@@ -9149,6 +12745,12 @@
      "VM.Migrate"
     ]
    ],
+   "enums": {
+    "migration_type": [
+     "secure",
+     "insecure"
+    ]
+   },
    "parameters": [
     "bwlimit",
     "force",
@@ -9192,6 +12794,647 @@
      "VM.Config.Disk"
     ]
    ],
+   "enums": {
+    "disk": [
+     "ide0",
+     "ide1",
+     "ide2",
+     "ide3",
+     "scsi0",
+     "scsi1",
+     "scsi2",
+     "scsi3",
+     "scsi4",
+     "scsi5",
+     "scsi6",
+     "scsi7",
+     "scsi8",
+     "scsi9",
+     "scsi10",
+     "scsi11",
+     "scsi12",
+     "scsi13",
+     "scsi14",
+     "scsi15",
+     "scsi16",
+     "scsi17",
+     "scsi18",
+     "scsi19",
+     "scsi20",
+     "scsi21",
+     "scsi22",
+     "scsi23",
+     "scsi24",
+     "scsi25",
+     "scsi26",
+     "scsi27",
+     "scsi28",
+     "scsi29",
+     "scsi30",
+     "virtio0",
+     "virtio1",
+     "virtio2",
+     "virtio3",
+     "virtio4",
+     "virtio5",
+     "virtio6",
+     "virtio7",
+     "virtio8",
+     "virtio9",
+     "virtio10",
+     "virtio11",
+     "virtio12",
+     "virtio13",
+     "virtio14",
+     "virtio15",
+     "sata0",
+     "sata1",
+     "sata2",
+     "sata3",
+     "sata4",
+     "sata5",
+     "efidisk0",
+     "tpmstate0",
+     "unused0",
+     "unused1",
+     "unused2",
+     "unused3",
+     "unused4",
+     "unused5",
+     "unused6",
+     "unused7",
+     "unused8",
+     "unused9",
+     "unused10",
+     "unused11",
+     "unused12",
+     "unused13",
+     "unused14",
+     "unused15",
+     "unused16",
+     "unused17",
+     "unused18",
+     "unused19",
+     "unused20",
+     "unused21",
+     "unused22",
+     "unused23",
+     "unused24",
+     "unused25",
+     "unused26",
+     "unused27",
+     "unused28",
+     "unused29",
+     "unused30",
+     "unused31",
+     "unused32",
+     "unused33",
+     "unused34",
+     "unused35",
+     "unused36",
+     "unused37",
+     "unused38",
+     "unused39",
+     "unused40",
+     "unused41",
+     "unused42",
+     "unused43",
+     "unused44",
+     "unused45",
+     "unused46",
+     "unused47",
+     "unused48",
+     "unused49",
+     "unused50",
+     "unused51",
+     "unused52",
+     "unused53",
+     "unused54",
+     "unused55",
+     "unused56",
+     "unused57",
+     "unused58",
+     "unused59",
+     "unused60",
+     "unused61",
+     "unused62",
+     "unused63",
+     "unused64",
+     "unused65",
+     "unused66",
+     "unused67",
+     "unused68",
+     "unused69",
+     "unused70",
+     "unused71",
+     "unused72",
+     "unused73",
+     "unused74",
+     "unused75",
+     "unused76",
+     "unused77",
+     "unused78",
+     "unused79",
+     "unused80",
+     "unused81",
+     "unused82",
+     "unused83",
+     "unused84",
+     "unused85",
+     "unused86",
+     "unused87",
+     "unused88",
+     "unused89",
+     "unused90",
+     "unused91",
+     "unused92",
+     "unused93",
+     "unused94",
+     "unused95",
+     "unused96",
+     "unused97",
+     "unused98",
+     "unused99",
+     "unused100",
+     "unused101",
+     "unused102",
+     "unused103",
+     "unused104",
+     "unused105",
+     "unused106",
+     "unused107",
+     "unused108",
+     "unused109",
+     "unused110",
+     "unused111",
+     "unused112",
+     "unused113",
+     "unused114",
+     "unused115",
+     "unused116",
+     "unused117",
+     "unused118",
+     "unused119",
+     "unused120",
+     "unused121",
+     "unused122",
+     "unused123",
+     "unused124",
+     "unused125",
+     "unused126",
+     "unused127",
+     "unused128",
+     "unused129",
+     "unused130",
+     "unused131",
+     "unused132",
+     "unused133",
+     "unused134",
+     "unused135",
+     "unused136",
+     "unused137",
+     "unused138",
+     "unused139",
+     "unused140",
+     "unused141",
+     "unused142",
+     "unused143",
+     "unused144",
+     "unused145",
+     "unused146",
+     "unused147",
+     "unused148",
+     "unused149",
+     "unused150",
+     "unused151",
+     "unused152",
+     "unused153",
+     "unused154",
+     "unused155",
+     "unused156",
+     "unused157",
+     "unused158",
+     "unused159",
+     "unused160",
+     "unused161",
+     "unused162",
+     "unused163",
+     "unused164",
+     "unused165",
+     "unused166",
+     "unused167",
+     "unused168",
+     "unused169",
+     "unused170",
+     "unused171",
+     "unused172",
+     "unused173",
+     "unused174",
+     "unused175",
+     "unused176",
+     "unused177",
+     "unused178",
+     "unused179",
+     "unused180",
+     "unused181",
+     "unused182",
+     "unused183",
+     "unused184",
+     "unused185",
+     "unused186",
+     "unused187",
+     "unused188",
+     "unused189",
+     "unused190",
+     "unused191",
+     "unused192",
+     "unused193",
+     "unused194",
+     "unused195",
+     "unused196",
+     "unused197",
+     "unused198",
+     "unused199",
+     "unused200",
+     "unused201",
+     "unused202",
+     "unused203",
+     "unused204",
+     "unused205",
+     "unused206",
+     "unused207",
+     "unused208",
+     "unused209",
+     "unused210",
+     "unused211",
+     "unused212",
+     "unused213",
+     "unused214",
+     "unused215",
+     "unused216",
+     "unused217",
+     "unused218",
+     "unused219",
+     "unused220",
+     "unused221",
+     "unused222",
+     "unused223",
+     "unused224",
+     "unused225",
+     "unused226",
+     "unused227",
+     "unused228",
+     "unused229",
+     "unused230",
+     "unused231",
+     "unused232",
+     "unused233",
+     "unused234",
+     "unused235",
+     "unused236",
+     "unused237",
+     "unused238",
+     "unused239",
+     "unused240",
+     "unused241",
+     "unused242",
+     "unused243",
+     "unused244",
+     "unused245",
+     "unused246",
+     "unused247",
+     "unused248",
+     "unused249",
+     "unused250",
+     "unused251",
+     "unused252",
+     "unused253",
+     "unused254",
+     "unused255"
+    ],
+    "format": [
+     "raw",
+     "qcow2",
+     "vmdk"
+    ],
+    "target-disk": [
+     "ide0",
+     "ide1",
+     "ide2",
+     "ide3",
+     "scsi0",
+     "scsi1",
+     "scsi2",
+     "scsi3",
+     "scsi4",
+     "scsi5",
+     "scsi6",
+     "scsi7",
+     "scsi8",
+     "scsi9",
+     "scsi10",
+     "scsi11",
+     "scsi12",
+     "scsi13",
+     "scsi14",
+     "scsi15",
+     "scsi16",
+     "scsi17",
+     "scsi18",
+     "scsi19",
+     "scsi20",
+     "scsi21",
+     "scsi22",
+     "scsi23",
+     "scsi24",
+     "scsi25",
+     "scsi26",
+     "scsi27",
+     "scsi28",
+     "scsi29",
+     "scsi30",
+     "virtio0",
+     "virtio1",
+     "virtio2",
+     "virtio3",
+     "virtio4",
+     "virtio5",
+     "virtio6",
+     "virtio7",
+     "virtio8",
+     "virtio9",
+     "virtio10",
+     "virtio11",
+     "virtio12",
+     "virtio13",
+     "virtio14",
+     "virtio15",
+     "sata0",
+     "sata1",
+     "sata2",
+     "sata3",
+     "sata4",
+     "sata5",
+     "efidisk0",
+     "tpmstate0",
+     "unused0",
+     "unused1",
+     "unused2",
+     "unused3",
+     "unused4",
+     "unused5",
+     "unused6",
+     "unused7",
+     "unused8",
+     "unused9",
+     "unused10",
+     "unused11",
+     "unused12",
+     "unused13",
+     "unused14",
+     "unused15",
+     "unused16",
+     "unused17",
+     "unused18",
+     "unused19",
+     "unused20",
+     "unused21",
+     "unused22",
+     "unused23",
+     "unused24",
+     "unused25",
+     "unused26",
+     "unused27",
+     "unused28",
+     "unused29",
+     "unused30",
+     "unused31",
+     "unused32",
+     "unused33",
+     "unused34",
+     "unused35",
+     "unused36",
+     "unused37",
+     "unused38",
+     "unused39",
+     "unused40",
+     "unused41",
+     "unused42",
+     "unused43",
+     "unused44",
+     "unused45",
+     "unused46",
+     "unused47",
+     "unused48",
+     "unused49",
+     "unused50",
+     "unused51",
+     "unused52",
+     "unused53",
+     "unused54",
+     "unused55",
+     "unused56",
+     "unused57",
+     "unused58",
+     "unused59",
+     "unused60",
+     "unused61",
+     "unused62",
+     "unused63",
+     "unused64",
+     "unused65",
+     "unused66",
+     "unused67",
+     "unused68",
+     "unused69",
+     "unused70",
+     "unused71",
+     "unused72",
+     "unused73",
+     "unused74",
+     "unused75",
+     "unused76",
+     "unused77",
+     "unused78",
+     "unused79",
+     "unused80",
+     "unused81",
+     "unused82",
+     "unused83",
+     "unused84",
+     "unused85",
+     "unused86",
+     "unused87",
+     "unused88",
+     "unused89",
+     "unused90",
+     "unused91",
+     "unused92",
+     "unused93",
+     "unused94",
+     "unused95",
+     "unused96",
+     "unused97",
+     "unused98",
+     "unused99",
+     "unused100",
+     "unused101",
+     "unused102",
+     "unused103",
+     "unused104",
+     "unused105",
+     "unused106",
+     "unused107",
+     "unused108",
+     "unused109",
+     "unused110",
+     "unused111",
+     "unused112",
+     "unused113",
+     "unused114",
+     "unused115",
+     "unused116",
+     "unused117",
+     "unused118",
+     "unused119",
+     "unused120",
+     "unused121",
+     "unused122",
+     "unused123",
+     "unused124",
+     "unused125",
+     "unused126",
+     "unused127",
+     "unused128",
+     "unused129",
+     "unused130",
+     "unused131",
+     "unused132",
+     "unused133",
+     "unused134",
+     "unused135",
+     "unused136",
+     "unused137",
+     "unused138",
+     "unused139",
+     "unused140",
+     "unused141",
+     "unused142",
+     "unused143",
+     "unused144",
+     "unused145",
+     "unused146",
+     "unused147",
+     "unused148",
+     "unused149",
+     "unused150",
+     "unused151",
+     "unused152",
+     "unused153",
+     "unused154",
+     "unused155",
+     "unused156",
+     "unused157",
+     "unused158",
+     "unused159",
+     "unused160",
+     "unused161",
+     "unused162",
+     "unused163",
+     "unused164",
+     "unused165",
+     "unused166",
+     "unused167",
+     "unused168",
+     "unused169",
+     "unused170",
+     "unused171",
+     "unused172",
+     "unused173",
+     "unused174",
+     "unused175",
+     "unused176",
+     "unused177",
+     "unused178",
+     "unused179",
+     "unused180",
+     "unused181",
+     "unused182",
+     "unused183",
+     "unused184",
+     "unused185",
+     "unused186",
+     "unused187",
+     "unused188",
+     "unused189",
+     "unused190",
+     "unused191",
+     "unused192",
+     "unused193",
+     "unused194",
+     "unused195",
+     "unused196",
+     "unused197",
+     "unused198",
+     "unused199",
+     "unused200",
+     "unused201",
+     "unused202",
+     "unused203",
+     "unused204",
+     "unused205",
+     "unused206",
+     "unused207",
+     "unused208",
+     "unused209",
+     "unused210",
+     "unused211",
+     "unused212",
+     "unused213",
+     "unused214",
+     "unused215",
+     "unused216",
+     "unused217",
+     "unused218",
+     "unused219",
+     "unused220",
+     "unused221",
+     "unused222",
+     "unused223",
+     "unused224",
+     "unused225",
+     "unused226",
+     "unused227",
+     "unused228",
+     "unused229",
+     "unused230",
+     "unused231",
+     "unused232",
+     "unused233",
+     "unused234",
+     "unused235",
+     "unused236",
+     "unused237",
+     "unused238",
+     "unused239",
+     "unused240",
+     "unused241",
+     "unused242",
+     "unused243",
+     "unused244",
+     "unused245",
+     "unused246",
+     "unused247",
+     "unused248",
+     "unused249",
+     "unused250",
+     "unused251",
+     "unused252",
+     "unused253",
+     "unused254",
+     "unused255"
+    ]
+   },
    "parameters": [
     "bwlimit",
     "delete",
@@ -9265,6 +13508,8 @@
     "perm",
     "/vms/{vmid}",
     [
+     "VM.Audit",
+     "VM.Config.Disk",
      "VM.Migrate"
     ]
    ],
@@ -9290,6 +13535,69 @@
      "VM.Config.Disk"
     ]
    ],
+   "enums": {
+    "disk": [
+     "ide0",
+     "ide1",
+     "ide2",
+     "ide3",
+     "scsi0",
+     "scsi1",
+     "scsi2",
+     "scsi3",
+     "scsi4",
+     "scsi5",
+     "scsi6",
+     "scsi7",
+     "scsi8",
+     "scsi9",
+     "scsi10",
+     "scsi11",
+     "scsi12",
+     "scsi13",
+     "scsi14",
+     "scsi15",
+     "scsi16",
+     "scsi17",
+     "scsi18",
+     "scsi19",
+     "scsi20",
+     "scsi21",
+     "scsi22",
+     "scsi23",
+     "scsi24",
+     "scsi25",
+     "scsi26",
+     "scsi27",
+     "scsi28",
+     "scsi29",
+     "scsi30",
+     "virtio0",
+     "virtio1",
+     "virtio2",
+     "virtio3",
+     "virtio4",
+     "virtio5",
+     "virtio6",
+     "virtio7",
+     "virtio8",
+     "virtio9",
+     "virtio10",
+     "virtio11",
+     "virtio12",
+     "virtio13",
+     "virtio14",
+     "virtio15",
+     "sata0",
+     "sata1",
+     "sata2",
+     "sata3",
+     "sata4",
+     "sata5",
+     "efidisk0",
+     "tpmstate0"
+    ]
+   },
    "parameters": [
     "digest",
     "disk",
@@ -9309,6 +13617,19 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "cf": [
+     "AVERAGE",
+     "MAX"
+    ],
+    "timeframe": [
+     "hour",
+     "day",
+     "week",
+     "month",
+     "year"
+    ]
+   },
    "parameters": [
     "cf",
     "ds",
@@ -9327,6 +13648,19 @@
      "VM.Audit"
     ]
    ],
+   "enums": {
+    "cf": [
+     "AVERAGE",
+     "MAX"
+    ],
+    "timeframe": [
+     "hour",
+     "day",
+     "week",
+     "month",
+     "year"
+    ]
+   },
    "parameters": [
     "cf",
     "node",
@@ -9578,6 +13912,12 @@
      "VM.PowerMgmt"
     ]
    ],
+   "enums": {
+    "migration_type": [
+     "secure",
+     "insecure"
+    ]
+   },
    "parameters": [
     "force-cpu",
     "machine",
@@ -9642,6 +13982,69 @@
      "VM.Allocate"
     ]
    ],
+   "enums": {
+    "disk": [
+     "ide0",
+     "ide1",
+     "ide2",
+     "ide3",
+     "scsi0",
+     "scsi1",
+     "scsi2",
+     "scsi3",
+     "scsi4",
+     "scsi5",
+     "scsi6",
+     "scsi7",
+     "scsi8",
+     "scsi9",
+     "scsi10",
+     "scsi11",
+     "scsi12",
+     "scsi13",
+     "scsi14",
+     "scsi15",
+     "scsi16",
+     "scsi17",
+     "scsi18",
+     "scsi19",
+     "scsi20",
+     "scsi21",
+     "scsi22",
+     "scsi23",
+     "scsi24",
+     "scsi25",
+     "scsi26",
+     "scsi27",
+     "scsi28",
+     "scsi29",
+     "scsi30",
+     "virtio0",
+     "virtio1",
+     "virtio2",
+     "virtio3",
+     "virtio4",
+     "virtio5",
+     "virtio6",
+     "virtio7",
+     "virtio8",
+     "virtio9",
+     "virtio10",
+     "virtio11",
+     "virtio12",
+     "virtio13",
+     "virtio14",
+     "virtio15",
+     "sata0",
+     "sata1",
+     "sata2",
+     "sata3",
+     "sata4",
+     "sata5",
+     "efidisk0",
+     "tpmstate0"
+    ]
+   },
    "parameters": [
     "disk",
     "node",
@@ -9658,6 +14061,14 @@
      "VM.Console"
     ]
    ],
+   "enums": {
+    "serial": [
+     "serial0",
+     "serial1",
+     "serial2",
+     "serial3"
+    ]
+   },
    "parameters": [
     "node",
     "serial",
@@ -9823,6 +14234,20 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "cf": [
+     "AVERAGE",
+     "MAX"
+    ],
+    "timeframe": [
+     "hour",
+     "day",
+     "week",
+     "month",
+     "year",
+     "decade"
+    ]
+   },
    "parameters": [
     "cf",
     "ds",
@@ -9840,6 +14265,20 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "cf": [
+     "AVERAGE",
+     "MAX"
+    ],
+    "timeframe": [
+     "hour",
+     "day",
+     "week",
+     "month",
+     "year",
+     "decade"
+    ]
+   },
    "parameters": [
     "cf",
     "node",
@@ -10137,6 +14576,33 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "service": [
+     "chrony",
+     "corosync",
+     "cron",
+     "ksmtuned",
+     "lxcfs",
+     "postfix",
+     "proxmox-firewall",
+     "pve-cluster",
+     "pve-firewall",
+     "pve-ha-crm",
+     "pve-ha-lrm",
+     "pve-lxc-syscalld",
+     "pvedaemon",
+     "pvefw-logger",
+     "pveproxy",
+     "pvescheduler",
+     "pvestatd",
+     "qmeventd",
+     "spiceproxy",
+     "sshd",
+     "syslog",
+     "systemd-journald",
+     "systemd-timesyncd"
+    ]
+   },
    "parameters": [
     "node",
     "service"
@@ -10152,6 +14618,33 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "service": [
+     "chrony",
+     "corosync",
+     "cron",
+     "ksmtuned",
+     "lxcfs",
+     "postfix",
+     "proxmox-firewall",
+     "pve-cluster",
+     "pve-firewall",
+     "pve-ha-crm",
+     "pve-ha-lrm",
+     "pve-lxc-syscalld",
+     "pvedaemon",
+     "pvefw-logger",
+     "pveproxy",
+     "pvescheduler",
+     "pvestatd",
+     "qmeventd",
+     "spiceproxy",
+     "sshd",
+     "syslog",
+     "systemd-journald",
+     "systemd-timesyncd"
+    ]
+   },
    "parameters": [
     "node",
     "service"
@@ -10167,6 +14660,33 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "service": [
+     "chrony",
+     "corosync",
+     "cron",
+     "ksmtuned",
+     "lxcfs",
+     "postfix",
+     "proxmox-firewall",
+     "pve-cluster",
+     "pve-firewall",
+     "pve-ha-crm",
+     "pve-ha-lrm",
+     "pve-lxc-syscalld",
+     "pvedaemon",
+     "pvefw-logger",
+     "pveproxy",
+     "pvescheduler",
+     "pvestatd",
+     "qmeventd",
+     "spiceproxy",
+     "sshd",
+     "syslog",
+     "systemd-journald",
+     "systemd-timesyncd"
+    ]
+   },
    "parameters": [
     "node",
     "service"
@@ -10182,6 +14702,33 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "service": [
+     "chrony",
+     "corosync",
+     "cron",
+     "ksmtuned",
+     "lxcfs",
+     "postfix",
+     "proxmox-firewall",
+     "pve-cluster",
+     "pve-firewall",
+     "pve-ha-crm",
+     "pve-ha-lrm",
+     "pve-lxc-syscalld",
+     "pvedaemon",
+     "pvefw-logger",
+     "pveproxy",
+     "pvescheduler",
+     "pvestatd",
+     "qmeventd",
+     "spiceproxy",
+     "sshd",
+     "syslog",
+     "systemd-journald",
+     "systemd-timesyncd"
+    ]
+   },
    "parameters": [
     "node",
     "service"
@@ -10197,6 +14744,33 @@
      "Sys.Audit"
     ]
    ],
+   "enums": {
+    "service": [
+     "chrony",
+     "corosync",
+     "cron",
+     "ksmtuned",
+     "lxcfs",
+     "postfix",
+     "proxmox-firewall",
+     "pve-cluster",
+     "pve-firewall",
+     "pve-ha-crm",
+     "pve-ha-lrm",
+     "pve-lxc-syscalld",
+     "pvedaemon",
+     "pvefw-logger",
+     "pveproxy",
+     "pvescheduler",
+     "pvestatd",
+     "qmeventd",
+     "spiceproxy",
+     "sshd",
+     "syslog",
+     "systemd-journald",
+     "systemd-timesyncd"
+    ]
+   },
    "parameters": [
     "node",
     "service"
@@ -10212,6 +14786,33 @@
      "Sys.Modify"
     ]
    ],
+   "enums": {
+    "service": [
+     "chrony",
+     "corosync",
+     "cron",
+     "ksmtuned",
+     "lxcfs",
+     "postfix",
+     "proxmox-firewall",
+     "pve-cluster",
+     "pve-firewall",
+     "pve-ha-crm",
+     "pve-ha-lrm",
+     "pve-lxc-syscalld",
+     "pvedaemon",
+     "pvefw-logger",
+     "pveproxy",
+     "pvescheduler",
+     "pvestatd",
+     "qmeventd",
+     "spiceproxy",
+     "sshd",
+     "syslog",
+     "systemd-journald",
+     "systemd-timesyncd"
+    ]
+   },
    "parameters": [
     "node",
     "service"
@@ -10227,6 +14828,13 @@
      "Sys.Console"
     ]
    ],
+   "enums": {
+    "cmd": [
+     "ceph_install",
+     "login",
+     "upgrade"
+    ]
+   },
    "parameters": [
     "cmd",
     "cmd-opts",
@@ -10266,6 +14874,12 @@
      "Sys.PowerMgmt"
     ]
    ],
+   "enums": {
+    "command": [
+     "reboot",
+     "shutdown"
+    ]
+   },
    "parameters": [
     "command",
     "node"
@@ -10340,6 +14954,14 @@
      "Datastore.AllocateSpace"
     ]
    ],
+   "enums": {
+    "format": [
+     "raw",
+     "qcow2",
+     "subvol",
+     "vmdk"
+    ]
+   },
    "parameters": [
     "filename",
     "format",
@@ -10415,6 +15037,22 @@
      ]
     ]
    ],
+   "enums": {
+    "checksum-algorithm": [
+     "md5",
+     "sha1",
+     "sha224",
+     "sha256",
+     "sha384",
+     "sha512"
+    ],
+    "compression": null,
+    "content": [
+     "iso",
+     "vztmpl",
+     "import"
+    ]
+   },
    "parameters": [
     "checksum",
     "checksum-algorithm",
@@ -10505,6 +15143,12 @@
  },
  "/nodes/{node}/storage/{storage}/prunebackups": {
   "DELETE": {
+   "enums": {
+    "type": [
+     "qemu",
+     "lxc"
+    ]
+   },
    "parameters": [
     "node",
     "prune-backups",
@@ -10514,16 +15158,12 @@
    ]
   },
   "GET": {
-   "check": [
-    "perm",
-    "/storage/{storage}",
-    [
-     "Datastore.Audit",
-     "Datastore.AllocateSpace"
-    ],
-    "any",
-    1
-   ],
+   "enums": {
+    "type": [
+     "qemu",
+     "lxc"
+    ]
+   },
    "parameters": [
     "node",
     "prune-backups",
@@ -10545,6 +15185,19 @@
     "any",
     1
    ],
+   "enums": {
+    "cf": [
+     "AVERAGE",
+     "MAX"
+    ],
+    "timeframe": [
+     "hour",
+     "day",
+     "week",
+     "month",
+     "year"
+    ]
+   },
    "parameters": [
     "cf",
     "ds",
@@ -10566,6 +15219,19 @@
     "any",
     1
    ],
+   "enums": {
+    "cf": [
+     "AVERAGE",
+     "MAX"
+    ],
+    "timeframe": [
+     "hour",
+     "day",
+     "week",
+     "month",
+     "year"
+    ]
+   },
    "parameters": [
     "cf",
     "node",
@@ -10601,6 +15267,21 @@
      "Datastore.AllocateTemplate"
     ]
    ],
+   "enums": {
+    "checksum-algorithm": [
+     "md5",
+     "sha1",
+     "sha224",
+     "sha256",
+     "sha384",
+     "sha512"
+    ],
+    "content": [
+     "iso",
+     "vztmpl",
+     "import"
+    ]
+   },
    "parameters": [
     "checksum",
     "checksum-algorithm",
@@ -10687,6 +15368,13 @@
  },
  "/nodes/{node}/tasks": {
   "GET": {
+   "enums": {
+    "source": [
+     "archive",
+     "active",
+     "all"
+    ]
+   },
    "parameters": [
     "errors",
     "limit",
@@ -10744,6 +15432,13 @@
      "Sys.Console"
     ]
    ],
+   "enums": {
+    "cmd": [
+     "ceph_install",
+     "login",
+     "upgrade"
+    ]
+   },
    "parameters": [
     "cmd",
     "cmd-opts",
@@ -10794,6 +15489,13 @@
      "Sys.Console"
     ]
    ],
+   "enums": {
+    "cmd": [
+     "ceph_install",
+     "login",
+     "upgrade"
+    ]
+   },
    "parameters": [
     "cmd",
     "cmd-opts",
@@ -10822,6 +15524,35 @@
  },
  "/nodes/{node}/vzdump": {
   "POST": {
+   "enums": {
+    "compress": [
+     "0",
+     "1",
+     "gzip",
+     "lzo",
+     "zstd"
+    ],
+    "mailnotification": [
+     "always",
+     "failure"
+    ],
+    "mode": [
+     "snapshot",
+     "suspend",
+     "stop"
+    ],
+    "notification-mode": [
+     "auto",
+     "legacy-sendmail",
+     "notification-system",
+     "none"
+    ],
+    "pbs-change-detection-mode": [
+     "legacy",
+     "data",
+     "metadata"
+    ]
+   },
    "parameters": [
     "all",
     "bwlimit",
@@ -10889,6 +15620,54 @@
    ]
   }
  },
+ "/plugins": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/plugins/storage": {
+  "GET": {
+   "parameters": []
+  }
+ },
+ "/plugins/storage/plugin": {
+  "GET": {
+   "enums": {
+    "origin": [
+     "builtin",
+     "custom"
+    ]
+   },
+   "parameters": [
+    "origin"
+   ]
+  }
+ },
+ "/plugins/storage/plugin/{type}": {
+  "GET": {
+   "enums": {
+    "type": [
+     "btrfs",
+     "cephfs",
+     "cifs",
+     "dir",
+     "esxi",
+     "iscsi",
+     "iscsidirect",
+     "lvm",
+     "lvmthin",
+     "nfs",
+     "pbs",
+     "rbd",
+     "zfs",
+     "zfspool"
+    ]
+   },
+   "parameters": [
+    "type"
+   ]
+  }
+ },
  "/pools": {
   "DELETE": {
    "check": [
@@ -10903,6 +15682,13 @@
    ]
   },
   "GET": {
+   "enums": {
+    "type": [
+     "qemu",
+     "lxc",
+     "storage"
+    ]
+   },
    "parameters": [
     "poolid",
     "type"
@@ -10960,6 +15746,13 @@
      "Pool.Audit"
     ]
    ],
+   "enums": {
+    "type": [
+     "qemu",
+     "lxc",
+     "storage"
+    ]
+   },
    "parameters": [
     "poolid",
     "type"
@@ -10985,6 +15778,24 @@
  },
  "/storage": {
   "GET": {
+   "enums": {
+    "type": [
+     "btrfs",
+     "cephfs",
+     "cifs",
+     "dir",
+     "esxi",
+     "iscsi",
+     "iscsidirect",
+     "lvm",
+     "lvmthin",
+     "nfs",
+     "pbs",
+     "rbd",
+     "zfs",
+     "zfspool"
+    ]
+   },
    "parameters": [
     "type"
    ]
@@ -10997,6 +15808,52 @@
      "Datastore.Allocate"
     ]
    ],
+   "enums": {
+    "format": [
+     "raw",
+     "qcow2",
+     "subvol",
+     "vmdk"
+    ],
+    "preallocation": [
+     "off",
+     "metadata",
+     "falloc",
+     "full"
+    ],
+    "saferemove-stepsize": [
+     "1",
+     "2",
+     "4",
+     "8",
+     "16",
+     "32"
+    ],
+    "smbversion": [
+     "default",
+     "2.0",
+     "2.1",
+     "3",
+     "3.0",
+     "3.11"
+    ],
+    "type": [
+     "btrfs",
+     "cephfs",
+     "cifs",
+     "dir",
+     "esxi",
+     "iscsi",
+     "iscsidirect",
+     "lvm",
+     "lvmthin",
+     "nfs",
+     "pbs",
+     "rbd",
+     "zfs",
+     "zfspool"
+    ]
+   },
    "parameters": [
     "authsupported",
     "base",
@@ -11032,6 +15889,7 @@
     "nocow",
     "nodes",
     "nowritecache",
+    "on-volume-remove",
     "options",
     "password",
     "path",
@@ -11095,6 +15953,36 @@
      "Datastore.Allocate"
     ]
    ],
+   "enums": {
+    "format": [
+     "raw",
+     "qcow2",
+     "subvol",
+     "vmdk"
+    ],
+    "preallocation": [
+     "off",
+     "metadata",
+     "falloc",
+     "full"
+    ],
+    "saferemove-stepsize": [
+     "1",
+     "2",
+     "4",
+     "8",
+     "16",
+     "32"
+    ],
+    "smbversion": [
+     "default",
+     "2.0",
+     "2.1",
+     "3",
+     "3.0",
+     "3.11"
+    ]
+   },
    "parameters": [
     "blocksize",
     "bwlimit",
@@ -11127,6 +16015,7 @@
     "nocow",
     "nodes",
     "nowritecache",
+    "on-volume-remove",
     "options",
     "password",
     "pool",
@@ -11154,5 +16043,10 @@
   "GET": {
    "parameters": []
   }
+ },
+ "_source": {
+  "fetched": "2026-11-19",
+  "last_modified": "Wed, 18 Nov 2026 13:41:06 GMT",
+  "url": "https://pve.proxmox.com/pve-docs/api-viewer/apidoc.js"
  }
 }

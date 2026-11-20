@@ -15,20 +15,40 @@ rebooted through `POST nodes/{node}/status` with a `command` — and guests
 were being sent a `restart` that Proxmox does not know. Both were found by
 trying them against a real cluster, which is a poor way to find out.
 
-The schema says so without asking a cluster, and it says it for all 449
-paths at once, so the check costs nothing to repeat.
+The schema says so without asking a cluster, and it says it for every
+path at once, so the check costs nothing to repeat.
 
 ## What is kept, and what is not
 
 `schema/pve_api.json` holds, per path and method:
 
 - the names of the parameters the route takes,
+- the values a parameter accepts, where the schema lists them
+  (`command` on `nodes/{node}/status`: `reboot`, `shutdown`),
 - the `check` the API performs before answering it, as Proxmox writes it:
   `["perm", "/vms/{vmid}", ["VM.GuestAgent.Audit", "VM.GuestAgent.Unrestricted"], "any", 1]`.
 
 Nothing else. Descriptions, defaults and formats stay in the
 documentation the file comes from — this is a table of facts about the
 API, not a copy of Proxmox's prose.
+
+## Where it came from
+
+The extract carries a `_source` entry with the address it was fetched from, the
+`Last-Modified` the server reported for it, and the date of the run:
+
+```json
+"_source": {
+  "fetched": "2026-10-12",
+  "last_modified": "Thu, 24 Sep 2026 17:51:15 GMT",
+  "url": "https://pve.proxmox.com/pve-docs/api-viewer/apidoc.js"
+}
+```
+
+`apidoc.js` names no version of its own, and the documentation site lists only past
+releases, so that timestamp is the dependable answer to "is this still current":
+running the refresh says whether the published file has moved since. Everything
+reading the extract takes the keys that start with `/` and skips the rest.
 
 ## Refreshing it
 
@@ -52,11 +72,13 @@ called — and checks each one against the schema:
 
 - the path exists,
 - it answers the method used,
-- the parameter names visible in the call are parameters of that route.
+- the parameter names visible in the call are parameters of that route,
+- a value the call fixes - a node command - is one the route accepts.
 
 A route the source builds elsewhere (`PostAction` keeps the path an action
-factory gave it) is listed as such, and the test fails if that list
-changes: a refactor that hides the paths from the reader would otherwise
+factory gave it) is listed as such, and so is a `request` call the reader
+cannot follow (the method in a variable, the path by keyword); the test
+fails if that list changes: a refactor that hides the paths from the reader would otherwise
 quietly mute the whole file.
 
 ## Privileges
@@ -67,7 +89,7 @@ route, so the library does not have to name one from memory:
 ```python
 from aioproxmox.privileges import privileges_for
 
-check = privileges_for("GET", "nodes/pve/qemu/101/agent/get-fsinfo")
+check = privileges_for("POST", "nodes/pve/qemu/101/agent/ping")
 check.render()
 # ['perm','/vms/101',['VM.GuestAgent.Audit','VM.GuestAgent.Unrestricted'],'any',1]
 ```
@@ -84,17 +106,20 @@ requirement in prose instead — `vzdump` wants `VM.Backup` on the guests
 and `Datastore.AllocateSpace` on the storage, which the schema does not
 express.
 
-The data is generated into `aioproxmox/_privilege_data.py` — 39 routes,
-so no schema file has to ship with the library:
+The data is generated into `aioproxmox/_privilege_data.py` — one entry
+per route this library calls that states a check, so no schema file has to
+ship with the library:
 
 ```bash
 python script/generate_privileges.py
 ```
 
-A test compares the committed module with what the generator would write
-now, so a refreshed schema that changes a privilege cannot slip through
-unregenerated. Shapes the generator cannot describe faithfully (`and`,
-and the other forms the wider schema uses) make it raise rather than
-flatten them into something that reads true and is not.
+A test compares the data in the committed module with what the generator
+would write now, so a refreshed schema that changes a privilege cannot
+slip through unregenerated; the generator formats its output with ruff,
+so a run on an unchanged schema leaves the file as it is. Shapes the
+generator cannot describe faithfully (`and`, `require_param`, an empty
+check, and the other forms the wider schema uses) make it raise rather
+than flatten them into something that reads true and is not.
 
 [apidoc]: https://pve.proxmox.com/pve-docs/api-viewer/apidoc.js

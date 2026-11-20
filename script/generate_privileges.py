@@ -2,18 +2,22 @@
 
 For every route this library calls, the schema says which privilege
 Proxmox checks before answering. That is kept as plain data next to the
-code rather than looked up from the schema at runtime: 43 entries instead
-of a 144 KB file in every installation.
+code rather than looked up from the schema at runtime: one entry per
+route that states a check, instead of the whole schema file in every
+installation.
 
 Run `python script/generate_privileges.py` after refreshing the schema;
-the test compares what it would write against what is there, so a
-forgotten run fails rather than going unnoticed.
+the test compares the data it would write against what is there, so a
+forgotten run fails rather than going unnoticed. The module is written
+through `ruff format`, so a run on an unchanged schema leaves it as it is.
 """
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
+import subprocess
+import sys
 from typing import Any
 
 from routes import collect
@@ -29,7 +33,7 @@ library calls that states a check; the entry is the alternatives that
 satisfy it, and each alternative is the ACL path, the privileges, and
 whether one of them is enough.
 
-    ("GET", "nodes/{node}/apt/update"): ((("/nodes/{node}", ("Sys.Modify",), False),),)
+    ("GET", "nodes/{node}/apt/update"): (("/nodes/{node}", ("Sys.Modify",), False),)
 
 `aioproxmox.privileges` is the way to read this.
 """
@@ -61,9 +65,14 @@ def alternatives(check: list[Any]) -> tuple[Alternative, ...]:
         raise UnsupportedCheck(msg)
     kind = check[0]
     if kind == "perm":
-        path, privileges = check[1], tuple(check[2])
-        any_of = "any" in check[3:]
-        return ((path, privileges, any_of),)
+        path, privileges, modifiers = check[1], tuple(check[2]), check[3:]
+        # `"any", 1` is the one modifier there is a field for. The others -
+        # `"require_param", "pool"` on the clone routes - add a condition,
+        # and dropping it would hand back a requirement that is too weak.
+        if modifiers not in ([], ["any", 1]):
+            msg = f"perm modifiers {modifiers} are not described yet: {check}"
+            raise UnsupportedCheck(msg)
+        return ((path, privileges, bool(modifiers)),)
     if kind == "or":
         found: tuple[Alternative, ...] = ()
         for part in check[1:]:
@@ -75,14 +84,19 @@ def alternatives(check: list[Any]) -> tuple[Alternative, ...]:
 
 def entries() -> dict[tuple[str, str], tuple[Alternative, ...]]:
     """Return what the schema states for each route the library calls."""
-    api: dict[str, dict[str, Any]] = json.loads(SCHEMA.read_text(encoding="utf-8"))
+    # Paths only: the file also records where the extract came from.
+    parsed: dict[str, Any] = json.loads(SCHEMA.read_text(encoding="utf-8"))
+    api = {path: info for path, info in parsed.items() if path.startswith("/")}
     routes, _ = collect()
     found: dict[tuple[str, str], tuple[Alternative, ...]] = {}
     for route in routes:
         info = api.get(f"/{route.path}", {}).get(route.method)
-        if info is None or not (check := info.get("check")):
+        # A route without a check key states none; one whose check is
+        # there but empty is malformed, and alternatives() refuses it
+        # rather than letting it drop out of the map unnoticed.
+        if info is None or "check" not in info:
             continue
-        found[route.method, route.path] = alternatives(check)
+        found[route.method, route.path] = alternatives(info["check"])
     return found
 
 
@@ -100,11 +114,25 @@ def render() -> str:
     return "".join(lines)
 
 
+def formatted(source: str) -> str:
+    """Return the module the way `ruff format` writes it, with the repository's settings."""
+    result = subprocess.run(
+        [sys.executable, "-m", "ruff", "format", "--stdin-filename", str(TARGET), "-"],
+        input=source,
+        capture_output=True,
+        check=True,
+        cwd=TARGET.parent.parent,
+        encoding="utf-8",
+    )
+    return result.stdout
+
+
 def main() -> None:
     """Write the module and say how much of the API it covers."""
-    text = render()
-    TARGET.write_text(text, encoding="utf-8", newline="\n")
-    print(f"{TARGET}: {text.count('): (')} routes with a stated check")
+    TARGET.write_text(formatted(render()), encoding="utf-8", newline="\n")
+    # Counted from the data: the module's docstring shows a sample entry,
+    # so counting the rendered text was one too many.
+    print(f"{TARGET}: {len(entries())} routes with a stated check")
 
 
 if __name__ == "__main__":
