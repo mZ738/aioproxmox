@@ -13,7 +13,11 @@ import pytest
 from aioproxmox import ProxmoxHTTPAuth, ProxmoxVE
 from aioproxmox.const import PROBE_TIMEOUT
 from aioproxmox.endpoints import ClusterEndpoint
-from aioproxmox.exceptions import ProxmoxConnectionError, ProxmoxSSLError
+from aioproxmox.exceptions import (
+    ProxmoxAuthError,
+    ProxmoxConnectionError,
+    ProxmoxSSLError,
+)
 
 
 def _client_with_session() -> tuple[ProxmoxVE, AsyncMock]:
@@ -739,3 +743,332 @@ async def test_a_candidate_whose_certificate_does_not_verify_is_passed_over():
 
     assert await pve.request("GET", "nodes") == {"ok": 1}
     assert pve.host == "192.0.2.3"
+
+
+@pytest.mark.asyncio
+async def test_a_dead_ticket_met_on_the_next_host_is_replaced_there():
+    """The host is gone and the ticket died as well: both are answered, in turn.
+
+    A client that slept through the ticket's two hours wakes up to a 401,
+    and where the configured host is off by then, that 401 comes from the
+    node the client has just moved to. The password is still here.
+    """
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the request
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(401, text="ticket expired"),  # the request there, old ticket
+        _response(200, {"ok": 1}),  # and again, with the new one
+    ]
+
+    assert await pve.request("GET", "nodes") == {"ok": 1}
+
+    assert pve.host == "192.0.2.2"
+    assert pve.auth.pve_auth_ticket == "t2"
+    logins = [call.args[0] for call in session.post.call_args_list]
+    assert logins == ["https://192.0.2.2:8006/api2/json/access/ticket"]
+
+
+@pytest.mark.asyncio
+async def test_a_password_refused_on_the_next_host_is_final():
+    """The login on the new host is tried once, and its 401 is the answer."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.post.return_value.__aenter__.return_value = _response(401)
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the request
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(401, text="ticket expired"),  # the request there
+        _response(200, {"ok": 1}),  # the request once more, if it were sent
+    ]
+
+    with pytest.raises(ProxmoxAuthError):
+        await pve.request("GET", "nodes")
+
+    assert session.post.call_count == 1
+    assert session.request.call_count == 4
+
+
+@pytest.mark.asyncio
+async def test_a_token_refused_on_the_next_host_is_final():
+    """A token has nothing to log in again with, wherever the 401 comes from."""
+    session = AsyncMock(spec=aiohttp.ClientSession)
+    pve = ProxmoxVE(
+        session=session,
+        host="192.0.2.1",
+        user="root@pam",
+        token_name="ha",
+        token_value="secret",
+    )
+    pve.learn_hosts(["192.0.2.2"])
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the request
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(401, text="no such token"),  # the request there
+        _response(200, {"ok": 1}),  # the request once more, if it were sent
+    ]
+
+    with pytest.raises(ProxmoxAuthError):
+        await pve.request("GET", "nodes")
+
+    assert pve.host == "192.0.2.2"
+    assert session.request.call_count == 4
+    session.post.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_a_login_that_meets_a_dead_host_moves_like_a_renewal():
+    """The 401 was the host's last word, and the login after it finds nobody.
+
+    The login goes to the host itself, so its failure is proof enough. The
+    command behind it was refused, not run - however the login broke, it
+    is sent on the node the client moved to.
+    """
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    granted = session.post.return_value.__aenter__.return_value
+    session.post.return_value.__aenter__.side_effect = [
+        aiohttp.ServerDisconnectedError(),  # the login on host 1
+        granted,  # the login on host 2
+    ]
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),  # the command, refused
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, "UPID:pve2:shutdown"),  # the command there
+    ]
+
+    task = await pve.request("POST", "nodes/pve/qemu/100/status/shutdown")
+
+    assert task == "UPID:pve2:shutdown"
+    assert pve.host == "192.0.2.2"
+    logins = [call.args[0] for call in session.post.call_args_list]
+    assert logins == [
+        "https://192.0.2.1:8006/api2/json/access/ticket",
+        "https://192.0.2.2:8006/api2/json/access/ticket",
+    ]
+    methods = [call.kwargs["method"] for call in session.request.call_args_list]
+    assert methods == ["POST", "GET", "POST"]
+
+
+@pytest.mark.asyncio
+async def test_a_login_refused_for_its_certificate_moves_nowhere():
+    """A certificate that does not verify is reported from the login as well."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.post.return_value.__aenter__.side_effect = (
+        aiohttp.ClientConnectorCertificateError(
+            _connection_key(), ssl.SSLCertVerificationError("self-signed certificate")
+        )
+    )
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),  # the request, refused
+        _response(200, {"version": "9.2"}),  # host 2, if it were asked
+    ]
+
+    with pytest.raises(ProxmoxSSLError):
+        await pve.request("GET", "nodes")
+
+    assert pve.host == "192.0.2.1"
+    assert session.request.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_a_host_lost_right_after_the_login_is_left_too():
+    """A read repeated with the new ticket fails over like the first attempt."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),  # the read, refused
+        aiohttp.ClientConnectionError("refused"),  # the read with the new ticket
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, {"ok": 1}),  # the read there
+    ]
+
+    assert await pve.request("GET", "nodes") == {"ok": 1}
+
+    assert pve.host == "192.0.2.2"
+    assert session.post.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_a_command_cut_off_after_the_login_is_not_sent_again():
+    """The rule for a command holds for the attempt that follows a login too."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),  # the command, refused
+        aiohttp.ServerDisconnectedError(),  # the command again: sent, then nothing
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, "UPID:pve2:shutdown"),  # the command a third time, if sent
+    ]
+
+    with pytest.raises(ProxmoxConnectionError):
+        await pve.request("POST", "nodes/pve/qemu/100/status/shutdown")
+
+    assert pve.host == "192.0.2.2"
+    methods = [call.kwargs["method"] for call in session.request.call_args_list]
+    assert methods == ["POST", "POST", "GET", "GET"]
+
+
+@pytest.mark.asyncio
+async def test_a_request_moves_once():
+    """Where the node it moved to fails as well, the request is done trying."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the request
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        aiohttp.ClientConnectionError("refused"),  # the request there
+        aiohttp.ClientConnectionError("refused"),  # host 2, if it were asked
+        _response(200, {"version": "9.2"}),  # host 3, if it were asked
+        _response(200, {"ok": 1}),  # the request there, if it were sent
+    ]
+
+    with pytest.raises(ProxmoxConnectionError):
+        await pve.request("GET", "nodes")
+
+    assert pve.host == "192.0.2.2"
+    assert session.request.call_count == 4
+
+
+@pytest.mark.asyncio
+async def test_a_command_never_delivered_after_the_login_goes_to_the_next_host():
+    """Refused once and never connected the second time: it has not run yet."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2"])
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),  # the command, refused
+        _never_connected(),  # the command again: no connection to send it on
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, "UPID:pve2:shutdown"),  # the command there
+    ]
+
+    task = await pve.request("POST", "nodes/pve/qemu/100/status/shutdown")
+
+    assert task == "UPID:pve2:shutdown"
+    assert pve.host == "192.0.2.2"
+    assert session.post.call_count == 1
+    methods = [call.kwargs["method"] for call in session.request.call_args_list]
+    assert methods == ["POST", "POST", "GET", "GET", "POST"]
+
+
+@pytest.mark.asyncio
+async def test_a_login_lost_on_the_next_host_too_is_reported():
+    """The login moves once; a second node that does not take it ends the request."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+    granted = session.post.return_value.__aenter__.return_value
+    session.post.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the login on host 1
+        aiohttp.ClientConnectionError("refused"),  # the login on host 2
+        granted,  # the login on host 3, if it were made
+    ]
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),  # the request, refused
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(200, {"version": "9.2"}),  # host 3, if it were asked
+    ]
+
+    with pytest.raises(ProxmoxConnectionError):
+        await pve.request("GET", "nodes")
+
+    assert pve.host == "192.0.2.2"
+    assert session.post.call_count == 2
+    assert session.request.call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_a_login_after_a_move_does_not_move_again():
+    """The request has moved already; a login that fails there is the answer."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+    session.post.return_value.__aenter__.side_effect = aiohttp.ClientConnectionError(
+        "refused"
+    )
+    session.request.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the request
+        aiohttp.ClientConnectionError("refused"),  # host 1 is gone
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        _response(401, text="ticket expired"),  # the request there
+        _response(200, {"version": "9.2"}),  # host 3, if it were asked
+    ]
+
+    with pytest.raises(ProxmoxConnectionError):
+        await pve.request("GET", "nodes")
+
+    assert pve.host == "192.0.2.2"
+    assert session.post.call_count == 1
+    assert session.request.call_count == 4
+
+
+@pytest.mark.asyncio
+async def test_a_burst_of_logins_moves_once():
+    """Every request of a burst is refused, and every login finds the host gone."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+    granted = _response(200, {"ticket": "t2", "CSRFPreventionToken": "c2"})
+
+    async def login() -> AsyncMock:
+        attempt = session.post.call_count
+        await asyncio.sleep(0)  # the other request gets as far as this one
+        if attempt <= 2:
+            raise aiohttp.ClientConnectionError("refused")  # both, on host 1
+        return granted
+
+    session.post.return_value.__aenter__.side_effect = login
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),  # one request, refused
+        _response(401, text="ticket expired"),  # and the other
+        _response(200, {"version": "9.2"}),  # host 2 answers, asked once
+        _response(200, {"ok": 1}),  # one request there
+        _response(200, {"ok": 1}),  # and the other
+    ]
+
+    answers = await asyncio.gather(
+        pve.request("GET", "nodes"), pve.request("GET", "nodes")
+    )
+
+    assert answers == [{"ok": 1}, {"ok": 1}]
+    assert pve.host == "192.0.2.2"
+    urls = [call.kwargs["url"] for call in session.request.call_args_list]
+    assert urls == [
+        "https://192.0.2.1:8006/api2/json/nodes",
+        "https://192.0.2.1:8006/api2/json/nodes",
+        "https://192.0.2.2:8006/api2/json/version",
+        "https://192.0.2.2:8006/api2/json/nodes",
+        "https://192.0.2.2:8006/api2/json/nodes",
+    ]
+
+
+@pytest.mark.asyncio
+async def test_a_request_that_moved_for_its_login_does_not_move_again():
+    """The move the login took is the request's one move."""
+    pve, session = _client_with_session()
+    pve.learn_hosts(["192.0.2.2", "192.0.2.3"])
+    granted = session.post.return_value.__aenter__.return_value
+    session.post.return_value.__aenter__.side_effect = [
+        aiohttp.ClientConnectionError("refused"),  # the login on host 1
+        granted,  # the login on host 2
+    ]
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),  # the request, refused
+        _response(200, {"version": "9.2"}),  # host 2 answers
+        aiohttp.ClientConnectionError("refused"),  # the request there
+        aiohttp.ClientConnectionError("refused"),  # host 2, if it were asked
+        _response(200, {"version": "9.2"}),  # host 3, if it were asked
+        _response(200, {"ok": 1}),  # the request there, if it were sent
+    ]
+
+    with pytest.raises(ProxmoxConnectionError):
+        await pve.request("GET", "nodes")
+
+    assert pve.host == "192.0.2.2"
+    assert session.request.call_count == 3

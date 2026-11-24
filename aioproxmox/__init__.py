@@ -1,7 +1,7 @@
 """Proxmox Home Assistant Integration Service."""
 
 import asyncio
-from collections.abc import Iterator
+from collections.abc import Awaitable, Callable, Iterator
 from contextlib import contextmanager
 import logging
 import ssl
@@ -102,8 +102,7 @@ class ProxmoxHTTPAuthBase:
 
         `verify_ssl` is handed to aiohttp as its `ssl` argument: True verifies
         against the session's trust store, False verifies nothing, and an
-        `ssl.SSLContext` verifies against exactly what that context trusts -
-        the way to accept a private cluster CA without giving up verification.
+        `ssl.SSLContext` verifies against exactly what that context trusts.
         """
         self.session = session
         self.timeout = timeout
@@ -303,7 +302,8 @@ class ProxmoxVE:
 
         `verify_ssl` may be an `ssl.SSLContext` instead of a bool, for a
         Proxmox that presents a certificate from a private CA: load that CA
-        into the context and every request verifies against it.
+        into the context and the login, every request and the probe of
+        another node verify against it. See docs/certificates.md.
         """
         host = _normalize_host(host)
 
@@ -560,6 +560,10 @@ class ProxmoxVE:
         Repeated there is a read, always. A command is repeated only where
         the connection was never made; one that broke after it may have
         reached Proxmox, so the client moves and the error is raised.
+
+        The two can meet in one request - the ticket is refused on the node
+        the client has just moved to, or the login finds the host gone -
+        and each is answered once, in whichever order they come.
         """
         host_before = self.host
         try:
@@ -574,25 +578,57 @@ class ProxmoxVE:
                 raise
             with _translate_client_errors(self.base_url):
                 await self.auth.check_and_refresh(method=method)
-        host_before = self.host
+        # One login and one move at most: every turn uses up one of them.
+        moved = logged_in = False
+        while True:
+            host_before = self.host
+            try:
+                return await self._request_once(method, path, json_data, params)
+            except ProxmoxAuthError:
+                relogin = getattr(self.auth, "relogin", None)
+                if relogin is None or logged_in:
+                    raise
+                _LOGGER.debug("Request to %s refused with 401, logging in again", path)
+                logged_in = True
+                if await self._logged_in_again(
+                    relogin, from_host=host_before, may_move=not moved
+                ):
+                    moved = True
+            except ProxmoxConnectionError as err:
+                if moved or not await self._moved_on(err, from_host=host_before):
+                    raise
+                moved = True
+                if not _repeatable(method, err):
+                    # The client has moved, but Proxmox may hold this
+                    # command already.
+                    raise
+
+    async def _logged_in_again(
+        self,
+        relogin: Callable[[], Awaitable[None]],
+        *,
+        from_host: str,
+        may_move: bool,
+    ) -> bool:
+        """Log in with the stored password; return whether that took a move.
+
+        The login goes to the host itself, like the renewal: where it finds
+        nobody there is nothing to ask the host again, and the login is
+        made on the next node instead. What it follows was refused, not
+        run, so the request goes there whatever it is.
+        """
         try:
-            return await self._request_once(method, path, json_data, params)
-        except ProxmoxAuthError:
-            relogin = getattr(self.auth, "relogin", None)
-            if relogin is None:
-                raise
-            _LOGGER.debug("Request to %s refused with 401, logging in again", path)
             with _translate_client_errors(self.base_url):
                 await relogin()
-            return await self._request_once(method, path, json_data, params)
         except ProxmoxConnectionError as err:
-            if not await self._moved_on(err, from_host=host_before):
+            if not may_move or not await self._moved_on(
+                err, from_host=from_host, verify_current=False
+            ):
                 raise
-            if not _repeatable(method, err):
-                # The client has moved, but Proxmox may hold this command
-                # already.
-                raise
-            return await self._request_once(method, path, json_data, params)
+            with _translate_client_errors(self.base_url):
+                await relogin()
+            return True
+        return False
 
     async def _request_once(
         self,

@@ -11,13 +11,16 @@ on:
 #    - cron: "2 4 * * 0"  # weekly
   workflow_dispatch:
   push:
-# pull_request:
+  # Needed for PRs from forks; same-repo branches are already covered by push
+  pull_request:
 
 jobs:
   # Check shellscripts
   shellcheck:
     name: Shellcheck
     runs-on: ubuntu-latest
+    # Run on push, or on PRs from forks (same-repo PR branches already run on push)
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     steps:
       - name: Check out committed code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
@@ -27,6 +30,8 @@ jobs:
   ruff:
     runs-on: ubuntu-latest
     name: Ruff check and force
+    # Run on push, or on PRs from forks (same-repo PR branches already run on push)
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     steps:
       - name: Check out committed code
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
@@ -47,7 +52,8 @@ jobs:
           . venv/bin/activate
           ruff check aioproxmox/ tests/
       - name: If needed, commit ruff changes to the pull request
-        if: failure()
+        # Forks get no secrets, so we cannot push fixes back to them
+        if: failure() && github.event_name == 'push'
         run: |
           . venv/bin/activate
           ruff format aioproxmox/ tests/
@@ -183,11 +189,15 @@ jobs:
 
   test-publishing:
     name: Build and publish Python 🐍 distributions 📦 to TestPyPI
+    runs-on: ubuntu-latest
+    # main publishes to PyPI via release.yml; TestPyPI already has this version from the branch run
+    # Never publish from pull_request events (forks have no OIDC/secrets)
     # TestPyPI's trusted publisher is bound to the upstream repository and
     # its workflow, so this job can only ever fail in a fork - on every
     # version bump, which buries the checks that do say something.
-    if: github.repository == 'CoMPaTech/aioproxmox'
-    runs-on: ubuntu-latest
+    if: >-
+      github.repository == 'CoMPaTech/aioproxmox'
+      && github.event_name == 'push' && github.ref != 'refs/heads/main'
     environment: testpypi
     permissions:
         contents: read
