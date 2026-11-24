@@ -75,6 +75,12 @@ means the host is gone. A probe gets `PROBE_TIMEOUT` or the client's own
 waited that out, and with a long timeout a cluster of four would otherwise
 spend minutes establishing what it could say in seconds.
 
+Proxmox holds a `401` back for about three seconds - for a token it does
+not know, a ticket that has run out and a login it refuses alike. A
+`timeout` of three seconds or less ends before that answer comes, so the
+refusal reads as a host that is silent, here and in any request. The
+default of five leaves room for it.
+
 A candidate is asked by its own address, and the client stays where it is
 until one has answered. Only the requests that failed wait for that; the
 others keep going to the host in use rather than to one nobody has heard
@@ -91,7 +97,19 @@ that is the consumer's part: `learn_hosts()` with what it kept from last
 time, before `connect()`. A consumer that calls `auth.async_init()` itself
 gets the bare login and does the same by hand: on a
 `ProxmoxConnectionError`, `failover(verify_current=False)` and the login
-again.
+again. `ProxmoxSSLError` is a `ProxmoxConnectionError` too, and `failover()`
+is not shown the error it is called for - so that one is raised first:
+
+```python
+try:
+    await pve.auth.async_init()
+except ProxmoxSSLError:
+    raise
+except ProxmoxConnectionError:
+    if not await pve.failover(verify_current=False):
+        raise
+    await pve.auth.async_init()
+```
 
 ## What a consumer sees
 
@@ -107,6 +125,16 @@ connection that broke or timed out after it was made may have delivered the
 command, and a second `shutdown` or `vzdump` is worse than an error. So the
 client still moves, the `ProxmoxConnectionError` is raised, and the next
 call goes to the new host.
+
+With a password, a `401` is answered by logging in again, and that can
+meet a move in one request. The ticket may be refused on the node the client
+has just moved to: it logs in there and sends the request once more. Or the
+login finds the host gone: it goes to the host itself, like the renewal, so
+the client moves without asking again, logs in on the next node and sends
+the request there - a command included, since the `401` means it was
+refused, not run. A request logs in once and moves once, in whichever order
+it needs to; what fails after that is raised. A password the next node
+refuses is as final as on the first, and so is a `401` for a token.
 
 A host that is switched off is met in one of two ways, depending on the
 network and on the system the client runs on: as an address with no route,

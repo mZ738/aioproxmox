@@ -95,3 +95,20 @@ async def test_other_api_errors_are_not_retried():
     with pytest.raises(ProxmoxAPIError):
         await pve.request("GET", "nodes")
     assert session.request.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_a_ticket_refused_again_after_the_login_is_reported():
+    """One login per request: a 401 with the fresh ticket is the answer."""
+    pve, session = _client_with_session()
+    session.request.return_value.__aenter__.side_effect = [
+        _response(401, text="ticket expired"),
+        _response(401, text="permission check failed"),
+        _response(200, {"ok": 1}),  # a third attempt, if it were made
+    ]
+
+    with pytest.raises(ProxmoxAuthError):
+        await pve.request("GET", "version")
+
+    assert session.post.call_count == 1
+    assert session.request.call_count == 2
